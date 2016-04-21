@@ -60,12 +60,30 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		assertTrue(proc.getSubArea(1).interfaceBusIdList.size() == 2);
   		assertTrue(proc.getSubArea(2).interfaceBusIdList.size() == 3);
   		
+  		/*
+  		 * The subarea info is stored at
+  		 *   (1) SubArea.flag field
+  		 *   (2) Bus.infFlag field
+  		 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
+  		 */
   		net.getBusList().forEach(bus -> {
   			assertTrue(bus.getIntFlag() != DefaultFlag);
   			//System.out.println(bus.getId() + "," + bus.getIntFlag());
   			if (bus.getId().equals("2")) assertTrue(bus.getIntFlag() == 1);
   			if (bus.getId().equals("13")) assertTrue(bus.getIntFlag() == 2);
   		});
+  		
+  		assertTrue(proc.getSubAreaList().get(0).flag == 1);
+  		assertTrue(proc.getSubAreaList().get(1).flag == 2);
+  		proc.getSubAreaList().forEach(subarea -> {
+  			subarea.interfaceBusIdList.forEach(id -> {
+  				assertTrue(net.getBus(id).getIntFlag() == subarea.flag);
+  			});
+  		});
+  		
+  		// [0] "4->71(1)"
+  		assertTrue(proc.getCuttingBranches()[0].fromSubAreaFlag == 1);
+  		assertTrue(proc.getCuttingBranches()[0].toSubAreaFlag == 2);
 	}
 
 	@Test
@@ -111,6 +129,11 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		assertTrue(proc.getSubAreaList().get(0).flag == 1);
   		assertTrue(proc.getSubAreaList().get(1).flag == 2);
   		assertTrue(proc.getSubAreaList().get(2).flag == 3);
+  		proc.getSubAreaList().forEach(subarea -> {
+  			subarea.interfaceBusIdList.forEach(id -> {
+  				assertTrue(net.getBus(id).getIntFlag() == subarea.flag);
+  			});
+  		});
   		
   		// [0] "4->71(1)"
   		assertTrue(proc.getCuttingBranches()[0].fromSubAreaFlag == 1);
