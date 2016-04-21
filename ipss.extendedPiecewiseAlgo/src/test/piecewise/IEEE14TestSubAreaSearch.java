@@ -92,15 +92,32 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		assertTrue(proc.getSubAreaList().size() == 3);
   		assertTrue(proc.getSubArea(1).interfaceBusIdList.size() == 2);
   		assertTrue(proc.getSubArea(2).interfaceBusIdList.size() == 5);
-  		assertTrue(proc.getSubArea(7).interfaceBusIdList.size() == 1);  		
+  		assertTrue(proc.getSubArea(3).interfaceBusIdList.size() == 1);  		
   		
+  		/*
+  		 * The subarea info is stored at
+  		 *   (1) SubArea.flag field
+  		 *   (2) Bus.infFlag field
+  		 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
+  		 */
   		net.getBusList().forEach(bus -> {
   			assertTrue(bus.getIntFlag() != DefaultFlag);
   			//System.out.println(bus.getId() + "," + bus.getIntFlag());
   			if (bus.getId().equals("2")) assertTrue(bus.getIntFlag() == 1);
   			if (bus.getId().equals("61")) assertTrue(bus.getIntFlag() == 2);
-  			if (bus.getId().equals("14")) assertTrue(bus.getIntFlag() == 7);  			
+  			if (bus.getId().equals("14")) assertTrue(bus.getIntFlag() == 3);  			
   		});
+  		
+  		assertTrue(proc.getSubAreaList().get(0).flag == 1);
+  		assertTrue(proc.getSubAreaList().get(1).flag == 2);
+  		assertTrue(proc.getSubAreaList().get(2).flag == 3);
+  		
+  		// [0] "4->71(1)"
+  		assertTrue(proc.getCuttingBranches()[0].fromSubAreaFlag == 1);
+  		assertTrue(proc.getCuttingBranches()[0].toSubAreaFlag == 2);
+  		// [4] "14->13(1)
+  		assertTrue(proc.getCuttingBranches()[4].fromSubAreaFlag == 3);
+  		assertTrue(proc.getCuttingBranches()[4].toSubAreaFlag == 2);
 	}
 	
 	private AclfNetwork getTestNet() throws Exception {

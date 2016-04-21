@@ -223,6 +223,35 @@ public class SubAreaProcessorImpl implements SubAreaProcessor {
 			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
 			bus.setIntFlag(p.subAreaFlag);
 		});
+		
+		// consolidate the subarea number
+		//  At this point the subarea number might not be continuous, for example, 1, 2, 7 ...
+		//  We make it continuous 1, 2, 3, ...
+		Hashtable<Integer, Integer> lookup = new Hashtable<>();
+		Integer cnt = 0;
+		for (SubArea subarea : this.subareaList) {
+			lookup.put(subarea.flag, ++cnt);
+		};
+		//System.out.println(lookup);
+
+		// update the subarea flag
+		this.subareaList.forEach(subarea -> {
+			subarea.flag = lookup.get(subarea.flag);
+		});
+		
+		// update network bus SubArea flag
+		net.getBusList().forEach(bus -> {
+			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
+			bus.setIntFlag(lookup.get(p.subAreaFlag));
+		});
+		
+		// update cutting branch from/toBus subarea flag
+		for (int i = 0; i < this.cuttingBranches.length; i++) {
+			CuttingBranch branch = this.cuttingBranches[i];
+			AclfBranch aclfBranch = net.getBranch(branch.branchId);
+			branch.fromSubAreaFlag = aclfBranch.getFromBus().getIntFlag();
+			branch.toSubAreaFlag = aclfBranch.getToBus().getIntFlag();
+		}
 	}
 	
 	/**

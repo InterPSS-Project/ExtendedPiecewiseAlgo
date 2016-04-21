@@ -65,7 +65,11 @@ public interface SubAreaProcessor {
 	SubArea getSubArea(int flag);	
 	
 	/**
-	 * Process SubArea
+	 * Process SubArea by automatically group buses into subareas based
+	 * on the defined cutting branches set. The subarea info is stored at
+	 *   (1) SubArea.flag field
+	 *   (2) Bus.infFlag field
+	 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
 	 * 
 	 */
 	void processSubArea();	
