@@ -22,15 +22,15 @@
   *
   */
 
-package org.interpss.piesewise.impl;
+package org.interpss.piecewise.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.interpss.piesewise.CuttingBranch;
-import org.interpss.piesewise.SubArea;
-import org.interpss.piesewise.SubAreaProcessor;
+import org.interpss.piecewise.CuttingBranch;
+import org.interpss.piecewise.SubArea;
+import org.interpss.piecewise.SubAreaProcessor;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.common.util.IpssLogger;

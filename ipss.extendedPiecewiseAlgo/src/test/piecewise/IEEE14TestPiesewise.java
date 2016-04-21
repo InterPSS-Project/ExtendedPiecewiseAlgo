@@ -22,7 +22,7 @@
   *
   */
 
-package test.piesewise;
+package test.piecewise;
 
 import static org.junit.Assert.assertTrue;
 
@@ -34,12 +34,12 @@ import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
-import org.interpss.piesewise.CuttingBranch;
-import org.interpss.piesewise.PiecewiseAlgorithm;
-import org.interpss.piesewise.SubArea;
-import org.interpss.piesewise.SubAreaProcessor;
-import org.interpss.piesewise.impl.PiecewiseAlgorithmImpl;
-import org.interpss.piesewise.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.CuttingBranch;
+import org.interpss.piecewise.PiecewiseAlgorithm;
+import org.interpss.piecewise.SubArea;
+import org.interpss.piecewise.SubAreaProcessor;
+import org.interpss.piecewise.impl.PiecewiseAlgorithmImpl;
+import org.interpss.piecewise.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;

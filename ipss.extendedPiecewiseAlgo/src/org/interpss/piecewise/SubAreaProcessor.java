@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piesewise;
+package org.interpss.piecewise;
 
 import java.util.List;
 

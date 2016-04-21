@@ -22,15 +22,15 @@
   *
   */
 
-package test.piesewise;
+package test.piecewise;
 
 import static org.junit.Assert.assertTrue;
 
 import org.interpss.CorePluginObjFactory;
 import org.interpss.fadapter.IpssFileAdapter;
-import org.interpss.piesewise.CuttingBranch;
-import org.interpss.piesewise.SubAreaProcessor;
-import org.interpss.piesewise.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.CuttingBranch;
+import org.interpss.piecewise.SubAreaProcessor;
+import org.interpss.piecewise.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;

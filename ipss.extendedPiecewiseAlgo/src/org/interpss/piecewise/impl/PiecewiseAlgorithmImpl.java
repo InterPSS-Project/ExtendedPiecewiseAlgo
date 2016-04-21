@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piesewise.impl;
+package org.interpss.piecewise.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -34,9 +34,9 @@ import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.numeric.matrix.ComplexMatrixEqn;
 import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piesewise.CuttingBranch;
-import org.interpss.piesewise.PiecewiseAlgorithm;
-import org.interpss.piesewise.SubArea;
+import org.interpss.piecewise.CuttingBranch;
+import org.interpss.piecewise.PiecewiseAlgorithm;
+import org.interpss.piecewise.SubArea;
 
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
