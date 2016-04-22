@@ -1,5 +1,5 @@
  /*
-  * @(#)BaseTestSetup.java   
+  * @(#)PiecewiseAlgoTestSetup.java   
   *
   * Copyright (C) 2006 www.interpss.org
   *
@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 07/15/2007
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
