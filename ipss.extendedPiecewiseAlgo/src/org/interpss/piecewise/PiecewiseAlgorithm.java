@@ -89,7 +89,7 @@ public interface PiecewiseAlgorithm {
 	 * @param cuttingBranches cutting branch storing the branch current
 	 * @throws IpssNumericException
 	 */
-	void calcuateNetVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException;
+	void calcuateSubAreaVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException;
 	
 	/**
 	 * calculate cutting branch current
@@ -98,5 +98,17 @@ public interface PiecewiseAlgorithm {
 	 * @return the current array
 	 */
 	void calculateCuttingBranchCurrent(CuttingBranch[] cuttingBranches) throws IpssNumericException;
+	
+	/**
+	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function.
+	 * SubAreas based on the cutting branches will be automatically formed inside the method 
+	 * 
+	 * @param cbranches cutting branch set
+	 * @param injCurrentFunc function for calculating bus injection current
+	 * @return network bus voltage pairs <BusId, Voltage>
+	 * @throws IpssNumericException
+	 */
+	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc) throws IpssNumericException;
+
 }
 

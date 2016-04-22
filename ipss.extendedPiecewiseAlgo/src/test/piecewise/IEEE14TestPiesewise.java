@@ -217,7 +217,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateNetVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
  		
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			//System.out.println(v.abs() + ",   //  " + id);
@@ -273,7 +273,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateNetVoltage(proc.getCuttingBranches());  		
+		pieceWiseAlgo.calcuateSubAreaVoltage(proc.getCuttingBranches());  		
  		
 		/*
 		 * Checking bus voltage results
@@ -374,7 +374,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
     	
-		pieceWiseAlgo.calcuateNetVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
  		/*
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			System.out.println(v.abs() + ",   //  " + id);
@@ -431,7 +431,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
     	
-		pieceWiseAlgo.calcuateNetVoltage(proc.getCuttingBranches());  		
+		pieceWiseAlgo.calcuateSubAreaVoltage(proc.getCuttingBranches());  		
  		
   		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("10").abs(), 0.9336218714651833, 1.0e-10));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("1").abs(), 1.1582643132837898, 1.0e-10));
@@ -574,7 +574,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateNetVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
  		
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			System.out.println(v.abs() + ",   //  " + id);

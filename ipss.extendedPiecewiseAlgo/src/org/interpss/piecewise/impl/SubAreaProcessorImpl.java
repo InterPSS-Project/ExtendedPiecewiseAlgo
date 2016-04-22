@@ -150,7 +150,7 @@ public class SubAreaProcessorImpl implements SubAreaProcessor {
 	 * Process SubArea
 	 * 
 	 */
-	public void processSubArea() {
+	public List<SubArea> processSubArea() {
 		initialization();
 		
 		Hashtable<String, BusPair> busPairSet = new Hashtable<>();
@@ -252,6 +252,8 @@ public class SubAreaProcessorImpl implements SubAreaProcessor {
 			branch.fromSubAreaFlag = aclfBranch.getFromBus().getIntFlag();
 			branch.toSubAreaFlag = aclfBranch.getToBus().getIntFlag();
 		}
+		
+		return this.subareaList;
 	}
 	
 	/**

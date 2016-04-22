@@ -37,6 +37,7 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.CuttingBranch;
 import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.SubArea;
+import org.interpss.piecewise.SubAreaProcessor;
 
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
@@ -137,12 +138,33 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 		return null;
 	}
 	
+	@Override
+	public Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
+		SubAreaProcessor proc = new SubAreaProcessorImpl(net, cbranches);	
+		proc.processSubArea();
+
+  		this.subareaList = new SubAreaProcessorImpl(net, cbranches).processSubArea();
+  		
+  		// Solve for the open-circuit voltage
+  		calculateOpenCircuitVoltage(injCurrentFunc);
+
+  		// calculate cutting branch current
+    	calculateCuttingBranchCurrent(cbranches);
+
+  		// calculate bus voltage by superposition of the open-circuit voltage and voltage by inject the 
+    	// cutting branch current in the subsrea network
+  		calcuateSubAreaVoltage(cbranches);  		
+
+		return this.netVoltage;
+	}
+	
 	/**
 	 * Solve for subarea open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
 	 * 
 	 * @param injCurrentFunc bus inject current calculation function
 	 * @throws IpssNumericException
 	 */
+	@Override
 	public void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
   		for (SubArea subarea: this.subareaList) {
   			solveSubAreaNet(subarea.flag, injCurrentFunc);
@@ -190,7 +212,8 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 * @param cuttingBranches cutting branch storing the branch current
 	 * @throws IpssNumericException
 	 */
-	public void calcuateNetVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException {
+	@Override
+	public void calcuateSubAreaVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException {
 		for(SubArea subarea : this.subareaList)
 			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
 	}
@@ -239,6 +262,7 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 * @param cuttingBranches cutting branches
 	 * @return the current array
 	 */
+	@Override
 	public void calculateCuttingBranchCurrent(CuttingBranch[] cuttingBranches) throws IpssNumericException { 
 		
 		Complex[] eCutBranch = cuttingBranchOpenCircuitVoltage(cuttingBranches); 

@@ -70,7 +70,7 @@ public interface SubAreaProcessor {
 	 *   (1) SubArea.flag field
 	 *   (2) Bus.infFlag field
 	 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
-	 * 
+	 * @return the subarea list
 	 */
-	void processSubArea();	
+	List<SubArea> processSubArea();	
 }
