@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 09/15/2006
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -25,6 +25,7 @@
 package sample.piecewise;
 
 import java.util.Hashtable;
+import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.CorePluginObjFactory;
@@ -35,6 +36,7 @@ import org.interpss.piecewise.CuttingBranch;
 import org.interpss.piecewise.impl.PiecewiseAlgorithmImpl;
 
 import com.interpss.CoreObjectFactory;
+import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfLoadCode;
 import com.interpss.core.aclf.AclfNetwork;
 import com.interpss.core.algo.LoadflowAlgorithm;
@@ -72,12 +74,15 @@ public class IEEE14BusSample {
 					new CuttingBranch("4->91(1)"),
 					new CuttingBranch("5->61(1)")};	
 
+		// define bus injection current calculation function
+		Function<AclfBus,Complex> injCurrentFunc = bus -> {   // this function calculates bus injection current
+				// The bus injection current is based on gen bus load flow results.
+	  			return bus.isGen()? bus.getNetGenResults().divide(bus.getVoltage()) : new Complex(0.0, 0.0);
+	  		};
+	  		
 		// define a piecewise algo object and calculate the network bus voltage
   		Hashtable<String,Complex> voltages = new PiecewiseAlgorithmImpl(net)
-  				.calculateNetVoltage(cuttingBranches, bus -> {   // this function calculates bus injection current
-  						// The bus injection current is based on gen bus load flow results.
-  			  			return bus.isGen()? bus.getNetGenResults().divide(bus.getVoltage()) : new Complex(0.0, 0.0);
-  			  		});
+  				.calculateNetVoltage(cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		voltages.forEach((busId, voltage) -> {
