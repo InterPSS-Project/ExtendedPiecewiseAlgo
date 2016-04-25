@@ -48,6 +48,9 @@ public class IEEE14BusSample {
 		IpssCorePlugin.init();
 		
 		// =========== Aclf Network data preparation =====================//
+		/*
+		 * The network diagram can be found at https://drive.google.com/drive/folders/0BzjeDvtdQBeyZTA5YTE4NGItMDIwMS00OGYzLTkyNGItOTNlZjM1YTEwMTEw
+		 */
 		
 		// Load the sample network
 		AclfNetwork net = CorePluginObjFactory
