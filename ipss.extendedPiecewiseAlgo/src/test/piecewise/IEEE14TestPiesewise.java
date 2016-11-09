@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.CorePluginObjFactory;
+import org.interpss.CorePluginFactory;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
@@ -441,7 +441,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
 		/*
 		 * Load the network and run Loadflow
 		 */
-		AclfNetwork net = CorePluginObjFactory
+		AclfNetwork net = CorePluginFactory
 					.getFileAdapter(IpssFileAdapter.FileFormat.IpssInternal)
 					.load("testdata/ieee14.ipssdat")
 					.getAclfNet();	

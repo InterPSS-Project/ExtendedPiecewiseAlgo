@@ -28,7 +28,7 @@ import java.util.Hashtable;
 import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.CorePluginObjFactory;
+import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
@@ -53,7 +53,7 @@ public class IEEE14BusSample {
 		 */
 		
 		// Load the sample network
-		AclfNetwork net = CorePluginObjFactory
+		AclfNetwork net = CorePluginFactory
 					.getFileAdapter(IpssFileAdapter.FileFormat.IpssInternal)
 					.load("testdata/ieee14.ipssdat")
 					.getAclfNet();	
