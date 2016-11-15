@@ -49,7 +49,9 @@ import com.interpss.core.aclf.AclfLoadCode;
 import com.interpss.core.aclf.AclfNetwork;
 import com.interpss.core.algo.LoadflowAlgorithm;
 
-
+/*
+ * This test case is for testing piecewise algorithm implementation
+ */
 public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
 	/*
 	 * Function to compute bus injection current for the testing purpose

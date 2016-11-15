@@ -36,7 +36,9 @@ import org.junit.Test;
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfNetwork;
 
-
+/*
+ * This test case is for testing sub-area search algorithm implementation.
+ */
 public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 	private static final int DefaultFlag = -1;
 	
