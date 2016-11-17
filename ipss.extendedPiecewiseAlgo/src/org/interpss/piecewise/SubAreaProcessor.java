@@ -26,6 +26,10 @@ package org.interpss.piecewise;
 
 import java.util.List;
 
+import com.interpss.common.exp.InterpssException;
+import com.interpss.core.net.Branch;
+import com.interpss.core.net.Bus;
+
 /**
  * Class for SubArea processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses.
@@ -34,7 +38,7 @@ import java.util.List;
  *
  */
 		
-public interface SubAreaProcessor {
+public interface SubAreaProcessor <TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>> {
 	/**
 	 * return the cutting branch set
 	 * 
@@ -54,7 +58,7 @@ public interface SubAreaProcessor {
 	 * 
 	 * @return the netVoltage
 	 */
-	List<SubArea> getSubAreaList();
+	List<TSub> getSubAreaList();
 
 	/**
 	 * get SubArea by the area flag
@@ -62,7 +66,7 @@ public interface SubAreaProcessor {
 	 * @param flag the area flag
 	 * @return the subarea object
 	 */
-	SubArea getSubArea(int flag);	
+	TSub getSubArea(int flag);	
 	
 	/**
 	 * Process SubArea by automatically group buses into subareas based
@@ -72,5 +76,5 @@ public interface SubAreaProcessor {
 	 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
 	 * @return the subarea list
 	 */
-	List<SubArea> processSubArea();	
+	List<TSub> processSubArea() throws InterpssException;	
 }

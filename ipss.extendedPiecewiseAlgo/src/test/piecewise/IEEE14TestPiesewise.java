@@ -244,7 +244,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase2_1() throws Exception {
 		AclfNetwork net = getTestNet();
   		
-		SubAreaProcessor proc = new SubAreaProcessorImpl(net, new CuttingBranch[] { 
+		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 				new CuttingBranch("4->71(1)"),
   				new CuttingBranch("4->91(1)"),
   				new CuttingBranch("5->61(1)")});	
@@ -397,7 +397,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase4_1() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaProcessor proc = new SubAreaProcessorImpl(net, new CuttingBranch[] { 
+		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 				new CuttingBranch("4->71(1)"),
 				new CuttingBranch("4->91(1)"),
 				new CuttingBranch("5->61(1)"),

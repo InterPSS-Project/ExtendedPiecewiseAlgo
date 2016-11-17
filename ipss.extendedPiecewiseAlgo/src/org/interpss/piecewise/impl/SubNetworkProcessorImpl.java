@@ -24,15 +24,13 @@
 
 package org.interpss.piecewise.impl;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.SubArea;
+import org.interpss.piecewise.SubNetwork;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.common.util.IpssLogger;
+import com.interpss.core.aclf.AclfNetwork;
 import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
@@ -45,13 +43,13 @@ import com.interpss.core.net.Network;
  *
  */
 		
-public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends AbstractSubAreaProcessorImpl<TBus, TBra, SubArea> {
+public class SubNetworkProcessorImpl<TBus extends Bus, TBra extends Branch> extends AbstractSubAreaProcessorImpl<TBus, TBra, SubNetwork> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net) {
+	public SubNetworkProcessorImpl(Network<TBus,TBra> net) {
 		super(net);
 	}
 
@@ -61,7 +59,7 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net, CuttingBranch[] cuttingBranches) {
+	public SubNetworkProcessorImpl(Network<TBus,TBra> net, CuttingBranch[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
@@ -71,7 +69,17 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends
 	 * @param flag
 	 * @return
 	 */
-	@Override public SubArea createSubArea(int flag) {
-		return new SubArea(flag);
+	@Override public SubNetwork createSubArea(int flag) {
+		return new SubNetwork(flag);
 	};
+	
+	@Override public List<SubNetwork> processSubArea() throws InterpssException {
+		List<SubNetwork> subNetList = super.processSubArea();
+		
+		for (SubNetwork subNet : subNetList ) {
+			subNet.buildSubNet((AclfNetwork)this.getNetwork());
+		};
+		
+		return subNetList;
+	}
 }

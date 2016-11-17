@@ -31,6 +31,7 @@ import java.util.function.Function;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
 
+import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBus;
 
 /**
@@ -108,7 +109,7 @@ public interface PiecewiseAlgorithm {
 	 * @return network bus voltage pairs <BusId, Voltage>
 	 * @throws IpssNumericException
 	 */
-	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc) throws IpssNumericException;
+	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc) throws InterpssException, IpssNumericException;
 
 }
 

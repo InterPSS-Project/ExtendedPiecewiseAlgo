@@ -39,6 +39,7 @@ import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.SubArea;
 import org.interpss.piecewise.SubAreaProcessor;
 
+import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
@@ -132,18 +133,20 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 */
 	public SubArea getSubArea(int flag) {
 		for (SubArea subarea: this.subareaList) {
-			if (subarea.flag == flag)
+			if (subarea.getFlag() == flag)
 				return subarea;
 		}
 		return null;
 	}
 	
 	@Override
-	public Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
-		SubAreaProcessor proc = new SubAreaProcessorImpl(net, cbranches);	
-		proc.processSubArea();
-
-  		this.subareaList = new SubAreaProcessorImpl(net, cbranches).processSubArea();
+	public Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws InterpssException, IpssNumericException {
+		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, cbranches);	
+		this.subareaList = proc.processSubArea();
+  		
+		/* 
+		 * this.subareaList = new SubAreaProcessorImpl<>(net, cbranches).processSubArea();
+		 */
   		
   		// Solve for the open-circuit voltage
   		calculateOpenCircuitVoltage(injCurrentFunc);
@@ -167,13 +170,13 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	@Override
 	public void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
   		for (SubArea subarea: this.subareaList) {
-  			solveSubAreaNet(subarea.flag, injCurrentFunc);
+  			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
   	  		//System.out.println("y1: \n" + y1.toString());
   			
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
   	  		net.getBusList().forEach(bus -> {
-  	  			if (bus.getIntFlag() == subarea.flag) {
-  	  				this.netVoltage.put(bus.getId(), subarea.ySparseEqn.getX(bus.getSortNumber()));
+  	  			if (bus.getIntFlag() == subarea.getFlag()) {
+  	  				this.netVoltage.put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
   	  			}
   	  		});   	  		
   		}
@@ -191,19 +194,19 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 		// there is no need to form the Y matrix if it has not changed
 		SubArea subArea = this.getSubArea(areaFlag);
   		if (this.netYmatrixDirty) {
-  			subArea.ySparseEqn = net.formYMatrix(areaFlag);
-  			subArea.ySparseEqn.luMatrix(1.0e-10);
+  			subArea.setYSparseEqn(net.formYMatrix(areaFlag));
+  			subArea.getYSparseEqn().luMatrix(1.0e-10);
   		}
   		//System.out.println("y1: \n" + y1.toString());
   		
   		net.getBusList().forEach(bus -> {
 				if (bus.getIntFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
-					subArea.ySparseEqn.setBi(injCurrentFunc.apply(bus), bus.getSortNumber());
+					subArea.getYSparseEqn().setBi(injCurrentFunc.apply(bus), bus.getSortNumber());
 				}
 			});
   		
-  		subArea.ySparseEqn.solveEqn();	
+  		subArea.getYSparseEqn().solveEqn();	
 	}
 	
 	/**
@@ -228,22 +231,22 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 */
 	private void calcuateSubAreaVoltage(SubArea subArea, CuttingBranch[] cuttingBranches)  throws IpssNumericException {
   		// calculate the cutting branch current injection
-		ISparseEqnComplex yMatrix = subArea.ySparseEqn;
+		ISparseEqnComplex yMatrix = subArea.getYSparseEqn();
 		yMatrix.setB2Zero();
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
   			AclfBranch branch = net.getBranch(cuttingBranches[cnt].branchId);
   			// current into the network as the positive direction
-  			if (branch.getFromBus().getIntFlag() == subArea.flag) {
+  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
   				yMatrix.addToB(cuttingBranches[cnt].cur.multiply(-1.0), branch.getFromBus().getSortNumber());
   			}
-  			else if (branch.getToBus().getIntFlag() == subArea.flag) {
+  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
   				yMatrix.addToB(cuttingBranches[cnt].cur, branch.getToBus().getSortNumber());
   			}
   		}
   		//System.out.println(yMatrix);
   		
   		// calculate sub-area bus voltage due to the cutting branch current injection
-  		subArea.ySparseEqn.solveEqn();
+  		subArea.getYSparseEqn().solveEqn();
   		//System.out.println(ySubArea);
   		
   		// update the bus voltage based on the superposition principle
@@ -331,22 +334,22 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 			 * form Mi matrix. Mi is the connection relationship matrix for
 			 * the subarea interface bus and the cutting branch for SubArea i 
 			 */
-			int[][] M = new int[subarea.interfaceBusIdList.size()][nCutBranches];
+			int[][] M = new int[subarea.getInterfaceBusIdList().size()][nCutBranches];
 			for ( int i = 0; i < nCutBranches; i++) {
 	  			AclfBranch branch = net.getBranch(cuttingBranches[i].branchId);
-	  			for (int j = 0; j < subarea.interfaceBusIdList.size(); j++)
+	  			for (int j = 0; j < subarea.getInterfaceBusIdList().size(); j++)
 	  				/*
 	  				 * branch current positive direction fromBus -> toBus
 	  				 * network injection current positive direction : into the network
 	  				 */
-	  				M[j][i] = branch.getFromBus().getId().equals(subarea.interfaceBusIdList.get(j))? -1 : 
-	  							(branch.getToBus().getId().equals(subarea.interfaceBusIdList.get(j))? 1: 0);
+	  				M[j][i] = branch.getFromBus().getId().equals(subarea.getInterfaceBusIdList().get(j))? -1 : 
+	  							(branch.getToBus().getId().equals(subarea.getInterfaceBusIdList().get(j))? 1: 0);
 			}
 			
 			/*
 			 * add the transpose[Mi]x[Zi]x[M] part. 
 			 */
-			matrix = MatrixUtil.add(matrix, MatrixUtil.prePostMultiply(subarea.zMatrix, M));
+			matrix = MatrixUtil.add(matrix, MatrixUtil.prePostMultiply(subarea.getZMatrix(), M));
 		}	
 		
 		return matrix;
@@ -361,21 +364,21 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 * @throws IpssNumericException
 	 */
 	private void formSubAreaZMatrix(SubArea subarea) throws IpssNumericException {
-		int areaNodes = subarea.interfaceBusIdList.size();
-		subarea.zMatrix = new Complex[areaNodes][areaNodes];
+		int areaNodes = subarea.getInterfaceBusIdList().size();
+		subarea.setZMatrix(new Complex[areaNodes][areaNodes]);
 		for (int i = 0; i < areaNodes; i++) {
-			int row = net.getBus(subarea.interfaceBusIdList.get(i)).getSortNumber();
-			if (!subarea.ySparseEqn.getBusId(row).equals(subarea.interfaceBusIdList.get(i))) {
+			int row = net.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
+			if (!subarea.getYSparseEqn().getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
 				// the y-matrix row number and the bus.sortNumber should match
 				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
 			}
-			subarea.ySparseEqn.setB2Unity(row);
+			subarea.getYSparseEqn().setB2Unity(row);
 			
-			subarea.ySparseEqn.solveEqn();
+			subarea.getYSparseEqn().solveEqn();
 			
 			for (int j = 0; j < areaNodes; j++) {
-				int col = net.getBus(subarea.interfaceBusIdList.get(j)).getSortNumber();
-				subarea.zMatrix[j][i] = subarea.ySparseEqn.getX(col);
+				int col = net.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
+				subarea.getZMatrix()[j][i] = subarea.getYSparseEqn().getX(col);
 			}
 		}
 		/*
