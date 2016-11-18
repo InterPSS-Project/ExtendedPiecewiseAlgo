@@ -44,13 +44,13 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 		
-public class SubAclfNetworkProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork, Complex> {
+public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork, Complex> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubAclfNetworkProcessorImpl(AclfNetwork net) {
+	public SubNet1PhaseProcessorImpl(AclfNetwork net) {
 		super(net);
 	}
 
@@ -60,7 +60,7 @@ public class SubAclfNetworkProcessorImpl extends BaseSubAreaProcessorImpl<AclfBu
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAclfNetworkProcessorImpl(AclfNetwork net, CuttingBranch[] cuttingBranches) {
+	public SubNet1PhaseProcessorImpl(AclfNetwork net, CuttingBranch[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	

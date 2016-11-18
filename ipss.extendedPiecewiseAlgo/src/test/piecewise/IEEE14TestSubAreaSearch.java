@@ -29,10 +29,10 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.CorePluginFactory;
 import org.interpss.fadapter.IpssFileAdapter;
-import org.interpss.piecewise.aclf.CuttingBranch;
-import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.net.SubAreaNetProcessor;
 import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.onephase.CuttingBranch;
+import org.interpss.piecewise.onephase.SubArea;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;

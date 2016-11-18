@@ -27,10 +27,10 @@ package test.piecewise;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.piecewise.aclf.CuttingBranch;
-import org.interpss.piecewise.aclf.SubAclfNetwork;
-import org.interpss.piecewise.aclf.impl.SubAclfNetworkProcessorImpl;
 import org.interpss.piecewise.net.SubAreaNetProcessor;
+import org.interpss.piecewise.onephase.CuttingBranch;
+import org.interpss.piecewise.onephase.SubAclfNetwork;
+import org.interpss.piecewise.onephase.impl.SubNet1PhaseProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
@@ -46,7 +46,7 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = IEEE14TestSubAreaSearch.getTestNet();
 		
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubAclfNetwork, Complex> proc = new SubAclfNetworkProcessorImpl(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubAclfNetwork, Complex> proc = new SubNet1PhaseProcessorImpl(net, new CuttingBranch[] { 
 					new CuttingBranch("4->71(1)"),
 					new CuttingBranch("4->91(1)"),
 					new CuttingBranch("5->61(1)")});	
@@ -70,7 +70,7 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 	public void testCase2() throws Exception {
 		AclfNetwork net = IEEE14TestSubAreaSearch.getTestNet();
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubAclfNetwork, Complex> proc = new SubAclfNetworkProcessorImpl(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubAclfNetwork, Complex> proc = new SubNet1PhaseProcessorImpl(net, new CuttingBranch[] { 
 					new CuttingBranch("4->71(1)"),
 					new CuttingBranch("4->91(1)"),
 					new CuttingBranch("5->61(1)"),

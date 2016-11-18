@@ -323,4 +323,75 @@ public abstract class BaseSubAreaProcessorImpl<TBus extends Bus, TBra extends Br
 			}
   		});
 	}	
+	
+	/**
+	 * Class holding a pair of buses for SubArea processing. The bus pair are stored in
+	 * such a way that bus1.IntFlag <= bus2.InfFlag. 
+	 */
+	private static class BusPair {
+		// bus pair
+		public Bus bus1, bus2;
+		// store the smallest Bus.IntFlag in a SubArea
+		public int subAreaFlag = BaseCuttingBranch.DefaultFlag;
+		
+		public BusPair(Bus bus) {
+			this.bus1 = bus;
+			this.bus2 = bus;
+			this.subAreaFlag = bus.getIntFlag();
+		}
+		
+		/**
+		 * constructor
+		 * 
+		 * @param bus1
+		 * @param bus2
+		 */
+		public BusPair(Bus bus1, Bus bus2) {
+			// make sure that bus1.IntFlag <= bus2.InfFlag.
+			if (bus1.getIntFlag() < bus2.getIntFlag()) {
+				this.bus1 = bus1;
+				this.bus2 = bus2;
+			}
+			else {
+				this.bus1 = bus2;
+				this.bus2 = bus1;
+			}
+		}
+		
+		/**
+		 * get the bus pair key
+		 * 
+		 * @return the key
+		 */
+		public String getKey() {
+			return createKey(bus1.getIntFlag(), bus2.getIntFlag());
+		};
+		
+		/**
+		 * static function to create bus pair key based on two flags
+		 * 
+		 * @param flag1
+		 * @param flag2
+		 * @return the key
+		 */
+		public static String createKey(int flag1, int flag2) {
+			return flag1 + "_" + flag2;
+		};
+		
+		/**
+		 * static function to create bus pair key based on a flag
+		 * 
+		 * @param flag1
+		 * @return the key
+		 */
+		public static String createKey(int flag1) {
+			return flag1 + "_" + flag1;
+		};
+		
+		public String toString() {
+			return "[" + this.bus1.getIntFlag() + " \"" + this.bus1.getId() + "\",  "
+					+ this.bus2.getIntFlag()  + " \""  + this.bus2.getId() + "\",  "
+					+ this.subAreaFlag + "]";
+		}
+	}
 }

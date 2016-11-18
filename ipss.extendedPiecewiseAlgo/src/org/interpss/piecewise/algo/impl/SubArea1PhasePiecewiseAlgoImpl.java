@@ -54,7 +54,7 @@ import com.interpss.core.aclf.AclfNetwork;
  * @author Mike
  *
  */
-public class AclfSubAreaPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Complex> {
+public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Complex> {
 	
 	// AclfNetwork object
 	private AclfNetwork net;
@@ -77,7 +77,7 @@ public class AclfSubAreaPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public AclfSubAreaPiecewiseAlgoImpl(AclfNetwork net) {
+	public SubArea1PhasePiecewiseAlgoImpl(AclfNetwork net) {
 		this.net = net;
 		this.netYmatrixDirty = true;
 		this.netVoltage = new Hashtable<>();
@@ -89,7 +89,7 @@ public class AclfSubAreaPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public AclfSubAreaPiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
+	public SubArea1PhasePiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
 		this(net);
 		this.subareaList = subareaList;
 	}
