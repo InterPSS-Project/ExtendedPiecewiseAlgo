@@ -22,14 +22,14 @@
   *
   */
 
-package org.interpss.piecewise.aclf.impl;
+package org.interpss.piecewise.onephase.impl;
 
 import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.piecewise.aclf.CuttingBranch;
-import org.interpss.piecewise.aclf.SubAclfNetwork;
 import org.interpss.piecewise.net.impl.BaseSubAreaProcessorImpl;
+import org.interpss.piecewise.onephase.CuttingBranch;
+import org.interpss.piecewise.onephase.SubAclfNetwork;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;

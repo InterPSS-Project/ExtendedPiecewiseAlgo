@@ -34,12 +34,12 @@ import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.numeric.matrix.ComplexMatrixEqn;
 import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piecewise.aclf.CuttingBranch;
-import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.algo.PiecewiseAlgorithm;
 import org.interpss.piecewise.net.BaseCuttingBranch;
 import org.interpss.piecewise.net.SubAreaNetProcessor;
 import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.onephase.CuttingBranch;
+import org.interpss.piecewise.onephase.SubArea;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;

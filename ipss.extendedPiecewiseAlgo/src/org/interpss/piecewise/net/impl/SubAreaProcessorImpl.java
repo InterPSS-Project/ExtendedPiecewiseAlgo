@@ -24,8 +24,8 @@
 
 package org.interpss.piecewise.net.impl;
 
-import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.net.BaseCuttingBranch;
+import org.interpss.piecewise.onephase.SubArea;
 
 import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;

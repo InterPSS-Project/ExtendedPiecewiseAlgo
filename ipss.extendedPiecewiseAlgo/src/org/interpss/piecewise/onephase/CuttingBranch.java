@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.aclf;
+package org.interpss.piecewise.onephase;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.datatype.ComplexFunc;

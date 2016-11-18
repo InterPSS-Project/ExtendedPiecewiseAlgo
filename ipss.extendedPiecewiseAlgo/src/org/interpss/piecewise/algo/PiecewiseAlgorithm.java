@@ -30,8 +30,8 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
-import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.net.BaseCuttingBranch;
+import org.interpss.piecewise.onephase.SubArea;
 
 import com.interpss.common.exp.InterpssException;
 
