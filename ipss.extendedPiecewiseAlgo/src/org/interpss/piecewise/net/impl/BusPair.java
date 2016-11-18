@@ -24,6 +24,8 @@
 
 package org.interpss.piecewise.net.impl;
 
+import org.interpss.piecewise.net.BaseCuttingBranch;
+
 import com.interpss.core.net.Bus;
 
 /**

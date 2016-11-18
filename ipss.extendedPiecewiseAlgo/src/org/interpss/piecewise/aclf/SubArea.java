@@ -22,10 +22,11 @@
   *
   */
 
-package org.interpss.piecewise.net;
+package org.interpss.piecewise.aclf;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
+import org.interpss.piecewise.net.BaseSubArea;
 
 /**
  * Class for modeling the SubArea concept for representing positive sequence sub-network. 

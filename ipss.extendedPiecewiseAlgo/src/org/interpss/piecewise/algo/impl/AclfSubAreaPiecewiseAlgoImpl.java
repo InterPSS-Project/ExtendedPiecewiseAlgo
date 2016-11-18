@@ -34,10 +34,11 @@ import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.numeric.matrix.ComplexMatrixEqn;
 import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
+import org.interpss.piecewise.aclf.CuttingBranch;
+import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.algo.PiecewiseAlgorithm;
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.SubArea;
-import org.interpss.piecewise.net.SubAreaProcessor;
+import org.interpss.piecewise.net.BaseCuttingBranch;
+import org.interpss.piecewise.net.SubAreaNetProcessor;
 import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 
 import com.interpss.common.exp.InterpssException;
@@ -53,7 +54,7 @@ import com.interpss.core.aclf.AclfNetwork;
  * @author Mike
  *
  */
-public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Complex> {
+public class AclfSubAreaPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Complex> {
 	
 	// AclfNetwork object
 	private AclfNetwork net;
@@ -76,7 +77,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public AclfNetPiecewiseAlgoImpl(AclfNetwork net) {
+	public AclfSubAreaPiecewiseAlgoImpl(AclfNetwork net) {
 		this.net = net;
 		this.netYmatrixDirty = true;
 		this.netVoltage = new Hashtable<>();
@@ -88,7 +89,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public AclfNetPiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
+	public AclfSubAreaPiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
 		this(net);
 		this.subareaList = subareaList;
 	}
@@ -141,9 +142,9 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	}
 	
 	@Override
-	public Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws InterpssException, IpssNumericException {
-		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, cbranches);	
-		this.subareaList = proc.processSubArea();
+	public Hashtable<String,Complex> calculateNetVoltage(BaseCuttingBranch<Complex>[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws InterpssException, IpssNumericException {
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, cbranches);	
+		this.subareaList = proc.processSubAreaNet();
   		
 		/* 
 		 * this.subareaList = new SubAreaProcessorImpl<>(net, cbranches).processSubArea();
@@ -217,7 +218,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * @throws IpssNumericException
 	 */
 	@Override
-	public void calcuateSubAreaVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException {
+	public void calcuateSubAreaVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
 		for(SubArea subarea : this.subareaList)
 			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
 	}
@@ -230,18 +231,18 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * @param cuttingBranches cutting branch storing the branch current
 	 * @throws IpssNumericException
 	 */
-	private void calcuateSubAreaVoltage(SubArea subArea, CuttingBranch[] cuttingBranches)  throws IpssNumericException {
+	private void calcuateSubAreaVoltage(SubArea subArea, BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
   		// calculate the cutting branch current injection
 		ISparseEqnComplex yMatrix = subArea.getYSparseEqn();
 		yMatrix.setB2Zero();
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[cnt].branchId);
+  			AclfBranch branch = net.getBranch(cuttingBranches[cnt].getBranchId());
   			// current into the network as the positive direction
   			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
-  				yMatrix.addToB(cuttingBranches[cnt].cur.multiply(-1.0), branch.getFromBus().getSortNumber());
+  				yMatrix.addToB(cuttingBranches[cnt].getCurrent().multiply(-1.0), branch.getFromBus().getSortNumber());
   			}
   			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
-  				yMatrix.addToB(cuttingBranches[cnt].cur, branch.getToBus().getSortNumber());
+  				yMatrix.addToB(cuttingBranches[cnt].getCurrent(), branch.getToBus().getSortNumber());
   			}
   		}
   		//System.out.println(yMatrix);
@@ -267,7 +268,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * @return the current array
 	 */
 	@Override
-	public void calculateCuttingBranchCurrent(CuttingBranch[] cuttingBranches) throws IpssNumericException { 
+	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex>[] cuttingBranches) throws IpssNumericException { 
 		
 		Complex[] eCutBranch = cuttingBranchOpenCircuitVoltage(cuttingBranches); 
 		
@@ -282,7 +283,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
     	
     	for (int i = 0; i < cuttingBranches.length; i++) {
     		//System.out.println("Branch cur: " + cuttingBranches[i] + " " + ComplexFunc.toStr(curAry[i]));
-    		cuttingBranches[i].cur = curAry[i];
+    		cuttingBranches[i].setCurrent(curAry[i]);
     	}
 	}
 	
@@ -294,11 +295,11 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * @param cuttingBranches cutting branch objects
 	 * @return cutting branch voltage difference array
 	 */
-	private Complex[] cuttingBranchOpenCircuitVoltage(CuttingBranch[] cuttingBranches) {
+	private Complex[] cuttingBranchOpenCircuitVoltage(BaseCuttingBranch<Complex>[] cuttingBranches) {
 		int nCutBranches = cuttingBranches.length;
 		Complex[] eCutBranch = new Complex[nCutBranches];    // transport[M] x open circuit[E]
   		for ( int i = 0; i < nCutBranches; i++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[i].branchId);
+  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
   			// assume branch current from bus -> to bus
   			// current positive direction - into the sub-area network
   			eCutBranch[i] = getNetVoltage().get(branch.getFromBus().getId())
@@ -314,7 +315,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 	 * @param cuttingBranches cutting branches
 	 * @return the z-matrix
 	 */
-	private Complex[][] buildEquivZMtrix(CuttingBranch[] cuttingBranches)  throws IpssNumericException {
+	private Complex[][] buildEquivZMtrix(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
 		int nCutBranches = cuttingBranches.length;
 		Complex[][] matrix = new Complex[nCutBranches][nCutBranches];
 	  	
@@ -322,7 +323,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 		 * first add the cutting branch [Zl] part
 		 */
 		for ( int i = 0; i < nCutBranches; i++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[i].branchId);
+  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
   			for (int j = 0; j < nCutBranches; j++) {
   				matrix[i][j] = i == j? branch.getZ() : new Complex(0.0,0.0);
   			}
@@ -337,7 +338,7 @@ public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Co
 			 */
 			int[][] M = new int[subarea.getInterfaceBusIdList().size()][nCutBranches];
 			for ( int i = 0; i < nCutBranches; i++) {
-	  			AclfBranch branch = net.getBranch(cuttingBranches[i].branchId);
+	  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
 	  			for (int j = 0; j < subarea.getInterfaceBusIdList().size(); j++)
 	  				/*
 	  				 * branch current positive direction fromBus -> toBus

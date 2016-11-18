@@ -34,11 +34,11 @@ import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
+import org.interpss.piecewise.aclf.CuttingBranch;
+import org.interpss.piecewise.aclf.SubArea;
 import org.interpss.piecewise.algo.PiecewiseAlgorithm;
-import org.interpss.piecewise.algo.impl.AclfNetPiecewiseAlgoImpl;
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.SubArea;
-import org.interpss.piecewise.net.SubAreaProcessor;
+import org.interpss.piecewise.algo.impl.AclfSubAreaPiecewiseAlgoImpl;
+import org.interpss.piecewise.net.SubAreaNetProcessor;
 import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
@@ -138,7 +138,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2;
 		
-  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net);
   		SubArea[] subareas = {
   					new SubArea(areaFlag1, new String[] {"4", "5"}), 
   					new SubArea(areaFlag2, new String[] {"71", "91", "61"})};
@@ -163,7 +163,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		// turn off the cutting branches
   		for (CuttingBranch cbra : cuttingBranches) {
-  			AclfBranch branch = net.getBranch(cbra.branchId);
+  			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			branch.setStatus(false);
   		}
   		
@@ -213,7 +213,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
     	/*
     	 * Check cutting branch currents
     	 */
-		assertTrue(NumericUtil.equals(cuttingBranches[0].cur, new Complex(0.33667, -0.1398), 1.0e-4));
+		assertTrue(NumericUtil.equals(cuttingBranches[0].getCurrent(), new Complex(0.33667, -0.1398), 1.0e-4));
 		
   		/*//////////////////////////////////////////
   		 * Step-3
@@ -244,17 +244,17 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase2_1() throws Exception {
 		AclfNetwork net = getTestNet();
   		
-		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 				new CuttingBranch("4->71(1)"),
   				new CuttingBranch("4->91(1)"),
   				new CuttingBranch("5->61(1)")});	
 		
-		proc.processSubArea();
+		proc.processSubAreaNet();
   		/*
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net, proc.getSubAreaList());
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -300,7 +300,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net);
   		
   		SubArea[] subareas = {
 					new SubArea(areaFlag1, new String[] {"4", "5"}), 
@@ -336,7 +336,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		// turn off the cutting branches
   		for (CuttingBranch cbra : cuttingBranches) {
-  			AclfBranch branch = net.getBranch(cbra.branchId);
+  			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
   			branch.setStatus(false);
   		}
@@ -397,21 +397,21 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase4_1() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 				new CuttingBranch("4->71(1)"),
 				new CuttingBranch("4->91(1)"),
 				new CuttingBranch("5->61(1)"),
 				new CuttingBranch("9->14(1)"),
 				new CuttingBranch("14->13(1)")});	
 		
-		proc.processSubArea();
+		proc.processSubAreaNet();
   		
   		/*
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
   		
-  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net, proc.getSubAreaList());
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net, proc.getSubAreaNetList());
   		
   		
   		/*//////////////////////////////////
@@ -489,7 +489,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net);
   		
   		SubArea[] subareas = {
 					new SubArea(areaFlag1, new String[] {"4", "5"}), 
@@ -526,7 +526,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		// turn off the cutting branches
   		for (CuttingBranch cbra : cuttingBranches) {
-  			AclfBranch branch = net.getBranch(cbra.branchId);
+  			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
   			branch.setStatus(false);
   		}
@@ -556,7 +556,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 */////////////////////////////
     	pieceWiseAlgo.calculateCuttingBranchCurrent(cuttingBranches);
     	for (CuttingBranch branch: cuttingBranches) {
-    		System.out.println("Branch cur: " + branch.branchId + "  " + ComplexFunc.toStr(branch.cur));
+    		System.out.println("Branch cur: " + branch.getBranchId() + "  " + ComplexFunc.toStr(branch.getCurrent()));
     	}
 
     	/*

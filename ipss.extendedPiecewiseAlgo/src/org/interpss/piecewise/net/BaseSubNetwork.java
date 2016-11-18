@@ -30,7 +30,7 @@ import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
 
 /**
- * Class for modeling the SubNetwork concept 
+ * Class for modeling the SubNetwork concept.  
  * 
  *  */
 public abstract class BaseSubNetwork<TBus extends Bus, 
@@ -80,6 +80,7 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 		
 		Object[] busAry = parentNet.getBusList().toArray();
 		for (Object obj : busAry) {
+			@SuppressWarnings("unchecked")
 			TBus bus = (TBus)obj;
 			if (bus.getIntFlag() == this.getFlag()) {
 				this.subNet.addBus(bus);
@@ -88,6 +89,7 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 		
 		Object[] braAry = parentNet.getBranchList().toArray();
 		for (Object obj : braAry) {
+			@SuppressWarnings("unchecked")
 			TBranch branch = (TBranch)obj;
 			if (branch.getFromBus().getIntFlag() == this.getFlag() && branch.getToBus().getIntFlag() == this.getFlag()) {
 				this.subNet.addBranch(branch);
@@ -98,7 +100,7 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 	/**
 	 * create the sub-network object
 	 * 
-	 * @return
+	 * @return the sub-network object
 	 */
 	public abstract TNet createSubNetwork();
 	

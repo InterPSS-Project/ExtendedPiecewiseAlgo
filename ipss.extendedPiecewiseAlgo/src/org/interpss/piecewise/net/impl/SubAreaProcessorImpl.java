@@ -24,15 +24,9 @@
 
 package org.interpss.piecewise.net.impl;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import org.interpss.piecewise.aclf.SubArea;
+import org.interpss.piecewise.net.BaseCuttingBranch;
 
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.SubArea;
-
-import com.interpss.common.exp.InterpssException;
-import com.interpss.common.util.IpssLogger;
 import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
@@ -45,7 +39,7 @@ import com.interpss.core.net.Network;
  *
  */
 		
-public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends AbstractSubAreaProcessorImpl<TBus, TBra, SubArea> {
+public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch, TState> extends BaseSubAreaProcessorImpl<TBus, TBra, SubArea, TState> {
 	/**
 	 * Constructor
 	 * 
@@ -61,7 +55,7 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net, CuttingBranch[] cuttingBranches) {
+	public SubAreaProcessorImpl(Network<TBus,TBra> net, BaseCuttingBranch<TState>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	

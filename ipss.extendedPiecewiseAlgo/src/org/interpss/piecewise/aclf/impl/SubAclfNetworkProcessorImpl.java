@@ -26,17 +26,15 @@ package org.interpss.piecewise.aclf.impl;
 
 import java.util.List;
 
+import org.apache.commons.math3.complex.Complex;
+import org.interpss.piecewise.aclf.CuttingBranch;
 import org.interpss.piecewise.aclf.SubAclfNetwork;
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.impl.AbstractSubAreaProcessorImpl;
+import org.interpss.piecewise.net.impl.BaseSubAreaProcessorImpl;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
-import com.interpss.core.net.Branch;
-import com.interpss.core.net.Bus;
-import com.interpss.core.net.Network;
 
 /**
  * Class for SubArea processing. It begins by defining a set of cutting branches.
@@ -46,7 +44,7 @@ import com.interpss.core.net.Network;
  *
  */
 		
-public class SubAclfNetworkProcessorImpl extends AbstractSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork> {
+public class SubAclfNetworkProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork, Complex> {
 	/**
 	 * Constructor
 	 * 
@@ -76,8 +74,8 @@ public class SubAclfNetworkProcessorImpl extends AbstractSubAreaProcessorImpl<Ac
 		return new SubAclfNetwork(flag);
 	};
 	
-	@Override public List<SubAclfNetwork> processSubArea() throws InterpssException {
-		List<SubAclfNetwork> subNetList = super.processSubArea();
+	@Override public List<SubAclfNetwork> processSubAreaNet() throws InterpssException {
+		List<SubAclfNetwork> subNetList = super.processSubAreaNet();
 		
 		for (SubAclfNetwork subNet : subNetList ) {
 			subNet.buildSubNet((AclfNetwork)this.getNetwork());

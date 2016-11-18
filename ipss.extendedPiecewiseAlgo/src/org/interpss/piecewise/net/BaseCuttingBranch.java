@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.net.impl;
+package org.interpss.piecewise.net;
 
 
 /**
@@ -30,19 +30,20 @@ package org.interpss.piecewise.net.impl;
  * 
  * @author Mike
  *
+ * @template TCur branch current generic type
  */
 public class BaseCuttingBranch<TCur> {
 	// default sub area flag
 	public static final int DefaultFlag = -1;
 	
 	// cutting branch AclfNetwork id
-	public String branchId;
+	private String branchId;
 	
 	// cutting branch from/to bus SubArea flag
-	public int fromSubAreaFlag, toSubAreaFlag;
+	private int fromSubAreaFlag, toSubAreaFlag;
 	
 	// the calculated cutting branch Norton equivalent current
-	public TCur cur;
+	protected TCur cur;
 	
 	/**
 	 * default constructor
@@ -60,6 +61,55 @@ public class BaseCuttingBranch<TCur> {
 		this.branchId = id;
 		this.fromSubAreaFlag = fromFlag;
 		this.toSubAreaFlag = toFlag;
+	}
+
+	/**
+	 * @return the branchId
+	 */
+	public String getBranchId() {
+		return branchId;
+	}
+
+	/**
+	 * @return the fromSubAreaFlag
+	 */
+	public int getFromSubAreaFlag() {
+		return fromSubAreaFlag;
+	}
+
+	/**
+	 * @return the toSubAreaFlag
+	 */
+	public void setToSubAreaFlag(int flag) {
+		this.toSubAreaFlag = flag;
+	}
+
+	/**
+	 * @return the fromSubAreaFlag
+	 */
+	public void setFromSubAreaFlag(int flag) {
+		this.fromSubAreaFlag = flag;
+	}
+
+	/**
+	 * @return the toSubAreaFlag
+	 */
+	public int getToSubAreaFlag() {
+		return toSubAreaFlag;
+	}
+	
+	/**
+	 * @return the cur
+	 */
+	public TCur getCurrent() {
+		return cur;
+	}
+
+	/**
+	 * @return the cur
+	 */
+	public void setCurrent(TCur cur) {
+		this.cur = cur;
 	}
 	
 	public String toString() {

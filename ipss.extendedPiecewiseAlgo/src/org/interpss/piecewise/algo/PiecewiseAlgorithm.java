@@ -30,11 +30,10 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.SubArea;
+import org.interpss.piecewise.aclf.SubArea;
+import org.interpss.piecewise.net.BaseCuttingBranch;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.core.aclf.AclfBus;
 
 /**
  * An AclfNetwork is divided into a set of SubArea connected by a set of cutting branches. Each SubArea is identified
@@ -92,7 +91,7 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	 * @param cuttingBranches cutting branch storing the branch current
 	 * @throws IpssNumericException
 	 */
-	void calcuateSubAreaVoltage(CuttingBranch[] cuttingBranches)  throws IpssNumericException;
+	void calcuateSubAreaVoltage(BaseCuttingBranch<TState>[] cuttingBranches)  throws IpssNumericException;
 	
 	/**
 	 * calculate cutting branch current
@@ -100,7 +99,7 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	 * @param cuttingBranches cutting branches
 	 * @return the current array
 	 */
-	void calculateCuttingBranchCurrent(CuttingBranch[] cuttingBranches) throws IpssNumericException;
+	void calculateCuttingBranchCurrent(BaseCuttingBranch<TState>[] cuttingBranches) throws IpssNumericException;
 	
 	/**
 	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function.
@@ -111,7 +110,7 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	 * @return network bus voltage pairs <BusId, Voltage>
 	 * @throws IpssNumericException
 	 */
-	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
+	Hashtable<String,Complex> calculateNetVoltage(BaseCuttingBranch<TState>[] cbranches, Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
 
 }
 

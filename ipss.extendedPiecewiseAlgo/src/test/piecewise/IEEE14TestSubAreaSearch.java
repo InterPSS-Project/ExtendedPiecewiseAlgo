@@ -26,12 +26,12 @@ package test.piecewise;
 
 import static org.junit.Assert.assertTrue;
 
+import org.apache.commons.math3.complex.Complex;
 import org.interpss.CorePluginFactory;
 import org.interpss.fadapter.IpssFileAdapter;
-import org.interpss.piecewise.net.CuttingBranch;
-import org.interpss.piecewise.net.SubArea;
-import org.interpss.piecewise.net.SubAreaProcessor;
-import org.interpss.piecewise.net.impl.AbstractSubAreaProcessorImpl;
+import org.interpss.piecewise.aclf.CuttingBranch;
+import org.interpss.piecewise.aclf.SubArea;
+import org.interpss.piecewise.net.SubAreaNetProcessor;
 import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
@@ -50,20 +50,20 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = getTestNet();
 		
 		
-		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 					new CuttingBranch("4->71(1)"),
 					new CuttingBranch("4->91(1)"),
 					new CuttingBranch("5->61(1)")});	
   		
-  		proc.processSubArea();
+  		proc.processSubAreaNet();
   		
-  		proc.getSubAreaList().forEach(subarea -> {
+  		proc.getSubAreaNetList().forEach(subarea -> {
   			//System.out.println(subarea);
   		});
   		
-  		assertTrue(proc.getSubAreaList().size() == 2);
-  		assertTrue(proc.getSubArea(1).getInterfaceBusIdList().size() == 2);
-  		assertTrue(proc.getSubArea(2).getInterfaceBusIdList().size() == 3);
+  		assertTrue(proc.getSubAreaNetList().size() == 2);
+  		assertTrue(proc.getSubAreaNet(1).getInterfaceBusIdList().size() == 2);
+  		assertTrue(proc.getSubAreaNet(2).getInterfaceBusIdList().size() == 3);
   		
   		/*
   		 * The subarea info is stored at
@@ -78,24 +78,24 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   			if (bus.getId().equals("13")) assertTrue(bus.getIntFlag() == 2);
   		});
   		
-  		assertTrue(proc.getSubAreaList().get(0).getFlag() == 1);
-  		assertTrue(proc.getSubAreaList().get(1).getFlag() == 2);
-  		proc.getSubAreaList().forEach(subarea -> {
+  		assertTrue(proc.getSubAreaNetList().get(0).getFlag() == 1);
+  		assertTrue(proc.getSubAreaNetList().get(1).getFlag() == 2);
+  		proc.getSubAreaNetList().forEach(subarea -> {
   			subarea.getInterfaceBusIdList().forEach(id -> {
   				assertTrue(net.getBus(id).getIntFlag() == subarea.getFlag());
   			});
   		});
   		
   		// [0] "4->71(1)"
-  		assertTrue(proc.getCuttingBranches()[0].fromSubAreaFlag == 1);
-  		assertTrue(proc.getCuttingBranches()[0].toSubAreaFlag == 2);
+  		assertTrue(proc.getCuttingBranches()[0].getFromSubAreaFlag() == 1);
+  		assertTrue(proc.getCuttingBranches()[0].getToSubAreaFlag() == 2);
 	}
 
 	@Test
 	public void testCase2() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaProcessor<AclfBus, AclfBranch, SubArea> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, new CuttingBranch[] { 
 					new CuttingBranch("4->71(1)"),
 					new CuttingBranch("4->91(1)"),
 					new CuttingBranch("5->61(1)"),
@@ -103,20 +103,20 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 					new CuttingBranch("14->13(1)")});	
 		// make sure all cutting branches are in the network
   		for (int i = 0; i < proc.getCuttingBranches().length; i++) {
-  			AclfBranch branch = net.getBranch(proc.getCuttingBranches()[i].branchId);
-  			assertTrue(proc.getCuttingBranches()[i].branchId + " not found!", branch != null);
+  			AclfBranch branch = net.getBranch(proc.getCuttingBranches()[i].getBranchId());
+  			assertTrue(proc.getCuttingBranches()[i].getBranchId() + " not found!", branch != null);
   		};
   		
-  		proc.processSubArea();
+  		proc.processSubAreaNet();
   		
-  		proc.getSubAreaList().forEach(subarea -> {
+  		proc.getSubAreaNetList().forEach(subarea -> {
   			//System.out.println(subarea);
   		});
   		
-  		assertTrue(proc.getSubAreaList().size() == 3);
-  		assertTrue(proc.getSubArea(1).getInterfaceBusIdList().size() == 2);
-  		assertTrue(proc.getSubArea(2).getInterfaceBusIdList().size() == 5);
-  		assertTrue(proc.getSubArea(3).getInterfaceBusIdList().size() == 1);  		
+  		assertTrue(proc.getSubAreaNetList().size() == 3);
+  		assertTrue(proc.getSubAreaNet(1).getInterfaceBusIdList().size() == 2);
+  		assertTrue(proc.getSubAreaNet(2).getInterfaceBusIdList().size() == 5);
+  		assertTrue(proc.getSubAreaNet(3).getInterfaceBusIdList().size() == 1);  		
   		
   		/*
   		 * The subarea info is stored at
@@ -132,21 +132,21 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   			if (bus.getId().equals("14")) assertTrue(bus.getIntFlag() == 3);  			
   		});
   		
-  		assertTrue(proc.getSubAreaList().get(0).getFlag() == 1);
-  		assertTrue(proc.getSubAreaList().get(1).getFlag() == 2);
-  		assertTrue(proc.getSubAreaList().get(2).getFlag() == 3);
-  		proc.getSubAreaList().forEach(subarea -> {
+  		assertTrue(proc.getSubAreaNetList().get(0).getFlag() == 1);
+  		assertTrue(proc.getSubAreaNetList().get(1).getFlag() == 2);
+  		assertTrue(proc.getSubAreaNetList().get(2).getFlag() == 3);
+  		proc.getSubAreaNetList().forEach(subarea -> {
   			subarea.getInterfaceBusIdList().forEach(id -> {
   				assertTrue(net.getBus(id).getIntFlag() == subarea.getFlag());
   			});
   		});
   		
   		// [0] "4->71(1)"
-  		assertTrue(proc.getCuttingBranches()[0].fromSubAreaFlag == 1);
-  		assertTrue(proc.getCuttingBranches()[0].toSubAreaFlag == 2);
+  		assertTrue(proc.getCuttingBranches()[0].getFromSubAreaFlag() == 1);
+  		assertTrue(proc.getCuttingBranches()[0].getToSubAreaFlag() == 2);
   		// [4] "14->13(1)
-  		assertTrue(proc.getCuttingBranches()[4].fromSubAreaFlag == 3);
-  		assertTrue(proc.getCuttingBranches()[4].toSubAreaFlag == 2);
+  		assertTrue(proc.getCuttingBranches()[4].getFromSubAreaFlag() == 3);
+  		assertTrue(proc.getCuttingBranches()[4].getToSubAreaFlag() == 2);
 	}
 	
 	public static AclfNetwork getTestNet() throws Exception {

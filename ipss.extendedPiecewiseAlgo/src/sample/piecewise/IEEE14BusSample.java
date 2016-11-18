@@ -32,9 +32,9 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
+import org.interpss.piecewise.aclf.CuttingBranch;
 import org.interpss.piecewise.algo.PiecewiseAlgorithm;
-import org.interpss.piecewise.algo.impl.AclfNetPiecewiseAlgoImpl;
-import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.algo.impl.AclfSubAreaPiecewiseAlgoImpl;
 
 import com.interpss.CoreObjectFactory;
 import com.interpss.core.aclf.AclfBus;
@@ -82,7 +82,7 @@ public class IEEE14BusSample {
 	  		};
 	  		
 		// define a piecewise algo object and calculate the network bus voltage
-	  	PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
+	  	PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfSubAreaPiecewiseAlgoImpl(net);
   		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage

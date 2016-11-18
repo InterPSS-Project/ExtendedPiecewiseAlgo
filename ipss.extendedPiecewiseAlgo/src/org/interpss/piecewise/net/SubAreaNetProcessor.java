@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAreaProcessor.java   
+  * @(#)SubAreaNetProcessor.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -31,50 +31,50 @@ import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;
 
 /**
- * Class for SubArea processing. It begins by defining a set of cutting branches.
- * It finds SubAreas in the network and SubArea interface buses.
+ * Interface for SubArea or SubNetwork processing. It begins by defining a set of cutting branches.
+ * It finds SubAreas in the network and SubArea interface buses. If it is SubNetwork processing, it
+ * builds SubNetworks based on the SubArea info.
  * 
  * @author Mike
  *
  */
 		
-public interface SubAreaProcessor <TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>> {
+public interface SubAreaNetProcessor <TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>, TState> {
 	/**
 	 * return the cutting branch set
 	 * 
 	 * @return the cuttingBranches
 	 */
-	CuttingBranch[] getCuttingBranches();
+	BaseCuttingBranch<TState>[] getCuttingBranches();
 
 	/**
 	 * set the cutting branch set
 	 * 
 	 * @param cuttingBranches the cuttingBranches to set
 	 */
-	void setCuttingBranches(CuttingBranch[] cuttingBranches);
+	void setCuttingBranches(BaseCuttingBranch<TState>[] cuttingBranches);
 	
 	/**
-	 * get the subarea list
+	 * get the SubArea or SubNetwork list
 	 * 
 	 * @return the netVoltage
 	 */
-	List<TSub> getSubAreaList();
+	List<TSub> getSubAreaNetList();
 
 	/**
-	 * get SubArea by the area flag
+	 * get SubArea/Network by the area flag
 	 * 
 	 * @param flag the area flag
-	 * @return the subarea object
+	 * @return the SubArea/Net object
 	 */
-	TSub getSubArea(int flag);	
+	TSub getSubAreaNet(int flag);	
 	
 	/**
-	 * Process SubArea by automatically group buses into subareas based
-	 * on the defined cutting branches set. The subarea info is stored at
-	 *   (1) SubArea.flag field
-	 *   (2) Bus.infFlag field
-	 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
-	 * @return the subarea list
+	 * Process SubArea by automatically group buses into SubAreas based
+	 * on the defined cutting branches set. If it is SubNetwork processing,
+	 * SubNetwork relationship will be created
+	 *  
+	 * @return the SubArea/Net list
 	 */
-	List<TSub> processSubArea() throws InterpssException;	
+	List<TSub> processSubAreaNet() throws InterpssException;	
 }
