@@ -22,15 +22,15 @@
   *
   */
 
-package org.interpss.piecewise.net.impl;
+package org.interpss.piecewise.base.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.interpss.piecewise.net.BaseCuttingBranch;
-import org.interpss.piecewise.net.BaseSubArea;
-import org.interpss.piecewise.net.SubAreaNetProcessor;
+import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.BaseSubArea;
+import org.interpss.piecewise.base.SubAreaNetProcessor;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.common.util.IpssLogger;
@@ -39,14 +39,18 @@ import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
 
 /**
- * Class for SubArea processing. It begins by defining a set of cutting branches.
+ * Base Class for SubArea processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses.
  * 
  * @author Mike
  *
  */
 		
-public abstract class BaseSubAreaProcessorImpl<TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>, TState> implements SubAreaNetProcessor<TBus, TBra, TSub, TState> {
+public abstract class BaseSubAreaProcessorImpl<
+							TBus extends Bus, 
+							TBra extends Branch, 
+							TSub extends BaseSubArea<?, ?>, 
+							TState> implements SubAreaNetProcessor<TBus, TBra, TSub, TState> {
 	// Parent Network object
 	private Network<TBus,TBra> net;
 	

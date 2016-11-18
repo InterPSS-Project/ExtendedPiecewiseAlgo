@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.algo.impl;
+package org.interpss.piecewise.onephase.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -34,12 +34,10 @@ import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.numeric.matrix.ComplexMatrixEqn;
 import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piecewise.algo.PiecewiseAlgorithm;
-import org.interpss.piecewise.net.BaseCuttingBranch;
-import org.interpss.piecewise.net.SubAreaNetProcessor;
-import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
-import org.interpss.piecewise.onephase.CuttingBranch;
-import org.interpss.piecewise.onephase.SubArea;
+import org.interpss.piecewise.PiecewiseAlgorithm;
+import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.SubAreaNetProcessor;
+import org.interpss.piecewise.onephase.SubArea1Phase;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
@@ -67,7 +65,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	private Hashtable<String, Complex> netVoltage;
 	
 	// Sub-area list 
-	private List<SubArea> subareaList;
+	private List<SubArea1Phase> subareaList;
 	
 	// Equivalent Z-matrix for cutting branch current calculation
 	private ComplexMatrixEqn equivZMatrixEqn;
@@ -89,7 +87,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubArea1PhasePiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
+	public SubArea1PhasePiecewiseAlgoImpl(AclfNetwork net, List<SubArea1Phase> subareaList) {
 		this(net);
 		this.subareaList = subareaList;
 	}
@@ -123,7 +121,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 * 
 	 * @return the netVoltage
 	 */
-	public List<SubArea> getSubAreaList() {
+	public List<SubArea1Phase> getSubAreaList() {
 		return this.subareaList;
 	}
 
@@ -133,8 +131,8 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 * @param flag the area flag
 	 * @return the subarea object
 	 */
-	public SubArea getSubArea(int flag) {
-		for (SubArea subarea: this.subareaList) {
+	public SubArea1Phase getSubArea(int flag) {
+		for (SubArea1Phase subarea: this.subareaList) {
 			if (subarea.getFlag() == flag)
 				return subarea;
 		}
@@ -143,7 +141,9 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	
 	@Override
 	public Hashtable<String,Complex> calculateNetVoltage(BaseCuttingBranch<Complex>[] cbranches, Function<AclfBus,Complex> injCurrentFunc)  throws InterpssException, IpssNumericException {
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea, Complex> proc = new SubAreaProcessorImpl<>(net, cbranches);	
+		@SuppressWarnings("unchecked")
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> proc = 
+								new SubArea1PhaseProcessorImpl(net, cbranches);	
 		this.subareaList = proc.processSubAreaNet();
   		
 		/* 
@@ -171,7 +171,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 */
 	@Override
 	public void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
-  		for (SubArea subarea: this.subareaList) {
+  		for (SubArea1Phase subarea: this.subareaList) {
   			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
   	  		//System.out.println("y1: \n" + y1.toString());
   			
@@ -194,7 +194,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 */
 	private void solveSubAreaNet(int areaFlag, Function<AclfBus,Complex> injCurrentFunc) throws IpssNumericException {
 		// there is no need to form the Y matrix if it has not changed
-		SubArea subArea = this.getSubArea(areaFlag);
+		SubArea1Phase subArea = this.getSubArea(areaFlag);
   		if (this.netYmatrixDirty) {
   			subArea.setYSparseEqn(net.formYMatrix(areaFlag));
   			subArea.getYSparseEqn().luMatrix(1.0e-10);
@@ -219,7 +219,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 */
 	@Override
 	public void calcuateSubAreaVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
-		for(SubArea subarea : this.subareaList)
+		for(SubArea1Phase subarea : this.subareaList)
 			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
 	}
 	
@@ -231,7 +231,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 * @param cuttingBranches cutting branch storing the branch current
 	 * @throws IpssNumericException
 	 */
-	private void calcuateSubAreaVoltage(SubArea subArea, BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
+	private void calcuateSubAreaVoltage(SubArea1Phase subArea, BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
   		// calculate the cutting branch current injection
 		ISparseEqnComplex yMatrix = subArea.getYSparseEqn();
 		yMatrix.setB2Zero();
@@ -329,7 +329,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
   			}
 		}
 		
-		for (SubArea subarea : this.subareaList) {
+		for (SubArea1Phase subarea : this.subareaList) {
 			formSubAreaZMatrix(subarea);
 			
 			/*
@@ -365,7 +365,7 @@ public class SubArea1PhasePiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfB
 	 * @return the z-matrix
 	 * @throws IpssNumericException
 	 */
-	private void formSubAreaZMatrix(SubArea subarea) throws IpssNumericException {
+	private void formSubAreaZMatrix(SubArea1Phase subarea) throws IpssNumericException {
 		int areaNodes = subarea.getInterfaceBusIdList().size();
 		subarea.setZMatrix(new Complex[areaNodes][areaNodes]);
 		for (int i = 0; i < areaNodes; i++) {

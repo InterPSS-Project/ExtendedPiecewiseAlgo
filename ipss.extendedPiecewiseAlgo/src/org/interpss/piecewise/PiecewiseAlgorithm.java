@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.algo;
+package org.interpss.piecewise;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -30,55 +30,62 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
-import org.interpss.piecewise.net.BaseCuttingBranch;
-import org.interpss.piecewise.onephase.SubArea;
+import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.onephase.SubArea1Phase;
 
 import com.interpss.common.exp.InterpssException;
 
 /**
- * An AclfNetwork is divided into a set of SubArea connected by a set of cutting branches. Each SubArea is identified
- * by an unique flag(int). The AclfBus.intFlag is used to indicate where the bus is located in terms of SubArea. A set of
- * interface buses are defined in a SubArea to keep track of cutting branch connection relationship.
+ * An Network could be divided into a set of SubArea or SubNetwork connected by a set of cutting branches. 
+ * Each SubArea/Network is identified by an unique flag(int). The Bus.intFlag is used to indicate where the 
+ * bus is located in terms of SubArea/Net. A set of interface buses are defined in a SubArea/Net to keep 
+ * track of cutting branch connection relationship.
  * 
  * @author Mike
  *
+ * @template TBus Bus object generic type
+ * @template TState Network state (current, voltage) generic type, Complex for single phase analysis
  */
 public interface PiecewiseAlgorithm<TBus, TState> {
 	/**
+	 * Flag to indicate if the Y-matrix of the SubArea/Network is dirty
+	 * 
 	 * @return the netYmatrixDirty boolean field
 	 */
 	boolean isNetYmatrixDirty();
 
 
 	/**
+	 * Set the netYmatrixDirty flag
+	 * 
 	 * @param netYmatrixDirty the netYmatrixDirty to set
 	 */
 	void setNetYmatrixDirty(boolean netYmatrixDirty);
 
 	/**
-	 * the network voltage cache hashtable
+	 * During the calculation process, the network voltage is cached in a hashtable.
 	 * 
 	 * @return the netVoltage
 	 */
 	Hashtable<String, TState> getNetVoltage();
 
 	/**
-	 * get the subarea list
+	 * get the SubArea/Network list
 	 * 
-	 * @return the netVoltage
+	 * @return the SubArea/Network list
 	 */
-	List<SubArea> getSubAreaList();
+	List<SubArea1Phase> getSubAreaList();
 
 	/**
-	 * get SubArea by the area flag
+	 * get SubArea/Net by the area flag
 	 * 
 	 * @param flag the area flag
 	 * @return the subarea object
 	 */
-	SubArea getSubArea(int flag);
+	SubArea1Phase getSubArea(int flag);
 	
 	/**
-	 * Solve for subarea open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
+	 * Solve for SubArea/Network open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
 	 * 
 	 * @param injCurrentFunc bus inject current calculation function
 	 * @throws IpssNumericException
@@ -86,31 +93,33 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	void calculateOpenCircuitVoltage(Function<TBus, TState> injCurrentFunc)  throws IpssNumericException;
 	
 	/**
-	 * calculate the bus voltage for the subarea based on the cutting branch current and the bus open circuit voltage
+	 * calculate the bus voltage for the SubArea/Network based on the cutting branch current and 
+	 * the bus open circuit voltage
 	 * 
-	 * @param cuttingBranches cutting branch storing the branch current
+	 * @param cuttingBranches cutting branch where the branch current is stored
 	 * @throws IpssNumericException
 	 */
 	void calcuateSubAreaVoltage(BaseCuttingBranch<TState>[] cuttingBranches)  throws IpssNumericException;
 	
 	/**
-	 * calculate cutting branch current
+	 * calculate cutting branch current, the results are stored in the cuttingBranches object
 	 * 
 	 * @param cuttingBranches cutting branches
-	 * @return the current array
 	 */
 	void calculateCuttingBranchCurrent(BaseCuttingBranch<TState>[] cuttingBranches) throws IpssNumericException;
 	
 	/**
 	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function.
-	 * SubAreas based on the cutting branches will be automatically formed inside the method 
+	 * SubAreas/Network based on the cutting branches will be automatically formed inside the method 
 	 * 
 	 * @param cbranches cutting branch set
 	 * @param injCurrentFunc function for calculating bus injection current
 	 * @return network bus voltage pairs <BusId, Voltage>
-	 * @throws IpssNumericException
+	 * @throws InterpssException, IpssNumericException
 	 */
-	Hashtable<String,Complex> calculateNetVoltage(BaseCuttingBranch<TState>[] cbranches, Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
+	Hashtable<String,Complex> calculateNetVoltage(
+			BaseCuttingBranch<TState>[] cbranches, 
+			Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
 
 }
 

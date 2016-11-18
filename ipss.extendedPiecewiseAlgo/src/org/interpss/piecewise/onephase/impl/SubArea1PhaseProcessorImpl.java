@@ -22,30 +22,31 @@
   *
   */
 
-package org.interpss.piecewise.net.impl;
+package org.interpss.piecewise.onephase.impl;
 
-import org.interpss.piecewise.net.BaseCuttingBranch;
-import org.interpss.piecewise.onephase.SubArea;
+import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
+import org.interpss.piecewise.onephase.SubArea1Phase;
 
 import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
 
 /**
- * Class for SubArea processing. It begins by defining a set of cutting branches.
+ * Class for single SubArea processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses.
  * 
  * @author Mike
  *
  */
 		
-public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch, TState> extends BaseSubAreaProcessorImpl<TBus, TBra, SubArea, TState> {
+public class SubArea1PhaseProcessorImpl<TBus extends Bus, TBra extends Branch, TState> extends BaseSubAreaProcessorImpl<TBus, TBra, SubArea1Phase, TState> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net) {
+	public SubArea1PhaseProcessorImpl(Network<TBus,TBra> net) {
 		super(net);
 	}
 
@@ -55,7 +56,7 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch, TState>
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net, BaseCuttingBranch<TState>[] cuttingBranches) {
+	public SubArea1PhaseProcessorImpl(Network<TBus,TBra> net, BaseCuttingBranch<TState>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
@@ -65,7 +66,7 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch, TState>
 	 * @param flag
 	 * @return
 	 */
-	@Override public SubArea createSubArea(int flag) {
-		return new SubArea(flag);
+	@Override public SubArea1Phase createSubArea(int flag) {
+		return new SubArea1Phase(flag);
 	};
 }

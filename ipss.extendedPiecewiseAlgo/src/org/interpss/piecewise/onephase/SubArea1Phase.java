@@ -1,5 +1,5 @@
  /*
-  * @(#)CuttingBranch.java   
+  * @(#)SubArea.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -25,41 +25,30 @@
 package org.interpss.piecewise.onephase;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.numeric.datatype.ComplexFunc;
-import org.interpss.piecewise.net.BaseCuttingBranch;
-
+import org.interpss.numeric.sparse.ISparseEqnComplex;
+import org.interpss.piecewise.base.BaseSubArea;
 
 /**
- * Class for modeling the cutting branch concept with current of Complex type
- * 
- * @author Mike
- *
+ * Class for modeling the SubArea concept for representing positive sequence sub-network. 
  */
-public class CuttingBranch extends BaseCuttingBranch<Complex> {
+public class SubArea1Phase extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
+	
 	/**
-	 * constructor
+	 * default constructor
 	 * 
-	 * @param id branch id
-	 * @param fromFlag branch from bus area flag
-	 * @param toFlag branch to bus area flag
+	 * @param flag
 	 */
-	public CuttingBranch(String id, int fromFlag, int toFlag) {
-		super(id, fromFlag, toFlag);
+	public SubArea1Phase(int flag) {
+		super(flag);
 	}
 	
 	/**
 	 * constructor
 	 * 
-	 * @param id branch id
+	 * @param flag
+	 * @param ids
 	 */
-	public CuttingBranch(String id) {
-		super(id, BaseCuttingBranch.DefaultFlag, BaseCuttingBranch.DefaultFlag);
+	public SubArea1Phase(int flag, String[] ids) {
+		super(flag, ids);
 	}
-	
-	public String toString() {
-		String str =  super.toString();
-		if (this.cur != null)
-			str += "Branch current (from->to): " + ComplexFunc.toStr(this.cur) + "\n";
-		return str;
-	}
-}
+}	

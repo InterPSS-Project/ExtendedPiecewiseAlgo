@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.net;
+package org.interpss.piecewise.base;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.net.Branch;
@@ -30,8 +30,13 @@ import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
 
 /**
- * Class for modeling the SubNetwork concept.  
+ * Class for modeling the SubNetwork concept. A SubNetwork contains buses and connected branches, 
+ * using Bus.intFlag = SubNetwork.flag. Therefore, Bus.network = the SubNetwork for all buses and branches 
+ * in a SubNetwork. 
  * 
+ * @template TBus bus generic type
+ * @template TBranch branch generic type
+ * @template TNet network generic type
  *  */
 public abstract class BaseSubNetwork<TBus extends Bus, 
                             TBranch extends Branch, 
@@ -69,7 +74,13 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 	
 	/**
 	 * After the sub-area info have been defined, build the sub-net object from
-	 * the parent network object.
+	 * the parent network object. Before the SubNetwork processing, all buses/branches in SubArea
+	 * are contained by the parent network (Bus/Branch.network = Parent Network). After the SubNetwork processing,
+	 * buses/branches in SubNetwork are contained by the SubNetwork (Bus/Branch.network = SubNetwork), although the
+	 * parent network still holds reference to all the buses and branches. <p>
+	 * 
+	 * In this method, only Bus and Branch objected are "moved" from the parent network to
+	 * the SubNetwork. It should be override in the subclass if more objects need to be "moved".
 	 * 
 	 * @param parentNet
 	 */
@@ -78,20 +89,15 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 		
 		this.subNet = createSubNetwork();
 		
-		Object[] busAry = parentNet.getBusList().toArray();
-		for (Object obj : busAry) {
-			@SuppressWarnings("unchecked")
-			TBus bus = (TBus)obj;
+		for (TBus bus : parentNet.getBusList()) {
 			if (bus.getIntFlag() == this.getFlag()) {
 				this.subNet.addBus(bus);
 			}
 		};
 		
-		Object[] braAry = parentNet.getBranchList().toArray();
-		for (Object obj : braAry) {
-			@SuppressWarnings("unchecked")
-			TBranch branch = (TBranch)obj;
-			if (branch.getFromBus().getIntFlag() == this.getFlag() && branch.getToBus().getIntFlag() == this.getFlag()) {
+		for ( TBranch branch : parentNet.getBranchList()) {
+			if (branch.getFromBus().getIntFlag() == this.getFlag() && 
+					branch.getToBus().getIntFlag() == this.getFlag()) {
 				this.subNet.addBranch(branch);
 			}
 		};

@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.net;
+package org.interpss.piecewise.base;
 
 import java.util.List;
 
@@ -33,7 +33,10 @@ import com.interpss.core.net.Bus;
 /**
  * Interface for SubArea or SubNetwork processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses. If it is SubNetwork processing, it
- * builds SubNetworks based on the SubArea info.
+ * builds SubNetworks based on the SubArea info. Before the SubNetwork processing, all buses/branches in SubArea
+ * are contained by the parent network (Bus/Branch.network = Parent Network). After the SubNetwork processing,
+ * buses/branches in SubNetwork are contained by the SubNetwork (Bus/Branch.network = SubNetwork), although the
+ * parent network still holds reference to all the buses and branches. 
  * 
  * @author Mike
  *

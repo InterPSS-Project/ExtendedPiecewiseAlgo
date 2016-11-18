@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAreaProcessorImpl.java   
+  * @(#)SubNet1PhaseProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -27,9 +27,10 @@ package org.interpss.piecewise.onephase.impl;
 import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
-import org.interpss.piecewise.net.impl.BaseSubAreaProcessorImpl;
-import org.interpss.piecewise.onephase.CuttingBranch;
-import org.interpss.piecewise.onephase.SubAclfNetwork;
+import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
+import org.interpss.piecewise.onephase.CuttingBranch1Phase;
+import org.interpss.piecewise.onephase.SubNetwork1Phase;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
@@ -37,14 +38,15 @@ import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
 
 /**
- * Class for SubArea processing. It begins by defining a set of cutting branches.
- * It finds SubAreas in the network and SubArea interface buses.
+ * Class for single phase SubNetwork processing. It begins by defining a set of cutting branches.
+ * It finds SubAreas in the network and SubArea interface buses. Then it "moves" the bus and branch 
+ * objects to corresponding SubNetwork.
  * 
  * @author Mike
  *
  */
 		
-public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork, Complex> {
+public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubNetwork1Phase, Complex> {
 	/**
 	 * Constructor
 	 * 
@@ -60,7 +62,7 @@ public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus,
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubNet1PhaseProcessorImpl(AclfNetwork net, CuttingBranch[] cuttingBranches) {
+	public SubNet1PhaseProcessorImpl(AclfNetwork net, BaseCuttingBranch<Complex>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
@@ -70,14 +72,14 @@ public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus,
 	 * @param flag
 	 * @return
 	 */
-	@Override public SubAclfNetwork createSubArea(int flag) {
-		return new SubAclfNetwork(flag);
+	@Override public SubNetwork1Phase createSubArea(int flag) {
+		return new SubNetwork1Phase(flag);
 	};
 	
-	@Override public List<SubAclfNetwork> processSubAreaNet() throws InterpssException {
-		List<SubAclfNetwork> subNetList = super.processSubAreaNet();
+	@Override public List<SubNetwork1Phase> processSubAreaNet() throws InterpssException {
+		List<SubNetwork1Phase> subNetList = super.processSubAreaNet();
 		
-		for (SubAclfNetwork subNet : subNetList ) {
+		for (SubNetwork1Phase subNet : subNetList ) {
 			subNet.buildSubNet((AclfNetwork)this.getNetwork());
 		};
 		

@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.net;
+package org.interpss.piecewise.base;
 
 
 /**

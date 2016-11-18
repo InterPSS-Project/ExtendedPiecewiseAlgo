@@ -32,9 +32,9 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
-import org.interpss.piecewise.algo.PiecewiseAlgorithm;
-import org.interpss.piecewise.algo.impl.SubArea1PhasePiecewiseAlgoImpl;
-import org.interpss.piecewise.onephase.CuttingBranch;
+import org.interpss.piecewise.PiecewiseAlgorithm;
+import org.interpss.piecewise.onephase.CuttingBranch1Phase;
+import org.interpss.piecewise.onephase.impl.SubArea1PhasePiecewiseAlgoImpl;
 
 import com.interpss.CoreObjectFactory;
 import com.interpss.core.aclf.AclfBus;
@@ -68,10 +68,10 @@ public class IEEE14BusSample {
   		// ============ Solve network voltage by piecewise algo ====================//
   		
   		// define the cutting branch set
-		CuttingBranch[] cuttingBranches = new CuttingBranch[] { 
-					new CuttingBranch("4->71(1)"),
-					new CuttingBranch("4->91(1)"),
-					new CuttingBranch("5->61(1)")};	
+		CuttingBranch1Phase[] cuttingBranches = new CuttingBranch1Phase[] { 
+					new CuttingBranch1Phase("4->71(1)"),
+					new CuttingBranch1Phase("4->91(1)"),
+					new CuttingBranch1Phase("5->61(1)")};	
 
 		// define bus injection current calculation function
 		Function<AclfBus,Complex> injCurrentFunc = bus -> {   // this function calculates bus injection current

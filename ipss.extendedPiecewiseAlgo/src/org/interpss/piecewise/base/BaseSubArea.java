@@ -22,13 +22,17 @@
   *
   */
 
-package org.interpss.piecewise.net;
+package org.interpss.piecewise.base;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class for modeling the SubArea concept. 
+ * Base Class for modeling the SubArea concept. SubArea is a logical grouping concept
+ * to group a set of buses and connected branches in the parent network together as a 
+ * SubArea, using Bus.intFlag = SubArea.flag . The bus objects are still contained by 
+ * the parent network, that is Bus.network = the parent network for all buses and branches 
+ * in a SubArea.
  * 
  * @template TYMatrix generic type for defining the sub-area Y matrix
  * @template TZMatrix generic type for defining the cutting branch Z matrix
