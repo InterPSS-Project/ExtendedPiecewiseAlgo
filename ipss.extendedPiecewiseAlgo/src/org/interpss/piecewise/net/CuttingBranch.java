@@ -22,11 +22,11 @@
   *
   */
 
-package org.interpss.piecewise;
+package org.interpss.piecewise.net;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.datatype.ComplexFunc;
-import org.interpss.piecewise.impl.BaseCuttingBranch;
+import org.interpss.piecewise.net.impl.BaseCuttingBranch;
 
 
 /**

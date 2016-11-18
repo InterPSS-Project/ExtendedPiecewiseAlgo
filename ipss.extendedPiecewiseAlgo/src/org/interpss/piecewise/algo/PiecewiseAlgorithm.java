@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise;
+package org.interpss.piecewise.algo;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -30,6 +30,8 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.SubArea;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBus;
@@ -42,7 +44,7 @@ import com.interpss.core.aclf.AclfBus;
  * @author Mike
  *
  */
-public interface PiecewiseAlgorithm {
+public interface PiecewiseAlgorithm<TBus, TState> {
 	/**
 	 * @return the netYmatrixDirty boolean field
 	 */
@@ -59,7 +61,7 @@ public interface PiecewiseAlgorithm {
 	 * 
 	 * @return the netVoltage
 	 */
-	Hashtable<String, Complex> getNetVoltage();
+	Hashtable<String, TState> getNetVoltage();
 
 	/**
 	 * get the subarea list
@@ -82,7 +84,7 @@ public interface PiecewiseAlgorithm {
 	 * @param injCurrentFunc bus inject current calculation function
 	 * @throws IpssNumericException
 	 */
-	void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException;
+	void calculateOpenCircuitVoltage(Function<TBus, TState> injCurrentFunc)  throws IpssNumericException;
 	
 	/**
 	 * calculate the bus voltage for the subarea based on the cutting branch current and the bus open circuit voltage
@@ -109,7 +111,7 @@ public interface PiecewiseAlgorithm {
 	 * @return network bus voltage pairs <BusId, Voltage>
 	 * @throws IpssNumericException
 	 */
-	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<AclfBus,Complex> injCurrentFunc) throws InterpssException, IpssNumericException;
+	Hashtable<String,Complex> calculateNetVoltage(CuttingBranch[] cbranches, Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
 
 }
 

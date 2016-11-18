@@ -22,16 +22,16 @@
   *
   */
 
-package org.interpss.piecewise.impl;
+package org.interpss.piecewise.net.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.interpss.piecewise.BaseSubArea;
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.SubArea;
-import org.interpss.piecewise.SubAreaProcessor;
+import org.interpss.piecewise.net.BaseSubArea;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.SubArea;
+import org.interpss.piecewise.net.SubAreaProcessor;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.common.util.IpssLogger;

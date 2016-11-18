@@ -22,17 +22,18 @@
   *
   */
 
-package org.interpss.piecewise.impl;
+package org.interpss.piecewise.aclf.impl;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.SubArea;
+import org.interpss.piecewise.aclf.SubAclfNetwork;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.impl.AbstractSubAreaProcessorImpl;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.common.util.IpssLogger;
+import com.interpss.core.aclf.AclfBranch;
+import com.interpss.core.aclf.AclfBus;
+import com.interpss.core.aclf.AclfNetwork;
 import com.interpss.core.net.Branch;
 import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
@@ -45,13 +46,13 @@ import com.interpss.core.net.Network;
  *
  */
 		
-public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends AbstractSubAreaProcessorImpl<TBus, TBra, SubArea> {
+public class SubAclfNetworkProcessorImpl extends AbstractSubAreaProcessorImpl<AclfBus, AclfBranch, SubAclfNetwork> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net) {
+	public SubAclfNetworkProcessorImpl(AclfNetwork net) {
 		super(net);
 	}
 
@@ -61,7 +62,7 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaProcessorImpl(Network<TBus,TBra> net, CuttingBranch[] cuttingBranches) {
+	public SubAclfNetworkProcessorImpl(AclfNetwork net, CuttingBranch[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
@@ -71,7 +72,17 @@ public class SubAreaProcessorImpl<TBus extends Bus, TBra extends Branch> extends
 	 * @param flag
 	 * @return
 	 */
-	@Override public SubArea createSubArea(int flag) {
-		return new SubArea(flag);
+	@Override public SubAclfNetwork createSubArea(int flag) {
+		return new SubAclfNetwork(flag);
 	};
+	
+	@Override public List<SubAclfNetwork> processSubArea() throws InterpssException {
+		List<SubAclfNetwork> subNetList = super.processSubArea();
+		
+		for (SubAclfNetwork subNet : subNetList ) {
+			subNet.buildSubNet((AclfNetwork)this.getNetwork());
+		};
+		
+		return subNetList;
+	}
 }

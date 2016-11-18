@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise;
+package org.interpss.piecewise.net;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.net.Branch;
@@ -74,21 +74,25 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 	 * @param parentNet
 	 */
 	public void buildSubNet(TNet parentNet) throws InterpssException {
-		System.out.println("Build SubNetwork for " + this.getFlag());
+		//System.out.println("Build SubNetwork for " + this.getFlag());
 		
-		TNet subnet = createSubNetwork();
+		this.subNet = createSubNetwork();
 		
-		for (Bus bus : parentNet.getBusList()) {
+		Object[] busAry = parentNet.getBusList().toArray();
+		for (Object obj : busAry) {
+			TBus bus = (TBus)obj;
 			if (bus.getIntFlag() == this.getFlag()) {
-				//subnet.addBus((TBus)bus);
+				this.subNet.addBus(bus);
 			}
 		};
 		
-		for (Branch branch : parentNet.getBranchList()) {
+		Object[] braAry = parentNet.getBranchList().toArray();
+		for (Object obj : braAry) {
+			TBranch branch = (TBranch)obj;
 			if (branch.getFromBus().getIntFlag() == this.getFlag() && branch.getToBus().getIntFlag() == this.getFlag()) {
-				//subnet.addBranch((TBranch)branch, branch.getFromBus().getId(), branch.getToBus().getId(), branch.getCircuitNumber());
+				this.subNet.addBranch(branch);
 			}
-		}
+		};
 	}
 	
 	/**
@@ -97,4 +101,9 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 	 * @return
 	 */
 	public abstract TNet createSubNetwork();
+	
+	public String toString() {
+		return super.toString() + 
+				this.subNet.net2String();
+	}	
 }	

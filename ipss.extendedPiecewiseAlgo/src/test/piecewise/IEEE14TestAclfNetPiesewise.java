@@ -34,12 +34,12 @@ import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.PiecewiseAlgorithm;
-import org.interpss.piecewise.SubArea;
-import org.interpss.piecewise.SubAreaProcessor;
-import org.interpss.piecewise.impl.PiecewiseAlgorithmImpl;
-import org.interpss.piecewise.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.algo.PiecewiseAlgorithm;
+import org.interpss.piecewise.algo.impl.AclfNetPiecewiseAlgoImpl;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.SubArea;
+import org.interpss.piecewise.net.SubAreaProcessor;
+import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;
@@ -52,7 +52,7 @@ import com.interpss.core.algo.LoadflowAlgorithm;
 /*
  * This test case is for testing piecewise algorithm implementation
  */
-public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
+public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	/*
 	 * Function to compute bus injection current for the testing purpose
 	 */
@@ -138,7 +138,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2;
 		
-  		PiecewiseAlgorithm pieceWiseAlgo = new PiecewiseAlgorithmImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
   		SubArea[] subareas = {
   					new SubArea(areaFlag1, new String[] {"4", "5"}), 
   					new SubArea(areaFlag2, new String[] {"71", "91", "61"})};
@@ -254,7 +254,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm pieceWiseAlgo = new PiecewiseAlgorithmImpl(net, proc.getSubAreaList());
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net, proc.getSubAreaList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -300,7 +300,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm pieceWiseAlgo = new PiecewiseAlgorithmImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
   		
   		SubArea[] subareas = {
 					new SubArea(areaFlag1, new String[] {"4", "5"}), 
@@ -411,7 +411,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		 * =============================================
   		 */
   		
-  		PiecewiseAlgorithm pieceWiseAlgo = new PiecewiseAlgorithmImpl(net, proc.getSubAreaList());
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net, proc.getSubAreaList());
   		
   		
   		/*//////////////////////////////////
@@ -489,7 +489,7 @@ public class IEEE14TestPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm pieceWiseAlgo = new PiecewiseAlgorithmImpl(net);
+  		PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
   		
   		SubArea[] subareas = {
 					new SubArea(areaFlag1, new String[] {"4", "5"}), 

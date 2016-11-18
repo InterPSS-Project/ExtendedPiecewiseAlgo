@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise;
+package org.interpss.piecewise.net;
 
 import java.util.List;
 

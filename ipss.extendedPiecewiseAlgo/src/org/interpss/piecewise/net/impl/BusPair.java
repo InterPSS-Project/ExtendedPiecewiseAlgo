@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.impl;
+package org.interpss.piecewise.net.impl;
 
 import com.interpss.core.net.Bus;
 

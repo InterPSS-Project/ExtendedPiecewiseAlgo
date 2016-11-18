@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.impl;
+package org.interpss.piecewise.algo.impl;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -34,10 +34,11 @@ import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.numeric.matrix.ComplexMatrixEqn;
 import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.PiecewiseAlgorithm;
-import org.interpss.piecewise.SubArea;
-import org.interpss.piecewise.SubAreaProcessor;
+import org.interpss.piecewise.algo.PiecewiseAlgorithm;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.SubArea;
+import org.interpss.piecewise.net.SubAreaProcessor;
+import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
@@ -52,7 +53,7 @@ import com.interpss.core.aclf.AclfNetwork;
  * @author Mike
  *
  */
-public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
+public class AclfNetPiecewiseAlgoImpl implements  PiecewiseAlgorithm<AclfBus, Complex> {
 	
 	// AclfNetwork object
 	private AclfNetwork net;
@@ -75,7 +76,7 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgorithmImpl(AclfNetwork net) {
+	public AclfNetPiecewiseAlgoImpl(AclfNetwork net) {
 		this.net = net;
 		this.netYmatrixDirty = true;
 		this.netVoltage = new Hashtable<>();
@@ -87,7 +88,7 @@ public class PiecewiseAlgorithmImpl implements  PiecewiseAlgorithm {
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgorithmImpl(AclfNetwork net, List<SubArea> subareaList) {
+	public AclfNetPiecewiseAlgoImpl(AclfNetwork net, List<SubArea> subareaList) {
 		this(net);
 		this.subareaList = subareaList;
 	}

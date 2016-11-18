@@ -1,7 +1,7 @@
  /*
-  * @(#)SubArea.java   
+  * @(#)PiecewiseAlgoTestSuite.java   
   *
-  * Copyright (C) 2006-2016 www.interpss.org
+  * Copyright (C) 2006 www.interpss.org
   *
   * This program is free software; you can redistribute it and/or
   * modify it under the terms of the GNU LESSER GENERAL PUBLIC LICENSE
@@ -15,39 +15,25 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 11/15/2016
   * 
   *   Revision History
   *   ================
   *
   */
 
-package org.interpss.piecewise;
+package test.piecewise;
 
-import org.apache.commons.math3.complex.Complex;
-import org.interpss.numeric.sparse.ISparseEqnComplex;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
-/**
- * Class for modeling the SubArea concept for representing positive sequence sub-network. 
- */
-public class SubArea extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
+@RunWith(Suite.class)
+@SuiteClasses({
+	IEEE14TestSubAreaSearch.class,
 	
-	/**
-	 * default constructor
-	 * 
-	 * @param flag
-	 */
-	public SubArea(int flag) {
-		super(flag);
-	}
-	
-	/**
-	 * constructor
-	 * 
-	 * @param flag
-	 * @param ids
-	 */
-	public SubArea(int flag, String[] ids) {
-		super(flag, ids);
-	}
-}	
+	IEEE14TestAclfNetPiesewise.class,
+	IEEE14TestAclfSubNetBuild.class,
+})
+public class PiecewiseAlgoTestSuite {
+}

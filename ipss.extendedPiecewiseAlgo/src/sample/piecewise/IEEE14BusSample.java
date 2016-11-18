@@ -32,8 +32,9 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.impl.PiecewiseAlgorithmImpl;
+import org.interpss.piecewise.algo.PiecewiseAlgorithm;
+import org.interpss.piecewise.algo.impl.AclfNetPiecewiseAlgoImpl;
+import org.interpss.piecewise.net.CuttingBranch;
 
 import com.interpss.CoreObjectFactory;
 import com.interpss.core.aclf.AclfBus;
@@ -46,11 +47,6 @@ public class IEEE14BusSample {
 	public static void main(String args[]) throws Exception {
 		// initialize InterPSS plugin
 		IpssCorePlugin.init();
-		
-		// =========== Aclf Network data preparation =====================//
-		/*
-		 * The network diagram can be found at https://drive.google.com/drive/folders/0BzjeDvtdQBeyZTA5YTE4NGItMDIwMS00OGYzLTkyNGItOTNlZjM1YTEwMTEw
-		 */
 		
 		// Load the sample network
 		AclfNetwork net = CorePluginFactory
@@ -80,17 +76,20 @@ public class IEEE14BusSample {
 		// define bus injection current calculation function
 		Function<AclfBus,Complex> injCurrentFunc = bus -> {   // this function calculates bus injection current
 				// The bus injection current is based on gen bus load flow results.
-	  			return bus.isGen()? bus.getNetGenResults().divide(bus.getVoltage()) : new Complex(0.0, 0.0);
+	  			return bus.isGen()? 
+	  						bus.getNetGenResults().divide(bus.getVoltage()) : 
+	  						new Complex(0.0, 0.0);
 	  		};
 	  		
 		// define a piecewise algo object and calculate the network bus voltage
-  		Hashtable<String,Complex> voltages = new PiecewiseAlgorithmImpl(net)
-  				.calculateNetVoltage(cuttingBranches, injCurrentFunc);
+	  	PiecewiseAlgorithm<AclfBus, Complex> pieceWiseAlgo = new AclfNetPiecewiseAlgoImpl(net);
+  		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		voltages.forEach((busId, voltage) -> {
   			System.out.println("Bus id:" + busId + ", v = " + ComplexFunc.toStr(voltage));
   		});
+
   		/* you should see output like the following
 			Bus id:10, v = 0.84642 + j0.39398
 			Bus id:1, v = 0.93198 + j0.68774

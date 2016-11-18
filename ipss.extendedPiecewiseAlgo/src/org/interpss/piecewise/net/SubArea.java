@@ -1,5 +1,5 @@
  /*
-  * @(#)SubNetwork.java   
+  * @(#)SubArea.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -22,27 +22,22 @@
   *
   */
 
-package org.interpss.piecewise;
+package org.interpss.piecewise.net;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 
-import com.interpss.CoreObjectFactory;
-import com.interpss.core.aclf.AclfBranch;
-import com.interpss.core.aclf.AclfBus;
-import com.interpss.core.aclf.AclfNetwork;
-
 /**
  * Class for modeling the SubArea concept for representing positive sequence sub-network. 
  */
-public class SubNetwork extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork, ISparseEqnComplex, Complex[][]>{
+public class SubArea extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
 	
 	/**
 	 * default constructor
 	 * 
 	 * @param flag
 	 */
-	public SubNetwork(int flag) {
+	public SubArea(int flag) {
 		super(flag);
 	}
 	
@@ -52,11 +47,7 @@ public class SubNetwork extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork,
 	 * @param flag
 	 * @param ids
 	 */
-	public SubNetwork(int flag, String[] ids) {
+	public SubArea(int flag, String[] ids) {
 		super(flag, ids);
 	}
-	
-	@Override public AclfNetwork createSubNetwork() {
-		return CoreObjectFactory.createAclfNetwork();
-	};	
 }	

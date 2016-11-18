@@ -28,11 +28,11 @@ import static org.junit.Assert.assertTrue;
 
 import org.interpss.CorePluginFactory;
 import org.interpss.fadapter.IpssFileAdapter;
-import org.interpss.piecewise.CuttingBranch;
-import org.interpss.piecewise.SubArea;
-import org.interpss.piecewise.SubAreaProcessor;
-import org.interpss.piecewise.impl.AbstractSubAreaProcessorImpl;
-import org.interpss.piecewise.impl.SubAreaProcessorImpl;
+import org.interpss.piecewise.net.CuttingBranch;
+import org.interpss.piecewise.net.SubArea;
+import org.interpss.piecewise.net.SubAreaProcessor;
+import org.interpss.piecewise.net.impl.AbstractSubAreaProcessorImpl;
+import org.interpss.piecewise.net.impl.SubAreaProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
