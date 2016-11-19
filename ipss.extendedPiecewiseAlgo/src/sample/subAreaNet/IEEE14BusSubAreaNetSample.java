@@ -29,6 +29,7 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.piecewise.SubAreaNetProcessor;
+import org.interpss.piecewise.SubAreaNetProcessor.SubAreaNetType;
 import org.interpss.piecewise.seqPos.CuttingBranchPos;
 import org.interpss.piecewise.seqPos.SubAreaPos;
 import org.interpss.piecewise.seqPos.SubNetworkPos;
@@ -39,7 +40,7 @@ import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
 
-public class IEEE14BusSample {
+public class IEEE14BusSubAreaNetSample {
 	
 	public static void main(String args[]) throws Exception {
 		// initialize InterPSS plugin
@@ -60,7 +61,7 @@ public class IEEE14BusSample {
 				.getAclfNet();
 				
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubAreaPos, Complex> 
-			proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranchPos[] { 
+			proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetType.SubArea, new CuttingBranchPos[] { 
 						new CuttingBranchPos("4->71(1)"),
 						new CuttingBranchPos("4->91(1)"),
 						new CuttingBranchPos("5->61(1)")});	
@@ -80,7 +81,7 @@ public class IEEE14BusSample {
 				.getAclfNet();		
 		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetworkPos, Complex> 
-				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranchPos[] { 
+				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetType.SubNetwork, new CuttingBranchPos[] { 
 							new CuttingBranchPos("4->71(1)"),
 							new CuttingBranchPos("4->91(1)"),
 							new CuttingBranchPos("5->61(1)")});	
@@ -92,5 +93,4 @@ public class IEEE14BusSample {
 			System.out.println(subNet);
 		});		
 	}
-	
 }

@@ -47,7 +47,7 @@ import com.interpss.core.aclf.AclfLoadCode;
 import com.interpss.core.aclf.AclfNetwork;
 import com.interpss.core.algo.LoadflowAlgorithm;
 
-public class IEEE14BusSample {
+public class IEEE14BusPiesewiseAlgoSample {
 	// define bus injection current calculation function
 	static Function<AclfBus,Complex> injCurrentFunc = bus -> {   // this function calculates bus injection current
 			// The bus injection current is based on gen bus load flow results.
@@ -83,9 +83,8 @@ public class IEEE14BusSample {
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-	  	PiecewiseAlgorithm<AclfBus, Complex, SubAreaPos> pieceWiseAlgo = new PiecewiseAlgoPosImpl<>(net);
-  		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(
-  				subAreaList, cuttingBranches, injCurrentFunc);
+  		Hashtable<String,Complex> voltages = new PiecewiseAlgoPosImpl<SubAreaPos>(net)
+  				.calculateNetVoltage(subAreaList, cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		System.out.println("----------- SubArea -----------");
@@ -118,9 +117,8 @@ public class IEEE14BusSample {
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-	  	PiecewiseAlgorithm<AclfBus, Complex, SubNetworkPos> pieceWiseAlgo = new PiecewiseAlgoPosImpl<>(net);
-  		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(
-  				subAreaList, cuttingBranches, injCurrentFunc);
+  		Hashtable<String,Complex> voltages = new PiecewiseAlgoPosImpl<SubNetworkPos>(net)
+  				.calculateNetVoltage(subAreaList, cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		System.out.println("----------- SubNetwork -----------");
