@@ -29,7 +29,7 @@ import org.interpss.piecewise.base.BaseCuttingBranch;
 
 
 /**
- * Class for modeling the cutting branch concept with current of Complex type
+ * Class for modeling the cutting branch concept with current of Complex[3] for 012 sub-network
  * 
  * @author Mike
  *

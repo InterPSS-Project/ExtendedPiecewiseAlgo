@@ -92,11 +92,12 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 	}
 
 	/**
-	 * Solve for SubArea/Network open circuit bus voltage. The bus injection current is based
-	 * on gen bus load flow results. The bus voltage results are stored in the subarea
+	 * Solve for SubArea/Network open circuit bus voltage. The bus injection current is calculated
+	 * using the injCurrentFunc - injection current calculation function. The bus voltage results are stored in the subarea
 	 * Y-matrix sparse eqn object.
 	 * 
 	 * @param areaFlag subarea flag
+	 * @param injCurrentFunc injection current calculation function
 	 * @throws IpssNumericException
 	 */
 	private void solveSubAreaNet(int areaFlag, Function<AclfBus,Complex> injCurrentFunc) throws IpssNumericException {
@@ -227,6 +228,9 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   			}
 		}
 		
+		/*
+		 * process the transpose[Mi]x[Zi]x[M] part.
+		 */
 		for (TSub subarea : this.subAreaNetList) {
 			formSubAreaZMatrix(subarea);
 			
