@@ -44,7 +44,7 @@ public abstract class BaseSubNetwork<TBus extends Bus,
                             TYmatrix, TZMatrix> 
 								extends BaseSubArea<TYmatrix, TZMatrix>{
 	/** a network object representing the sub-area*/
-	private TNet subNet;
+	protected TNet subNet;
 	
 	/**
 	 * default constructor

@@ -66,4 +66,8 @@ public class SubNetwork1Phase extends BaseSubNetwork<AclfBus, AclfBranch, AclfNe
 	@Override public void buildSubNet(AclfNetwork parentNet) throws InterpssException {
 		super.buildSubNet(parentNet);
 	}
+	
+	public void formYMatrix() {
+		this.setYSparseEqn(this.subNet.formYMatrix());
+	}
 }	

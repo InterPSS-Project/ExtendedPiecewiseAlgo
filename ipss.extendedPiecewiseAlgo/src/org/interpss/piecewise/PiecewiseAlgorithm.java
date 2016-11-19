@@ -30,7 +30,9 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
+import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.onephase.SubArea1Phase;
 
 import com.interpss.common.exp.InterpssException;
@@ -46,7 +48,7 @@ import com.interpss.common.exp.InterpssException;
  * @template TBus Bus object generic type
  * @template TState Network state (current, voltage) generic type, Complex for single phase analysis
  */
-public interface PiecewiseAlgorithm<TBus, TState> {
+public interface PiecewiseAlgorithm<TBus, TState, TSub extends BaseSubArea<?, ?>> {
 	/**
 	 * Flag to indicate if the Y-matrix of the SubArea/Network is dirty
 	 * 
@@ -74,7 +76,7 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	 * 
 	 * @return the SubArea/Network list
 	 */
-	List<SubArea1Phase> getSubAreaList();
+	List<TSub> getSubAreaList();
 
 	/**
 	 * get SubArea/Net by the area flag
@@ -82,7 +84,7 @@ public interface PiecewiseAlgorithm<TBus, TState> {
 	 * @param flag the area flag
 	 * @return the subarea object
 	 */
-	SubArea1Phase getSubArea(int flag);
+	TSub getSubArea(int flag);
 	
 	/**
 	 * Solve for SubArea/Network open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
