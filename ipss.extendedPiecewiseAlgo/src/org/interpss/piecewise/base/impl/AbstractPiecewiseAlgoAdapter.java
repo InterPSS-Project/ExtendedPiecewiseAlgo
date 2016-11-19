@@ -119,13 +119,26 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TState, TSub extends Ba
 				Function<TBus,TState> injCurrentFunc)  throws InterpssException, IpssNumericException {
 		this.subAreaNetList = subAreaNetList;
   		
+		/*
+		 * extension point-1: The open circuit voltage of each SubArea/Network could be calculated in
+		 *                    different ways. This is the place to plug-in different open circuit solution
+		 *                    methods 
+		 */
   		// Solve for the open-circuit voltage. The voltage results are stored in
 		// the this.netVoltage.
   		calculateOpenCircuitVoltage(injCurrentFunc);
 
+		/*
+		 * extension point-2: Certain SubArea/Network might be a current source, for example, an SubArea/Network
+		 *                    modeled in the EMTP approach. 
+		 */
   		// calculate cutting branch current. The current results are stored in the cbranches object
     	calculateCuttingBranchCurrent(cbranches);
 
+		/*
+		 * extension point-3: For linear SubArea/Network, the superposition method could be used. However, for non-linear
+		 *                    SubArea/Network (EMPT, abc), custom methods might be needed.  
+		 */
   		// calculate the SubArea/Network bus voltage. For linear SubArea/Network, the superposition method could 
     	// be used, superposition of the open-circuit voltage and voltage by injecting the cutting branch current 
     	// in the SubArea/Network.
