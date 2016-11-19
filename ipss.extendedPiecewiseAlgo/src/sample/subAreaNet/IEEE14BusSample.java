@@ -29,10 +29,10 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.piecewise.SubAreaNetProcessor;
-import org.interpss.piecewise.onephase.CuttingBranch1P;
-import org.interpss.piecewise.onephase.SubArea1P;
-import org.interpss.piecewise.onephase.SubNetwork1P;
-import org.interpss.piecewise.onephase.impl.SubAreaNet1PProcessorImpl;
+import org.interpss.piecewise.seqPos.CuttingBranchPos;
+import org.interpss.piecewise.seqPos.SubAreaPos;
+import org.interpss.piecewise.seqPos.SubNetworkPos;
+import org.interpss.piecewise.seqPos.impl.SubAreaNetPosProcessorImpl;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
@@ -59,11 +59,11 @@ public class IEEE14BusSample {
 				.load("testdata/ieee14.ipssdat")
 				.getAclfNet();
 				
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1P, Complex> 
-			proc = new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1P[] { 
-						new CuttingBranch1P("4->71(1)"),
-						new CuttingBranch1P("4->91(1)"),
-						new CuttingBranch1P("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubAreaPos, Complex> 
+			proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranchPos[] { 
+						new CuttingBranchPos("4->71(1)"),
+						new CuttingBranchPos("4->91(1)"),
+						new CuttingBranchPos("5->61(1)")});	
 		
 		proc.processSubAreaNet();
 		
@@ -79,11 +79,11 @@ public class IEEE14BusSample {
 				.load("testdata/ieee14.ipssdat")
 				.getAclfNet();		
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1P, Complex> 
-				proc = new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1P[] { 
-							new CuttingBranch1P("4->71(1)"),
-							new CuttingBranch1P("4->91(1)"),
-							new CuttingBranch1P("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetworkPos, Complex> 
+				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranchPos[] { 
+							new CuttingBranchPos("4->71(1)"),
+							new CuttingBranchPos("4->91(1)"),
+							new CuttingBranchPos("5->61(1)")});	
 		
 		proc.processSubAreaNet();
 		

@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAreaNet1PProcessorImpl.java   
+  * @(#)SubAreaNetPosProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.onephase.impl;
+package org.interpss.piecewise.seqPos.impl;
 
 import java.util.List;
 
@@ -30,8 +30,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
-import org.interpss.piecewise.onephase.SubArea1P;
-import org.interpss.piecewise.onephase.SubNetwork1P;
+import org.interpss.piecewise.seqPos.SubAreaPos;
+import org.interpss.piecewise.seqPos.SubNetworkPos;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
@@ -47,14 +47,14 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 		
-public class SubAreaNet1PProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
+public class SubAreaNetPosProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 * @param subType SubArea/Network processing type
 	 */
-	public SubAreaNet1PProcessorImpl(AclfNetwork net, SubAreaNetType subType) {
+	public SubAreaNetPosProcessorImpl(AclfNetwork net, SubAreaNetType subType) {
 		super(net, subType);
 	}
 
@@ -65,16 +65,16 @@ public class SubAreaNet1PProcessorImpl<TSub extends BaseSubArea<?, ?>> extends B
 	 * @param subType SubArea/Network processing type
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaNet1PProcessorImpl(AclfNetwork net, SubAreaNetType subType, BaseCuttingBranch<Complex>[] cuttingBranches) {
+	public SubAreaNetPosProcessorImpl(AclfNetwork net, SubAreaNetType subType, BaseCuttingBranch<Complex>[] cuttingBranches) {
 		super(net, subType, cuttingBranches);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Override public TSub createSubAreaNet(int flag) {
 		if (this.subType == SubAreaNetType.SubArea)
-			return (TSub)new SubArea1P(flag);
+			return (TSub)new SubAreaPos(flag);
 		else
-			return (TSub)new SubNetwork1P(flag);
+			return (TSub)new SubNetworkPos(flag);
 	};
 	
 	@Override public List<TSub> processSubAreaNet() throws InterpssException {
@@ -82,8 +82,8 @@ public class SubAreaNet1PProcessorImpl<TSub extends BaseSubArea<?, ?>> extends B
 		
 		// for each SubNetwork, we build the child/parent relationship.
 		for (TSub subNet : subNetList ) {
-			if (subNet instanceof SubNetwork1P)
-				((SubNetwork1P)subNet).buildSubNet((AclfNetwork)this.getNetwork());
+			if (subNet instanceof SubNetworkPos)
+				((SubNetworkPos)subNet).buildSubNet((AclfNetwork)this.getNetwork());
 		};
 		
 		return subNetList;

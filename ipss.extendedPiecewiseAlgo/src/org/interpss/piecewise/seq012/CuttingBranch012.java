@@ -1,5 +1,5 @@
  /*
-  * @(#)CuttingBranch3P.java   
+  * @(#)CuttingBranch012.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.threephase;
+package org.interpss.piecewise.seq012;
 
 import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
@@ -34,7 +34,7 @@ import org.interpss.piecewise.base.BaseCuttingBranch;
  * @author Mike
  *
  */
-public class CuttingBranch3P extends BaseCuttingBranch<Complex3x1> {
+public class CuttingBranch012 extends BaseCuttingBranch<Complex3x1> {
 	/**
 	 * constructor
 	 * 
@@ -42,7 +42,7 @@ public class CuttingBranch3P extends BaseCuttingBranch<Complex3x1> {
 	 * @param fromFlag branch from bus area flag
 	 * @param toFlag branch to bus area flag
 	 */
-	public CuttingBranch3P(String id, int fromFlag, int toFlag) {
+	public CuttingBranch012(String id, int fromFlag, int toFlag) {
 		super(id, fromFlag, toFlag);
 	}
 	
@@ -51,7 +51,7 @@ public class CuttingBranch3P extends BaseCuttingBranch<Complex3x1> {
 	 * 
 	 * @param id branch id
 	 */
-	public CuttingBranch3P(String id) {
+	public CuttingBranch012(String id) {
 		super(id, BaseCuttingBranch.DefaultFlag, BaseCuttingBranch.DefaultFlag);
 	}
 	

@@ -1,5 +1,5 @@
  /*
-  * @(#)SubArea1P.java   
+  * @(#)SubAreaPos.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.onephase;
+package org.interpss.piecewise.seqPos;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
@@ -31,14 +31,14 @@ import org.interpss.piecewise.base.BaseSubArea;
 /**
  * Class for modeling the SubArea concept for representing single phase or positive sequence sub-network. 
  */
-public class SubArea1P extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
+public class SubAreaPos extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
 	
 	/**
 	 * default constructor
 	 * 
 	 * @param flag
 	 */
-	public SubArea1P(int flag) {
+	public SubAreaPos(int flag) {
 		super(flag);
 	}
 	
@@ -48,7 +48,7 @@ public class SubArea1P extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
 	 * @param flag
 	 * @param ids
 	 */
-	public SubArea1P(int flag, String[] ids) {
+	public SubAreaPos(int flag, String[] ids) {
 		super(flag, ids);
 	}
 }	

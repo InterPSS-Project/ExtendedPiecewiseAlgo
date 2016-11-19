@@ -1,6 +1,6 @@
  /*
 
-  * @(#)SubNetwork1P.java   
+  * @(#)SubNetworkPos.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -23,7 +23,7 @@
   *
   */
 
-package org.interpss.piecewise.onephase;
+package org.interpss.piecewise.seqPos;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
@@ -38,14 +38,14 @@ import com.interpss.core.aclf.AclfNetwork;
 /**
  * Class for modeling the SubArea concept for representing single phase or positive sequence sub-network. 
  */
-public class SubNetwork1P extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork, ISparseEqnComplex, Complex[][]>{
+public class SubNetworkPos extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork, ISparseEqnComplex, Complex[][]>{
 	
 	/**
 	 * default constructor
 	 * 
 	 * @param flag
 	 */
-	public SubNetwork1P(int flag) {
+	public SubNetworkPos(int flag) {
 		super(flag);
 	}
 	
@@ -55,7 +55,7 @@ public class SubNetwork1P extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwor
 	 * @param flag
 	 * @param ids
 	 */
-	public SubNetwork1P(int flag, String[] ids) {
+	public SubNetworkPos(int flag, String[] ids) {
 		super(flag, ids);
 	}
 	

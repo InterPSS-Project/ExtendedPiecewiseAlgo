@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgo1PImpl.java   
+  * @(#)PiecewiseAlgoPosImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -22,7 +22,7 @@
   *
   */
 
-package org.interpss.piecewise.onephase.algo;
+package org.interpss.piecewise.seqPos.algo;
 
 import java.util.List;
 import java.util.function.Function;
@@ -35,7 +35,7 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.AbstractPiecewiseAlgoAdapter;
-import org.interpss.piecewise.onephase.SubNetwork1P;
+import org.interpss.piecewise.seqPos.SubNetworkPos;
 
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
@@ -47,7 +47,7 @@ import com.interpss.core.aclf.AclfNetwork;
  * @author Mike
  *
  */
-public class PiecewiseAlgo1PImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
+public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
 					extends AbstractPiecewiseAlgoAdapter<AclfBus, Complex, TSub> {
 	// AclfNetwork object
 	private AclfNetwork net;
@@ -60,7 +60,7 @@ public class PiecewiseAlgo1PImpl<TSub extends BaseSubArea<ISparseEqnComplex, Com
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgo1PImpl(AclfNetwork net) {
+	public PiecewiseAlgoPosImpl(AclfNetwork net) {
 		super();
 		this.net = net;
 	}
@@ -70,7 +70,7 @@ public class PiecewiseAlgo1PImpl<TSub extends BaseSubArea<ISparseEqnComplex, Com
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgo1PImpl(AclfNetwork net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgoPosImpl(AclfNetwork net, List<TSub> subAreaNetList) {
 		super();
 		this.net = net;
 		this.subAreaNetList = subAreaNetList;
@@ -103,8 +103,8 @@ public class PiecewiseAlgo1PImpl<TSub extends BaseSubArea<ISparseEqnComplex, Com
 		// there is no need to form the Y matrix if it has not changed
 		TSub subArea = this.getSubArea(areaFlag);
   		if (this.netYmatrixDirty) {
-  			if (subArea instanceof SubNetwork1P)
-  				((SubNetwork1P)subArea).formYMatrix();
+  			if (subArea instanceof SubNetworkPos)
+  				((SubNetworkPos)subArea).formYMatrix();
   			else	
   				subArea.setYSparseEqn(net.formYMatrix(areaFlag));
   			subArea.getYSparseEqn().luMatrix(1.0e-10);
