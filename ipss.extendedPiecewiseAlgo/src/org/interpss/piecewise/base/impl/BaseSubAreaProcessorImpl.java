@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.base.SubAreaNetProcessor;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.common.util.IpssLogger;
@@ -55,7 +55,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	protected SubAreaNetType subType;
 	
 	// Parent Network object
-	private Network<TBus,TBra> net;
+	private Network<TBus,TBra> parentNet;
 	
 	// Cutting branch set
 	private BaseCuttingBranch<TState>[] cuttingBranches;
@@ -69,7 +69,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @param net AclfNetwork object
 	 */
 	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, SubAreaNetType subType) {
-		this.net = net;
+		this.parentNet = net;
 		this.subType = subType;
 		this.subAreaNetList = new ArrayList<>();
 	}
@@ -86,19 +86,21 @@ public abstract class BaseSubAreaProcessorImpl<
 	}
 	
 	/**
-	 * create a SubArea object
+	 * create a SubArea/Network object for the area flag
 	 * 
-	 * @param flag
+	 * @param flag SubArea/Network flag
 	 * @return
 	 */
 	public abstract TSub createSubAreaNet(int flag);
 	
 	
 	/**
+	 * get the parent network object
+	 * 
 	 * @return the net
 	 */
 	public Network<TBus, TBra> getNetwork() {
-		return net;
+		return parentNet;
 	}
 
 	/**
@@ -120,7 +122,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	}
 	
 	/**
-	 * get the subarea list
+	 * get the SubArea/Network list
 	 * 
 	 * @return the netVoltage
 	 */
@@ -129,7 +131,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	}
 
 	/**
-	 * get SubArea by the area flag
+	 * get SubArea/Network by the area flag
 	 * 
 	 * @param flag the area flag
 	 * @return the subarea object
@@ -143,17 +145,17 @@ public abstract class BaseSubAreaProcessorImpl<
 	}	
 
 	/**
-	 * Initialization for SubArea processing 
+	 * Initialization for SubArea/Network processing 
 	 * 
 	 */
 	private void initialization() {
 		// init bus IntFlag
-		net.getBusList().forEach(bus -> { bus.setIntFlag(BaseCuttingBranch.DefaultFlag);});
+		parentNet.getBusList().forEach(bus -> { bus.setIntFlag(BaseCuttingBranch.DefaultFlag);});
 		
 		// init cutting branch set
   		int flag = 0;
   		for (BaseCuttingBranch<TState> cbra : cuttingBranches) {
-  			Branch branch = net.getBranch(cbra.getBranchId());
+  			Branch branch = parentNet.getBranch(cbra.getBranchId());
   			branch.setStatus(false);
   			
   			if (branch.getFromBus().getIntFlag() == BaseCuttingBranch.DefaultFlag) {
@@ -170,11 +172,7 @@ public abstract class BaseSubAreaProcessorImpl<
   		}		
 	}
 	
-	/**
-	 * Process SubArea
-	 * 
-	 */
-	public List<TSub> processSubAreaNet() throws InterpssException {
+	@Override public List<TSub> processSubAreaNet() throws InterpssException {
 		initialization();
 		
 		Hashtable<String, BusPair> busPairSet = new Hashtable<>();
@@ -184,7 +182,7 @@ public abstract class BaseSubAreaProcessorImpl<
 			//                           consolidated to the smallest Bus.IntFlag in the SubAre
 		
   		for (BaseCuttingBranch<TState> cbra : cuttingBranches) {
-  			Branch branch = net.getBranch(cbra.getBranchId());
+  			Branch branch = parentNet.getBranch(cbra.getBranchId());
 
   			// starting from the fromBus, recursively set the branch opposite 
   			// bus IntFlag for SubArea processing 
@@ -243,7 +241,7 @@ public abstract class BaseSubAreaProcessorImpl<
 		});		
 		
 		// update network bus SubArea flag
-		net.getBusList().forEach(bus -> {
+		parentNet.getBusList().forEach(bus -> {
 			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
 			bus.setIntFlag(p.subAreaFlag);
 		});
@@ -264,7 +262,7 @@ public abstract class BaseSubAreaProcessorImpl<
 		});
 		
 		// update network bus SubArea flag
-		net.getBusList().forEach(bus -> {
+		parentNet.getBusList().forEach(bus -> {
 			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
 			bus.setIntFlag(lookup.get(p.subAreaFlag));
 		});
@@ -272,7 +270,7 @@ public abstract class BaseSubAreaProcessorImpl<
 		// update cutting branch from/toBus subarea flag
 		for (int i = 0; i < this.cuttingBranches.length; i++) {
 			BaseCuttingBranch<TState> branch = this.cuttingBranches[i];
-			Branch aclfBranch = net.getBranch(branch.getBranchId());
+			Branch aclfBranch = parentNet.getBranch(branch.getBranchId());
 			branch.setFromSubAreaFlag(aclfBranch.getFromBus().getIntFlag());
 			branch.setToSubAreaFlag(aclfBranch.getToBus().getIntFlag());
 		}
@@ -285,6 +283,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * 
 	 * @param startPair the starting Bus (Type2 record)
 	 * @param flag SubArea flag
+	 * @param busPairSet
 	 */
 	private void setSubAreaFlag(BusPair startPair, int flag, Hashtable<String, BusPair> busPairSet) {
 		// 5_5=["61",  "61",  5], 6_6=["9",  "9",  5], 2_2=["71",  "71",  2]
@@ -301,6 +300,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * to define SubArea in the network 
 	 * 
 	 * @param bus
+	 * @param busPairSet
 	 */
 	private void setConnectedBusFlag(Bus bus, Hashtable<String, BusPair> busPairSet) {
 		bus.getBranchList().forEach(branch -> {

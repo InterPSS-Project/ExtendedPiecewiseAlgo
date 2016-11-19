@@ -1,5 +1,6 @@
  /*
-  * @(#)SubArea.java   
+
+  * @(#)SubNetwork1P.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -26,19 +27,25 @@ package org.interpss.piecewise.onephase;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piecewise.base.BaseSubArea;
+import org.interpss.piecewise.base.BaseSubNetwork;
+
+import com.interpss.CoreObjectFactory;
+import com.interpss.common.exp.InterpssException;
+import com.interpss.core.aclf.AclfBranch;
+import com.interpss.core.aclf.AclfBus;
+import com.interpss.core.aclf.AclfNetwork;
 
 /**
- * Class for modeling the SubArea concept for representing positive sequence sub-network. 
+ * Class for modeling the SubArea concept for representing single phase or positive sequence sub-network. 
  */
-public class SubArea1Phase extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
+public class SubNetwork1P extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork, ISparseEqnComplex, Complex[][]>{
 	
 	/**
 	 * default constructor
 	 * 
 	 * @param flag
 	 */
-	public SubArea1Phase(int flag) {
+	public SubNetwork1P(int flag) {
 		super(flag);
 	}
 	
@@ -48,7 +55,22 @@ public class SubArea1Phase extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
 	 * @param flag
 	 * @param ids
 	 */
-	public SubArea1Phase(int flag, String[] ids) {
+	public SubNetwork1P(int flag, String[] ids) {
 		super(flag, ids);
+	}
+	
+	@Override public AclfNetwork createSubNetwork() {
+		return CoreObjectFactory.createAclfNetwork();
+	};
+	
+	@Override public void buildSubNet(AclfNetwork parentNet) throws InterpssException {
+		super.buildSubNet(parentNet);
+	}
+	
+	/**
+	 * form the Y-matrix for the SubNetwork
+	 */
+	public void formYMatrix() {
+		this.setYSparseEqn(this.subNet.formYMatrix());
 	}
 }	

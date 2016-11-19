@@ -35,12 +35,12 @@ import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
 import org.interpss.piecewise.PiecewiseAlgorithm;
-import org.interpss.piecewise.base.SubAreaNetProcessor;
-import org.interpss.piecewise.onephase.CuttingBranch1Phase;
-import org.interpss.piecewise.onephase.SubArea1Phase;
-import org.interpss.piecewise.onephase.SubNetwork1Phase;
-import org.interpss.piecewise.onephase.algo.PiecewiseAlgo1PhaseImpl;
-import org.interpss.piecewise.onephase.impl.SubAreaNet1PhaseProcessorImpl;
+import org.interpss.piecewise.SubAreaNetProcessor;
+import org.interpss.piecewise.onephase.CuttingBranch1P;
+import org.interpss.piecewise.onephase.SubArea1P;
+import org.interpss.piecewise.onephase.SubNetwork1P;
+import org.interpss.piecewise.onephase.algo.PiecewiseAlgo1PImpl;
+import org.interpss.piecewise.onephase.impl.SubAreaNet1PProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;
@@ -139,18 +139,18 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2;
 		
-  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net);
-  		SubArea1Phase[] subareas = {
-  					new SubArea1Phase(areaFlag1, new String[] {"4", "5"}), 
-  					new SubArea1Phase(areaFlag2, new String[] {"71", "91", "61"})};
+  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net);
+  		SubArea1P[] subareas = {
+  					new SubArea1P(areaFlag1, new String[] {"4", "5"}), 
+  					new SubArea1P(areaFlag2, new String[] {"71", "91", "61"})};
   		
-  		for( SubArea1Phase area : subareas)
-  			pieceWiseAlgo.getSubAreaList().add(area); 
+  		for( SubArea1P area : subareas)
+  			pieceWiseAlgo.getSubAreaNetList().add(area); 
 
-  		CuttingBranch1Phase[] cuttingBranches = { 
-  							new CuttingBranch1Phase("4->71(1)", areaFlag1, areaFlag2),
-  							new CuttingBranch1Phase("4->91(1)", areaFlag1, areaFlag2),
-  							new CuttingBranch1Phase("5->61(1)", areaFlag1, areaFlag2)};
+  		CuttingBranch1P[] cuttingBranches = { 
+  							new CuttingBranch1P("4->71(1)", areaFlag1, areaFlag2),
+  							new CuttingBranch1P("4->91(1)", areaFlag1, areaFlag2),
+  							new CuttingBranch1P("5->61(1)", areaFlag1, areaFlag2)};
   		
   		String[][] subAreaBusSet = { {"1", "2", "3", "4", "5"},
                  {"61", "71", "91",  "6", "7", "8", "9", "10", "11", "12", "13", "14"}};
@@ -163,7 +163,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		}
   		
   		// turn off the cutting branches
-  		for (CuttingBranch1Phase cbra : cuttingBranches) {
+  		for (CuttingBranch1P cbra : cuttingBranches) {
   			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			branch.setStatus(false);
   		}
@@ -220,7 +220,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(cuttingBranches);  		
  		
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			//System.out.println(v.abs() + ",   //  " + id);
@@ -245,18 +245,18 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase2_1() throws Exception {
 		AclfNetwork net = getTestNet();
   		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> 
-				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
-							new CuttingBranch1Phase("4->71(1)"),
-							new CuttingBranch1Phase("4->91(1)"),
-							new CuttingBranch1Phase("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1P, Complex> 
+				proc = new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1P[] { 
+							new CuttingBranch1P("4->71(1)"),
+							new CuttingBranch1P("4->91(1)"),
+							new CuttingBranch1P("5->61(1)")});	
 		
 		proc.processSubAreaNet();
   		/*
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -277,7 +277,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateSubAreaVoltage(proc.getCuttingBranches());  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
  		
 		/*
 		 * Checking bus voltage results
@@ -295,19 +295,19 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase2_2() throws Exception {
 		AclfNetwork net = getTestNet();
   		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> proc = 
-						new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1Phase[] { 
-				new CuttingBranch1Phase("4->71(1)"),
-  				new CuttingBranch1Phase("4->91(1)"),
-  				new CuttingBranch1Phase("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1P, Complex> proc = 
+						new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1P[] { 
+				new CuttingBranch1P("4->71(1)"),
+  				new CuttingBranch1P("4->91(1)"),
+  				new CuttingBranch1P("5->61(1)")});	
 		
 		proc.processSubAreaNet();
   		/*
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AclfBus, Complex, SubNetwork1Phase> pieceWiseAlgo = 
-  						new PiecewiseAlgo1PhaseImpl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AclfBus, Complex, SubNetwork1P> pieceWiseAlgo = 
+  						new PiecewiseAlgo1PImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -328,7 +328,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateSubAreaVoltage(proc.getCuttingBranches());  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
  		
 		/*
 		 * Checking bus voltage results
@@ -353,22 +353,22 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net);
+  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net);
   		
-  		SubArea1Phase[] subareas = {
-					new SubArea1Phase(areaFlag1, new String[] {"4", "5"}), 
-					new SubArea1Phase(areaFlag2, new String[] {"71", "91", "61", "9", "13"}),
-					new SubArea1Phase(areaFlag3, new String[] {"14"})};
+  		SubArea1P[] subareas = {
+					new SubArea1P(areaFlag1, new String[] {"4", "5"}), 
+					new SubArea1P(areaFlag2, new String[] {"71", "91", "61", "9", "13"}),
+					new SubArea1P(areaFlag3, new String[] {"14"})};
 		
-		for( SubArea1Phase area : subareas)
-			pieceWiseAlgo.getSubAreaList().add(area); 
+		for( SubArea1P area : subareas)
+			pieceWiseAlgo.getSubAreaNetList().add(area); 
 
-		CuttingBranch1Phase[] cuttingBranches = { 
-					new CuttingBranch1Phase("4->71(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("4->91(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("5->61(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("9->14(1)", areaFlag2, areaFlag3),
-					new CuttingBranch1Phase("14->13(1)", areaFlag3, areaFlag2) };
+		CuttingBranch1P[] cuttingBranches = { 
+					new CuttingBranch1P("4->71(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("4->91(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("5->61(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("9->14(1)", areaFlag2, areaFlag3),
+					new CuttingBranch1P("14->13(1)", areaFlag3, areaFlag2) };
   		
   		String[][] subAreaBusSet = { 
 					 {"1", "2", "3", "4", "5"},
@@ -388,7 +388,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		}  		
   		
   		// turn off the cutting branches
-  		for (CuttingBranch1Phase cbra : cuttingBranches) {
+  		for (CuttingBranch1P cbra : cuttingBranches) {
   			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
   			branch.setStatus(false);
@@ -429,7 +429,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
     	
-		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(cuttingBranches);  		
  		/*
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			System.out.println(v.abs() + ",   //  " + id);
@@ -450,13 +450,13 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase4_1() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> 
-				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
-							new CuttingBranch1Phase("4->71(1)"),
-							new CuttingBranch1Phase("4->91(1)"),
-							new CuttingBranch1Phase("5->61(1)"),
-							new CuttingBranch1Phase("9->14(1)"),
-							new CuttingBranch1Phase("14->13(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1P, Complex> 
+				proc = new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1P[] { 
+							new CuttingBranch1P("4->71(1)"),
+							new CuttingBranch1P("4->91(1)"),
+							new CuttingBranch1P("5->61(1)"),
+							new CuttingBranch1P("9->14(1)"),
+							new CuttingBranch1P("14->13(1)")});	
 		
 		proc.processSubAreaNet();
   		
@@ -465,7 +465,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * =============================================
   		 */
   		
-  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net, proc.getSubAreaNetList());
   		
   		
   		/*//////////////////////////////////
@@ -487,7 +487,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
     	
-		pieceWiseAlgo.calcuateSubAreaVoltage(proc.getCuttingBranches());  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
  		
   		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("10").abs(), 0.9336218714651833, 1.0e-10));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("1").abs(), 1.1582643132837898, 1.0e-10));
@@ -543,23 +543,23 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		
   		int areaFlag1 = 1, areaFlag2 = 2, areaFlag3 = 3;
 
-  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net);
+  		PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net);
   		
-  		SubArea1Phase[] subareas = {
-					new SubArea1Phase(areaFlag1, new String[] {"4", "5"}), 
-					new SubArea1Phase(areaFlag2, new String[] {"71", "91", "61", "9", "6", "12"}),
-					new SubArea1Phase(areaFlag3, new String[] {"13", "14"})};
+  		SubArea1P[] subareas = {
+					new SubArea1P(areaFlag1, new String[] {"4", "5"}), 
+					new SubArea1P(areaFlag2, new String[] {"71", "91", "61", "9", "6", "12"}),
+					new SubArea1P(areaFlag3, new String[] {"13", "14"})};
 		
-		for( SubArea1Phase area : subareas)
-			pieceWiseAlgo.getSubAreaList().add(area); 
+		for( SubArea1P area : subareas)
+			pieceWiseAlgo.getSubAreaNetList().add(area); 
 
-		CuttingBranch1Phase[] cuttingBranches = { 
-					new CuttingBranch1Phase("4->71(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("4->91(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("5->61(1)", areaFlag1, areaFlag2),
-					new CuttingBranch1Phase("9->14(1)", areaFlag2, areaFlag3),
-					new CuttingBranch1Phase("6->13(1)", areaFlag2, areaFlag3),
-					new CuttingBranch1Phase("12->13(1)", areaFlag2, areaFlag3)};
+		CuttingBranch1P[] cuttingBranches = { 
+					new CuttingBranch1P("4->71(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("4->91(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("5->61(1)", areaFlag1, areaFlag2),
+					new CuttingBranch1P("9->14(1)", areaFlag2, areaFlag3),
+					new CuttingBranch1P("6->13(1)", areaFlag2, areaFlag3),
+					new CuttingBranch1P("12->13(1)", areaFlag2, areaFlag3)};
   		
   		String[][] subAreaBusSet = { 
 					 {"1", "2", "3", "4", "5"},
@@ -579,7 +579,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		}  		
   		
   		// turn off the cutting branches
-  		for (CuttingBranch1Phase cbra : cuttingBranches) {
+  		for (CuttingBranch1P cbra : cuttingBranches) {
   			AclfBranch branch = net.getBranch(cbra.getBranchId());
   			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
   			branch.setStatus(false);
@@ -609,7 +609,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-2: calculate cutting branch current
   		 */////////////////////////////
     	pieceWiseAlgo.calculateCuttingBranchCurrent(cuttingBranches);
-    	for (CuttingBranch1Phase branch: cuttingBranches) {
+    	for (CuttingBranch1P branch: cuttingBranches) {
     		System.out.println("Branch cur: " + branch.getBranchId() + "  " + ComplexFunc.toStr(branch.getCurrent()));
     	}
 
@@ -630,7 +630,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-3
   		 *//////////////////////////////////////////
 		
-		pieceWiseAlgo.calcuateSubAreaVoltage(cuttingBranches);  		
+		pieceWiseAlgo.calcuateSubAreaNetVoltage(cuttingBranches);  		
  		
 		pieceWiseAlgo.getNetVoltage().forEach((id, v) -> {
   			System.out.println(v.abs() + ",   //  " + id);

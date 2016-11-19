@@ -29,10 +29,10 @@ import static org.junit.Assert.assertTrue;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.CorePluginFactory;
 import org.interpss.fadapter.IpssFileAdapter;
-import org.interpss.piecewise.base.SubAreaNetProcessor;
-import org.interpss.piecewise.onephase.CuttingBranch1Phase;
-import org.interpss.piecewise.onephase.SubArea1Phase;
-import org.interpss.piecewise.onephase.impl.SubAreaNet1PhaseProcessorImpl;
+import org.interpss.piecewise.SubAreaNetProcessor;
+import org.interpss.piecewise.onephase.CuttingBranch1P;
+import org.interpss.piecewise.onephase.SubArea1P;
+import org.interpss.piecewise.onephase.impl.SubAreaNet1PProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
@@ -50,11 +50,11 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = getTestNet();
 		
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> proc = 
-				new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
-						new CuttingBranch1Phase("4->71(1)"),
-						new CuttingBranch1Phase("4->91(1)"),
-						new CuttingBranch1Phase("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1P, Complex> proc = 
+				new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1P[] { 
+						new CuttingBranch1P("4->71(1)"),
+						new CuttingBranch1P("4->91(1)"),
+						new CuttingBranch1P("5->61(1)")});	
   		
   		proc.processSubAreaNet();
   		
@@ -96,13 +96,13 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 	public void testCase2() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> 
-				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
-							new CuttingBranch1Phase("4->71(1)"),
-							new CuttingBranch1Phase("4->91(1)"),
-							new CuttingBranch1Phase("5->61(1)"),
-							new CuttingBranch1Phase("9->14(1)"),
-							new CuttingBranch1Phase("14->13(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1P, Complex> 
+				proc = new SubAreaNet1PProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1P[] { 
+							new CuttingBranch1P("4->71(1)"),
+							new CuttingBranch1P("4->91(1)"),
+							new CuttingBranch1P("5->61(1)"),
+							new CuttingBranch1P("9->14(1)"),
+							new CuttingBranch1P("14->13(1)")});	
 		// make sure all cutting branches are in the network
   		for (int i = 0; i < proc.getCuttingBranches().length; i++) {
   			AclfBranch branch = net.getBranch(proc.getCuttingBranches()[i].getBranchId());

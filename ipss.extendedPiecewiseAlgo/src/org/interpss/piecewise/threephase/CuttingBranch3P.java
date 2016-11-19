@@ -25,7 +25,6 @@
 package org.interpss.piecewise.threephase;
 
 import org.interpss.numeric.datatype.Complex3x1;
-import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 
 

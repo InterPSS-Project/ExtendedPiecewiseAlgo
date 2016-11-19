@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgo1PhaseImpl.java   
+  * @(#)AbstractPiecewiseAlgoAdapter.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -29,9 +29,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Function;
 
-import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
-import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
@@ -39,14 +37,12 @@ import org.interpss.piecewise.base.BaseSubArea;
 import com.interpss.common.exp.InterpssException;
 
 /**
- * A Network is divided into a set of SubArea/Network connected by a set of cutting branches. Each SubArea/Network is identified
- * by an unique flag(int). The Bus.intFlag is used to indicate where the bus is located in terms of SubArea. A set of
- * interface buses are defined in a SubArea to keep track of cutting branch connection relationship.
+ * Abstract Piecewise Algorithm implementation adapter.
  * 
  * @author Mike
  *
  */
-public abstract class BasePiecewiseAlgoImpl<TBus, TState, TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
+public abstract class AbstractPiecewiseAlgoAdapter<TBus, TState, TSub extends BaseSubArea<?, ?>> 
 					implements  PiecewiseAlgorithm<TBus, TState, TSub> {
 	// flag to indicate if the network subarea Y-matrix needs to be formed for the 
 	// calculation
@@ -63,7 +59,7 @@ public abstract class BasePiecewiseAlgoImpl<TBus, TState, TSub extends BaseSubAr
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public BasePiecewiseAlgoImpl() {
+	public AbstractPiecewiseAlgoAdapter() {
 		this.netYmatrixDirty = true;
 		this.netVoltage = new Hashtable<>();
 		this.subAreaNetList = new ArrayList<>();
@@ -98,7 +94,7 @@ public abstract class BasePiecewiseAlgoImpl<TBus, TState, TSub extends BaseSubAr
 	 * 
 	 * @return the netVoltage
 	 */
-	public List<TSub> getSubAreaList() {
+	public List<TSub> getSubAreaNetList() {
 		return this.subAreaNetList;
 	}
 
@@ -123,15 +119,17 @@ public abstract class BasePiecewiseAlgoImpl<TBus, TState, TSub extends BaseSubAr
 				Function<TBus,TState> injCurrentFunc)  throws InterpssException, IpssNumericException {
 		this.subAreaNetList = subAreaNetList;
   		
-  		// Solve for the open-circuit voltage
+  		// Solve for the open-circuit voltage. The voltage results are stored in
+		// the this.netVoltage.
   		calculateOpenCircuitVoltage(injCurrentFunc);
 
-  		// calculate cutting branch current
+  		// calculate cutting branch current. The current results are stored in the cbranches object
     	calculateCuttingBranchCurrent(cbranches);
 
-  		// calculate bus voltage by superposition of the open-circuit voltage and voltage by inject the 
-    	// cutting branch current in the subsrea network
-  		calcuateSubAreaVoltage(cbranches);  		
+  		// calculate the SubArea/Network bus voltage. For linear SubArea/Network, the superposition method could 
+    	// be used, superposition of the open-circuit voltage and voltage by injecting the cutting branch current 
+    	// in the SubArea/Network.
+  		calcuateSubAreaNetVoltage(cbranches);  		
 
 		return this.netVoltage;
 	}

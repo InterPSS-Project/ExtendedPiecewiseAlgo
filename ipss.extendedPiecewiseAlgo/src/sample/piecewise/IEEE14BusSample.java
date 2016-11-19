@@ -34,12 +34,12 @@ import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.piecewise.PiecewiseAlgorithm;
-import org.interpss.piecewise.base.SubAreaNetProcessor.SubAreaNetType;
-import org.interpss.piecewise.onephase.CuttingBranch1Phase;
-import org.interpss.piecewise.onephase.SubArea1Phase;
-import org.interpss.piecewise.onephase.SubNetwork1Phase;
-import org.interpss.piecewise.onephase.algo.PiecewiseAlgo1PhaseImpl;
-import org.interpss.piecewise.onephase.impl.SubAreaNet1PhaseProcessorImpl;
+import org.interpss.piecewise.SubAreaNetProcessor.SubAreaNetType;
+import org.interpss.piecewise.onephase.CuttingBranch1P;
+import org.interpss.piecewise.onephase.SubArea1P;
+import org.interpss.piecewise.onephase.SubNetwork1P;
+import org.interpss.piecewise.onephase.algo.PiecewiseAlgo1PImpl;
+import org.interpss.piecewise.onephase.impl.SubAreaNet1PProcessorImpl;
 
 import com.interpss.CoreObjectFactory;
 import com.interpss.core.aclf.AclfBus;
@@ -72,18 +72,18 @@ public class IEEE14BusSample {
 		// ============ Solve network voltage by piecewise algo ====================//
   		
   		// define the cutting branch set
-		CuttingBranch1Phase[] cuttingBranches = new CuttingBranch1Phase[] { 
-					new CuttingBranch1Phase("4->71(1)"),
-					new CuttingBranch1Phase("4->91(1)"),
-					new CuttingBranch1Phase("5->61(1)")};	
+		CuttingBranch1P[] cuttingBranches = new CuttingBranch1P[] { 
+					new CuttingBranch1P("4->71(1)"),
+					new CuttingBranch1P("4->91(1)"),
+					new CuttingBranch1P("5->61(1)")};	
 		
 		// process the SubArea or SubNetwork
-		List<SubArea1Phase> subAreaList = 
-				new SubAreaNet1PhaseProcessorImpl<SubArea1Phase>(net, SubAreaNetType.SubArea, cuttingBranches)
+		List<SubArea1P> subAreaList = 
+				new SubAreaNet1PProcessorImpl<SubArea1P>(net, SubAreaNetType.SubArea, cuttingBranches)
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-	  	PiecewiseAlgorithm<AclfBus, Complex, SubArea1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net);
+	  	PiecewiseAlgorithm<AclfBus, Complex, SubArea1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net);
   		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(
   				subAreaList, cuttingBranches, injCurrentFunc);
  		
@@ -107,18 +107,18 @@ public class IEEE14BusSample {
 		// ============ Solve network voltage by piecewise algo ====================//
   		
   		// define the cutting branch set
-		CuttingBranch1Phase[] cuttingBranches = new CuttingBranch1Phase[] { 
-					new CuttingBranch1Phase("4->71(1)"),
-					new CuttingBranch1Phase("4->91(1)"),
-					new CuttingBranch1Phase("5->61(1)")};	
+		CuttingBranch1P[] cuttingBranches = new CuttingBranch1P[] { 
+					new CuttingBranch1P("4->71(1)"),
+					new CuttingBranch1P("4->91(1)"),
+					new CuttingBranch1P("5->61(1)")};	
 		
 		// process the SubArea or SubNetwork
-		List<SubNetwork1Phase> subAreaList = 
-				new SubAreaNet1PhaseProcessorImpl<SubNetwork1Phase>(net, SubAreaNetType.SubNetwork, cuttingBranches)
+		List<SubNetwork1P> subAreaList = 
+				new SubAreaNet1PProcessorImpl<SubNetwork1P>(net, SubAreaNetType.SubNetwork, cuttingBranches)
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-	  	PiecewiseAlgorithm<AclfBus, Complex, SubNetwork1Phase> pieceWiseAlgo = new PiecewiseAlgo1PhaseImpl<>(net);
+	  	PiecewiseAlgorithm<AclfBus, Complex, SubNetwork1P> pieceWiseAlgo = new PiecewiseAlgo1PImpl<>(net);
   		Hashtable<String,Complex> voltages = pieceWiseAlgo.calculateNetVoltage(
   				subAreaList, cuttingBranches, injCurrentFunc);
  		

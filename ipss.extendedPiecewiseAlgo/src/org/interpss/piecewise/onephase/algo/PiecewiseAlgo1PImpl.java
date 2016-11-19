@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgo1PhaseImpl.java   
+  * @(#)PiecewiseAlgo1PImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -34,24 +34,21 @@ import org.interpss.numeric.matrix.MatrixUtil;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.base.impl.BasePiecewiseAlgoImpl;
-import org.interpss.piecewise.onephase.SubNetwork1Phase;
+import org.interpss.piecewise.base.impl.AbstractPiecewiseAlgoAdapter;
+import org.interpss.piecewise.onephase.SubNetwork1P;
 
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
 
 /**
- * An AclfNetqork is divided into a set of SubArea connected by a set of cutting branches. Each SubArea is identified
- * by an unique flag(int). The AclfBus.intFlag is used to indicate where the bus is located in terms of SubArea. A set of
- * interface buses are defined in a SubArea to keep track of cutting branch connection relationship.
+ * Piecewise algorithm implementation for single phase or positive sequence network.
  * 
  * @author Mike
  *
  */
-public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
-					extends BasePiecewiseAlgoImpl<AclfBus, Complex, TSub> {
-	
+public class PiecewiseAlgo1PImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
+					extends AbstractPiecewiseAlgoAdapter<AclfBus, Complex, TSub> {
 	// AclfNetwork object
 	private AclfNetwork net;
 	
@@ -63,7 +60,7 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgo1PhaseImpl(AclfNetwork net) {
+	public PiecewiseAlgo1PImpl(AclfNetwork net) {
 		super();
 		this.net = net;
 	}
@@ -73,18 +70,12 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public PiecewiseAlgo1PhaseImpl(AclfNetwork net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgo1PImpl(AclfNetwork net, List<TSub> subAreaNetList) {
 		super();
 		this.net = net;
 		this.subAreaNetList = subAreaNetList;
 	}
 	
-	/**
-	 * Solve for subarea open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
-	 * 
-	 * @param injCurrentFunc bus inject current calculation function
-	 * @throws IpssNumericException
-	 */
 	@Override
 	public void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
   		for (TSub subarea: this.subAreaNetList) {
@@ -101,7 +92,7 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
 	}
 
 	/**
-	 * Solve for subarea open circuit bus voltage. The bus injection current is based
+	 * Solve for SubArea/Network open circuit bus voltage. The bus injection current is based
 	 * on gen bus load flow results. The bus voltage results are stored in the subarea
 	 * Y-matrix sparse eqn object.
 	 * 
@@ -112,8 +103,8 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
 		// there is no need to form the Y matrix if it has not changed
 		TSub subArea = this.getSubArea(areaFlag);
   		if (this.netYmatrixDirty) {
-  			if (subArea instanceof SubNetwork1Phase)
-  				((SubNetwork1Phase)subArea).formYMatrix();
+  			if (subArea instanceof SubNetwork1P)
+  				((SubNetwork1P)subArea).formYMatrix();
   			else	
   				subArea.setYSparseEqn(net.formYMatrix(areaFlag));
   			subArea.getYSparseEqn().luMatrix(1.0e-10);
@@ -130,14 +121,8 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
   		subArea.getYSparseEqn().solveEqn();	
 	}
 	
-	/**
-	 * calculate the bus voltage for the subarea based on the cutting branch current and the bus open circuit voltage
-	 * 
-	 * @param cuttingBranches cutting branch storing the branch current
-	 * @throws IpssNumericException
-	 */
 	@Override
-	public void calcuateSubAreaVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
+	public void calcuateSubAreaNetVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
 		for(TSub subarea : this.subAreaNetList)
 			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
 	}
@@ -180,12 +165,6 @@ public class PiecewiseAlgo1PhaseImpl<TSub extends BaseSubArea<ISparseEqnComplex,
 	}	
 	
 	
-	/**
-	 * calculate cutting branch current
-	 * 
-	 * @param cuttingBranches cutting branches
-	 * @return the current array
-	 */
 	@Override
 	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex>[] cuttingBranches) throws IpssNumericException { 
 		

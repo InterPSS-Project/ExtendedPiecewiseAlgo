@@ -1,5 +1,5 @@
  /*
-  * @(#)CuttingBranch.java   
+  * @(#)CuttingBranch1P.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -31,11 +31,12 @@ import org.interpss.piecewise.base.BaseCuttingBranch;
 
 /**
  * Class for modeling the cutting branch concept with current of Complex type
+ * for single phase or positive sequence network analysis
  * 
  * @author Mike
  *
  */
-public class CuttingBranch1Phase extends BaseCuttingBranch<Complex> {
+public class CuttingBranch1P extends BaseCuttingBranch<Complex> {
 	/**
 	 * constructor
 	 * 
@@ -43,7 +44,7 @@ public class CuttingBranch1Phase extends BaseCuttingBranch<Complex> {
 	 * @param fromFlag branch from bus area flag
 	 * @param toFlag branch to bus area flag
 	 */
-	public CuttingBranch1Phase(String id, int fromFlag, int toFlag) {
+	public CuttingBranch1P(String id, int fromFlag, int toFlag) {
 		super(id, fromFlag, toFlag);
 	}
 	
@@ -52,7 +53,7 @@ public class CuttingBranch1Phase extends BaseCuttingBranch<Complex> {
 	 * 
 	 * @param id branch id
 	 */
-	public CuttingBranch1Phase(String id) {
+	public CuttingBranch1P(String id) {
 		super(id, BaseCuttingBranch.DefaultFlag, BaseCuttingBranch.DefaultFlag);
 	}
 	

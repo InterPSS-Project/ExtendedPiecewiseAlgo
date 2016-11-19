@@ -28,26 +28,25 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Function;
 
-import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.piecewise.base.BaseCuttingBranch;
-import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.base.SubAreaNetProcessor.SubAreaNetType;
 
 import com.interpss.common.exp.InterpssException;
 
 /**
- * An Network could be divided into a set of SubArea or SubNetwork connected by a set of cutting branches. 
+ * Interface for the Piecewise Algorithm implementation. 
+ * A Network could be divided into a set of SubArea or SubNetwork connected by a set of cutting branches. 
  * Each SubArea/Network is identified by an unique flag(int). The Bus.intFlag is used to indicate where the 
- * bus is located in terms of SubArea/Net. A set of interface buses are defined in a SubArea/Net to keep 
+ * bus is located in terms of SubArea/Network. A set of interface buses are defined in a SubArea/Network to keep 
  * track of cutting branch connection relationship.
  * 
  * @author Mike
  *
  * @template TBus Bus object generic type
- * @template TState Network state (current, voltage) generic type, Complex for single phase analysis
+ * @template TState Network state (current, voltage) generic type, for example, Complex for single phase analysis
+ * @template TSub SubArea/Network generic type
  */
-public interface PiecewiseAlgorithm<TBus, TState, TSub extends BaseSubArea<?, ?>> {
+public interface PiecewiseAlgorithm<TBus, TState, TSub> {
 	/**
 	 * Flag to indicate if the Y-matrix of the SubArea/Network is dirty
 	 * 
@@ -75,18 +74,19 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub extends BaseSubArea<?, ?>
 	 * 
 	 * @return the SubArea/Network list
 	 */
-	List<TSub> getSubAreaList();
+	List<TSub> getSubAreaNetList();
 
 	/**
-	 * get SubArea/Net by the area flag
+	 * get SubArea/Network by the area flag
 	 * 
 	 * @param flag the area flag
-	 * @return the subarea object
+	 * @return the SubArea/Network object
 	 */
 	TSub getSubArea(int flag);
 	
 	/**
-	 * Solve for SubArea/Network open circuit bus voltage. The bus voltage results are stored in the netVoltage hashtable.
+	 * Solve for SubArea/Network open circuit bus voltage based on the bus inject current function. The 
+	 * bus voltage results are stored in the netVoltage hashtable.
 	 * 
 	 * @param injCurrentFunc bus inject current calculation function
 	 * @throws IpssNumericException
@@ -94,24 +94,26 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub extends BaseSubArea<?, ?>
 	void calculateOpenCircuitVoltage(Function<TBus, TState> injCurrentFunc)  throws IpssNumericException;
 	
 	/**
-	 * calculate the bus voltage for the SubArea/Network based on the cutting branch current and 
-	 * the bus open circuit voltage
+	 * calculate the SubArea/Network bus voltage based on 1) the cutting branch current; and  
+	 * 2) the bus open circuit voltage stored in the netVoltage hashtable.
 	 * 
 	 * @param cuttingBranches cutting branch where the branch current is stored
 	 * @throws IpssNumericException
 	 */
-	void calcuateSubAreaVoltage(BaseCuttingBranch<TState>[] cuttingBranches)  throws IpssNumericException;
+	void calcuateSubAreaNetVoltage(BaseCuttingBranch<TState>[] cuttingBranches)  throws IpssNumericException;
 	
 	/**
-	 * calculate cutting branch current, the results are stored in the cuttingBranches object
+	 * Calculate cutting branch current, based on the the bus open circuit voltage stored in the netVoltage hashtable
+	 * and the cutting branch Z-matrix. The results are stored in the cuttingBranches object
 	 * 
 	 * @param cuttingBranches cutting branches
 	 */
 	void calculateCuttingBranchCurrent(BaseCuttingBranch<TState>[] cuttingBranches) throws IpssNumericException;
 	
 	/**
-	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function.
-	 * SubAreas/Network based on the cutting branches will be automatically formed inside the method 
+	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function. 
+	 * It includes 1) Solve for the open-circuit voltage; 2) calculate cutting branch current; and 3) calculate 
+	 * SubArea/Network bus voltage.
 	 * 
 	 * @param subAreaNetList SubArea/Network list
 	 * @param cbranches cutting branch set

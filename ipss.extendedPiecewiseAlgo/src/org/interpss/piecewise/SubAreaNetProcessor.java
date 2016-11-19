@@ -22,9 +22,11 @@
   *
   */
 
-package org.interpss.piecewise.base;
+package org.interpss.piecewise;
 
 import java.util.List;
+
+import org.interpss.piecewise.base.BaseCuttingBranch;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.net.Branch;
@@ -40,11 +42,15 @@ import com.interpss.core.net.Bus;
  * 
  * @author Mike
  *
+ * @template TBus Bus object generic type
+ * @template TBra Branch object generic type
+ * @template TSub SubArea/Network generic type
+ * @template TState Network state (current, voltage) generic type, for example, Complex for single phase analysis
  */
 		
-public interface SubAreaNetProcessor <TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>, TState> {
+public interface SubAreaNetProcessor <TBus, TBra, TSub, TState> {
 	/**
-	 * enum for indicating SubArea or SubNetwork based processing
+	 * enum for defining indicator for SubArea or SubNetwork based processing
 	 */
 	public static enum SubAreaNetType { SubArea, SubNetwork};
 	
@@ -80,9 +86,9 @@ public interface SubAreaNetProcessor <TBus extends Bus, TBra extends Branch, TSu
 	/**
 	 * Process SubArea by automatically group buses into SubAreas based
 	 * on the defined cutting branches set. If it is SubNetwork processing,
-	 * SubNetwork relationship will be created
+	 * SubNetwork and the parent Network object relationship will be created
 	 *  
-	 * @return the SubArea/Net list
+	 * @return the SubArea/Network list
 	 */
 	List<TSub> processSubAreaNet() throws InterpssException;	
 }
