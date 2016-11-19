@@ -30,7 +30,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.interpss.piecewise.base.SubAreaNetProcessor;
 import org.interpss.piecewise.onephase.CuttingBranch1Phase;
 import org.interpss.piecewise.onephase.SubNetwork1Phase;
-import org.interpss.piecewise.onephase.impl.SubNet1PhaseProcessorImpl;
+import org.interpss.piecewise.onephase.impl.SubAreaNet1PhaseProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
@@ -46,10 +46,11 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = IEEE14TestSubAreaSearch.getTestNet();
 		
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> proc = new SubNet1PhaseProcessorImpl(net, new CuttingBranch1Phase[] { 
-					new CuttingBranch1Phase("4->71(1)"),
-					new CuttingBranch1Phase("4->91(1)"),
-					new CuttingBranch1Phase("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> 
+				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1Phase[] { 
+							new CuttingBranch1Phase("4->71(1)"),
+							new CuttingBranch1Phase("4->91(1)"),
+							new CuttingBranch1Phase("5->61(1)")});	
   		
   		proc.processSubAreaNet();
   		
@@ -70,12 +71,13 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 	public void testCase2() throws Exception {
 		AclfNetwork net = IEEE14TestSubAreaSearch.getTestNet();
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> proc = new SubNet1PhaseProcessorImpl(net, new CuttingBranch1Phase[] { 
-					new CuttingBranch1Phase("4->71(1)"),
-					new CuttingBranch1Phase("4->91(1)"),
-					new CuttingBranch1Phase("5->61(1)"),
-					new CuttingBranch1Phase("9->14(1)"),
-					new CuttingBranch1Phase("14->13(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> 
+				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1Phase[] { 
+							new CuttingBranch1Phase("4->71(1)"),
+							new CuttingBranch1Phase("4->91(1)"),
+							new CuttingBranch1Phase("5->61(1)"),
+							new CuttingBranch1Phase("9->14(1)"),
+							new CuttingBranch1Phase("14->13(1)")});	
   		
   		proc.processSubAreaNet();
   		

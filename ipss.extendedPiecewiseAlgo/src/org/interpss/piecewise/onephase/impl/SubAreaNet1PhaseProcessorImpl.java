@@ -28,8 +28,9 @@ import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
+import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
-import org.interpss.piecewise.onephase.CuttingBranch1Phase;
+import org.interpss.piecewise.onephase.SubArea1Phase;
 import org.interpss.piecewise.onephase.SubNetwork1Phase;
 
 import com.interpss.common.exp.InterpssException;
@@ -46,41 +47,42 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 		
-public class SubNet1PhaseProcessorImpl extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, SubNetwork1Phase, Complex> {
+public class SubAreaNet1PhaseProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
+	 * @param subType SubArea/Network processing type
 	 */
-	public SubNet1PhaseProcessorImpl(AclfNetwork net) {
-		super(net);
+	public SubAreaNet1PhaseProcessorImpl(AclfNetwork net, SubAreaNetType subType) {
+		super(net, subType);
 	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
+	 * @param subType SubArea/Network processing type
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubNet1PhaseProcessorImpl(AclfNetwork net, BaseCuttingBranch<Complex>[] cuttingBranches) {
-		super(net, cuttingBranches);
+	public SubAreaNet1PhaseProcessorImpl(AclfNetwork net, SubAreaNetType subType, BaseCuttingBranch<Complex>[] cuttingBranches) {
+		super(net, subType, cuttingBranches);
 	}	
 	
-	/**
-	 * create a SubArea object
-	 * 
-	 * @param flag
-	 * @return
-	 */
-	@Override public SubNetwork1Phase createSubArea(int flag) {
-		return new SubNetwork1Phase(flag);
+	@SuppressWarnings("unchecked")
+	@Override public TSub createSubAreaNet(int flag) {
+		if (this.subType == SubAreaNetType.SubArea)
+			return (TSub)new SubArea1Phase(flag);
+		else
+			return (TSub)new SubNetwork1Phase(flag);
 	};
 	
-	@Override public List<SubNetwork1Phase> processSubAreaNet() throws InterpssException {
-		List<SubNetwork1Phase> subNetList = super.processSubAreaNet();
+	@Override public List<TSub> processSubAreaNet() throws InterpssException {
+		List<TSub> subNetList = super.processSubAreaNet();
 		
-		for (SubNetwork1Phase subNet : subNetList ) {
-			subNet.buildSubNet((AclfNetwork)this.getNetwork());
+		for (TSub subNet : subNetList ) {
+			if (subNet instanceof SubNetwork1Phase)
+				((SubNetwork1Phase)subNet).buildSubNet((AclfNetwork)this.getNetwork());
 		};
 		
 		return subNetList;

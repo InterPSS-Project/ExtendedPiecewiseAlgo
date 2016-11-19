@@ -44,6 +44,11 @@ import com.interpss.core.net.Bus;
 		
 public interface SubAreaNetProcessor <TBus extends Bus, TBra extends Branch, TSub extends BaseSubArea<?, ?>, TState> {
 	/**
+	 * enum for indicating SubArea or SubNetwork based processing
+	 */
+	public static enum SubAreaNetType { SubArea, SubNetwork};
+	
+	/**
 	 * return the cutting branch set
 	 * 
 	 * @return the cuttingBranches

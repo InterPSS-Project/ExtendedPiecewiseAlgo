@@ -51,6 +51,9 @@ public abstract class BaseSubAreaProcessorImpl<
 							TBra extends Branch, 
 							TSub extends BaseSubArea<?, ?>, 
 							TState> implements SubAreaNetProcessor<TBus, TBra, TSub, TState> {
+	// SubArea or SubNetwork type
+	protected SubAreaNetType subType;
+	
 	// Parent Network object
 	private Network<TBus,TBra> net;
 	
@@ -58,16 +61,17 @@ public abstract class BaseSubAreaProcessorImpl<
 	private BaseCuttingBranch<TState>[] cuttingBranches;
 	
 	// Sub-area list 
-	private List<TSub> subareaList;
+	private List<TSub> subAreaNetList;
 	
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net) {
+	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, SubAreaNetType subType) {
 		this.net = net;
-		this.subareaList = new ArrayList<>();
+		this.subType = subType;
+		this.subAreaNetList = new ArrayList<>();
 	}
 
 	/**
@@ -76,8 +80,8 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, BaseCuttingBranch<TState>[] cuttingBranches) {
-		this(net);
+	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, SubAreaNetType subType, BaseCuttingBranch<TState>[] cuttingBranches) {
+		this(net, subType);
 		this.cuttingBranches = cuttingBranches;
 	}
 	
@@ -87,7 +91,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @param flag
 	 * @return
 	 */
-	public abstract TSub createSubArea(int flag);
+	public abstract TSub createSubAreaNet(int flag);
 	
 	
 	/**
@@ -121,7 +125,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @return the netVoltage
 	 */
 	public List<TSub> getSubAreaNetList() {
-		return this.subareaList;
+		return this.subAreaNetList;
 	}
 
 	/**
@@ -131,7 +135,7 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @return the subarea object
 	 */
 	public TSub getSubAreaNet(int flag) {
-		for (TSub subarea: this.subareaList) {
+		for (TSub subarea: this.subAreaNetList) {
 			if (subarea.getFlag() == flag)
 				return subarea;
 		}
@@ -230,7 +234,7 @@ public abstract class BaseSubAreaProcessorImpl<
 				TSub subarea = getSubAreaNet(pair.subAreaFlag);
 				if (subarea == null) {
 					// create SubArea object and add to the SubArea list
-					subarea = createSubArea(pair.subAreaFlag);
+					subarea = createSubAreaNet(pair.subAreaFlag);
 					getSubAreaNetList().add(subarea);
 				}
 				// add the interface bus ID to the list
@@ -249,13 +253,13 @@ public abstract class BaseSubAreaProcessorImpl<
 		//  We make it continuous 1, 2, 3, ...
 		Hashtable<Integer, Integer> lookup = new Hashtable<>();
 		Integer cnt = 0;
-		for (BaseSubArea<?, ?> subarea : this.subareaList) {
+		for (BaseSubArea<?, ?> subarea : this.subAreaNetList) {
 			lookup.put(subarea.getFlag(), ++cnt);
 		};
 		//System.out.println(lookup);
 
 		// update the subarea flag
-		this.subareaList.forEach(subarea -> {
+		this.subAreaNetList.forEach(subarea -> {
 			subarea.setFlag(lookup.get(subarea.getFlag()));
 		});
 		
@@ -273,7 +277,7 @@ public abstract class BaseSubAreaProcessorImpl<
 			branch.setToSubAreaFlag(aclfBranch.getToBus().getIntFlag());
 		}
 		
-		return this.subareaList;
+		return this.subAreaNetList;
 	}
 	
 	/**

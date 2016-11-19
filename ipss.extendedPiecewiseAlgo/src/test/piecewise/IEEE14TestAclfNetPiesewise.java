@@ -40,8 +40,7 @@ import org.interpss.piecewise.onephase.CuttingBranch1Phase;
 import org.interpss.piecewise.onephase.SubArea1Phase;
 import org.interpss.piecewise.onephase.SubNetwork1Phase;
 import org.interpss.piecewise.onephase.algo.PiecewiseAlgo1PhaseImpl;
-import org.interpss.piecewise.onephase.impl.SubArea1PhaseProcessorImpl;
-import org.interpss.piecewise.onephase.impl.SubNet1PhaseProcessorImpl;
+import org.interpss.piecewise.onephase.impl.SubAreaNet1PhaseProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;
@@ -246,10 +245,11 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase2_1() throws Exception {
 		AclfNetwork net = getTestNet();
   		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> proc = new SubArea1PhaseProcessorImpl<>(net, new CuttingBranch1Phase[] { 
-				new CuttingBranch1Phase("4->71(1)"),
-  				new CuttingBranch1Phase("4->91(1)"),
-  				new CuttingBranch1Phase("5->61(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> 
+				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
+							new CuttingBranch1Phase("4->71(1)"),
+							new CuttingBranch1Phase("4->91(1)"),
+							new CuttingBranch1Phase("5->61(1)")});	
 		
 		proc.processSubAreaNet();
   		/*
@@ -296,7 +296,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = getTestNet();
   		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetwork1Phase, Complex> proc = 
-						new SubNet1PhaseProcessorImpl(net, new CuttingBranch1Phase[] { 
+						new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranch1Phase[] { 
 				new CuttingBranch1Phase("4->71(1)"),
   				new CuttingBranch1Phase("4->91(1)"),
   				new CuttingBranch1Phase("5->61(1)")});	
@@ -450,12 +450,13 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 	public void testCase4_1() throws Exception {
 		AclfNetwork net = getTestNet();
 		
-		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> proc = new SubArea1PhaseProcessorImpl<>(net, new CuttingBranch1Phase[] { 
-				new CuttingBranch1Phase("4->71(1)"),
-				new CuttingBranch1Phase("4->91(1)"),
-				new CuttingBranch1Phase("5->61(1)"),
-				new CuttingBranch1Phase("9->14(1)"),
-				new CuttingBranch1Phase("14->13(1)")});	
+		SubAreaNetProcessor<AclfBus, AclfBranch, SubArea1Phase, Complex> 
+				proc = new SubAreaNet1PhaseProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranch1Phase[] { 
+							new CuttingBranch1Phase("4->71(1)"),
+							new CuttingBranch1Phase("4->91(1)"),
+							new CuttingBranch1Phase("5->61(1)"),
+							new CuttingBranch1Phase("9->14(1)"),
+							new CuttingBranch1Phase("14->13(1)")});	
 		
 		proc.processSubAreaNet();
   		

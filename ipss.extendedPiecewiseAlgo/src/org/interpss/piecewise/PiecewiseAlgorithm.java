@@ -30,10 +30,9 @@ import java.util.function.Function;
 
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.exp.IpssNumericException;
-import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.onephase.SubArea1Phase;
+import org.interpss.piecewise.base.SubAreaNetProcessor.SubAreaNetType;
 
 import com.interpss.common.exp.InterpssException;
 
@@ -114,14 +113,15 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub extends BaseSubArea<?, ?>
 	 * Calculate network bus voltage based on a set of cutting branches and a bus injection current calculate function.
 	 * SubAreas/Network based on the cutting branches will be automatically formed inside the method 
 	 * 
+	 * @param subAreaNetList SubArea/Network list
 	 * @param cbranches cutting branch set
 	 * @param injCurrentFunc function for calculating bus injection current
 	 * @return network bus voltage pairs <BusId, Voltage>
 	 * @throws InterpssException, IpssNumericException
 	 */
-	Hashtable<String,Complex> calculateNetVoltage(
+	Hashtable<String, TState> calculateNetVoltage(
+			List<TSub> subAreaNetList,
 			BaseCuttingBranch<TState>[] cbranches, 
 			Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;
-
 }
 
