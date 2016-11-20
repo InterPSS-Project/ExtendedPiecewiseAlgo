@@ -65,6 +65,9 @@ public class SubNetworkPos extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwo
 	
 	@Override public void buildSubNet(AclfNetwork parentNet) throws InterpssException {
 		super.buildSubNet(parentNet);
+		
+		// TODO only bus and branch objects are copied to the SubNetwork in the super class. We
+		//      may need to add missing objects
 	}
 	
 	/**

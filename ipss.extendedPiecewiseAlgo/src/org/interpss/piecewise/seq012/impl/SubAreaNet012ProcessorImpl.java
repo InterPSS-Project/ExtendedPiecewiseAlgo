@@ -83,7 +83,7 @@ public class SubAreaNet012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends 
 		
 		// for each SubNetwork, we build the child/parent relationship.
 		for (TSub subNet : subNetList ) {
-			if (subNet instanceof SubNetworkPos)
+			if (subNet instanceof SubNetwork012)
 				((SubNetwork012)subNet).buildSubNet((AcscNetwork)this.getNetwork());
 		};
 		
