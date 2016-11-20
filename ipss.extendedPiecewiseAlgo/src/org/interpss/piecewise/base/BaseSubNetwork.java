@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -34,9 +34,9 @@ import com.interpss.core.net.Network;
  * using Bus.intFlag = SubNetwork.flag. Therefore, Bus.network = the SubNetwork for all buses and branches 
  * in a SubNetwork. 
  * 
- * @template TBus bus generic type
- * @template TBranch branch generic type
- * @template TNet network generic type
+ * @param <TBus> bus generic type
+ * @param <TBranch> branch generic type
+ * @param <TNet> network generic type
  *  */
 public abstract class BaseSubNetwork<TBus extends Bus, 
                             TBranch extends Branch, 

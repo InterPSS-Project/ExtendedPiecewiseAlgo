@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -34,8 +34,8 @@ import java.util.List;
  * the parent network, that is Bus.network = the parent network for all buses and branches 
  * in a SubArea.
  * 
- * @template TYMatrix generic type for defining the sub-area Y matrix
- * @template TZMatrix generic type for defining the cutting branch Z matrix
+ * @param <TYMatrix> generic type for defining the sub-area Y matrix
+ * @param <TZMatrix> generic type for defining the cutting branch Z matrix
  */
 public class BaseSubArea<TYmatrix, TZMatrix> {
 	// SubArea flag, which should be unique

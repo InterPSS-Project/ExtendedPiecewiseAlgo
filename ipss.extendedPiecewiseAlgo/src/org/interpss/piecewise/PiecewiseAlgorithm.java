@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -42,9 +42,9 @@ import com.interpss.common.exp.InterpssException;
  * 
  * @author Mike
  *
- * @template TBus Bus object generic type
- * @template TState Network state (current, voltage) generic type, for example, Complex for single phase analysis
- * @template TSub SubArea/Network generic type
+ * @param <TBus> Bus object generic type
+ * @param <TState> Network state (current, voltage) generic type, for example, Complex for single phase analysis
+ * @param <TSub> SubArea/Network generic type
  */
 public interface PiecewiseAlgorithm<TBus, TState, TSub> {
 	/**

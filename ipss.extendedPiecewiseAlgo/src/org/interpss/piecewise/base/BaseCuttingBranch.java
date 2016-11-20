@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -30,7 +30,7 @@ package org.interpss.piecewise.base;
  * 
  * @author Mike
  *
- * @template TCur branch current generic type
+ * @param <TCur> branch current generic type
  */
 public class BaseCuttingBranch<TCur> {
 	// default sub area flag

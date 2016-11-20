@@ -15,7 +15,7 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 01/15/2016
+  * @Date 04/15/2016
   * 
   *   Revision History
   *   ================
@@ -29,8 +29,6 @@ import java.util.List;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.core.net.Branch;
-import com.interpss.core.net.Bus;
 
 /**
  * Interface for SubArea or SubNetwork processing. It begins by defining a set of cutting branches.
@@ -42,10 +40,10 @@ import com.interpss.core.net.Bus;
  * 
  * @author Mike
  *
- * @template TBus Bus object generic type
- * @template TBra Branch object generic type
- * @template TSub SubArea/Network generic type
- * @template TState Network state (current, voltage) generic type, for example, Complex for single phase analysis
+ * @param <TBus> Bus object generic type
+ * @param <TBra> Branch object generic type
+ * @param <TSub> SubArea/Network generic type
+ * @param <TState> Network state (current, voltage) generic type, for example, Complex for single phase analysis
  */
 		
 public interface SubAreaNetProcessor <TBus, TBra, TSub, TState> {
