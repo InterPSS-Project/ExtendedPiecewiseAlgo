@@ -23,7 +23,7 @@
 
 package org.interpss.piecewise.seq012;
 
-import org.apache.commons.math3.complex.Complex;
+import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubNetwork;
 
@@ -37,7 +37,7 @@ import com.interpss.core.acsc.SequenceCode;
 /**
  * Class for modeling the SubArea concept for representing 012 sub-network. 
  */
-public class SubNetwork012 extends BaseSubNetwork<AcscBus, AcscBranch, AcscNetwork, ISparseEqnComplex[], Complex[][][]>{
+public class SubNetwork012 extends BaseSubNetwork<AcscBus, AcscBranch, AcscNetwork, ISparseEqnComplex[], Complex3x1[][]>{
 	
 	/**
 	 * default constructor
@@ -74,8 +74,8 @@ public class SubNetwork012 extends BaseSubNetwork<AcscBus, AcscBranch, AcscNetwo
 	 */
 	public void formYMatrix() {
 		this.setYSparseEqn(new ISparseEqnComplex[] { 
-				this.subNet.formYMatrix(SequenceCode.POSITIVE, false),
-				this.subNet.formYMatrix(SequenceCode.NEGATIVE, false),
-				this.subNet.formYMatrix(SequenceCode.ZERO, false)});
+				this.subNet.formScYMatrix(SequenceCode.POSITIVE, false),
+				this.subNet.formScYMatrix(SequenceCode.NEGATIVE, false),
+				this.subNet.formScYMatrix(SequenceCode.ZERO, false)});
 	}
 }	

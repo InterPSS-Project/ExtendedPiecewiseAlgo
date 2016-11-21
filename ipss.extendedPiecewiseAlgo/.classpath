@@ -12,5 +12,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ipss.plugin.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ipss.simu_EMF"/>
 	<classpathentry kind="lib" path="/ipss.lib.3rdPty/lib/apache/commons-logging.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ipss.pssl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

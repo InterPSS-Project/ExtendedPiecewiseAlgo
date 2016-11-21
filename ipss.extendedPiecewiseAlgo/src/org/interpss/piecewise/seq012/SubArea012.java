@@ -24,19 +24,14 @@
 
 package org.interpss.piecewise.seq012;
 
-import org.apache.commons.math3.complex.Complex;
+import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
 /**
  * Class for modeling the SubArea concept for representing 012 sub-network. 
  */
-public class SubArea012 extends BaseSubArea<ISparseEqnComplex[], Complex[][][]>{
-	// index constant for the Y-matrix array (ISparseEqnComplex[]) and Z-matrix array (Complex[][][])
-	public static final int Index_Pos = 0;
-	public static final int Index_Neg = 1;
-	public static final int Index_Zero = 2;
-	
+public class SubArea012 extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>{
 	/**
 	 * default constructor
 	 * 
