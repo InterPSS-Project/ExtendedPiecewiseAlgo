@@ -31,9 +31,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 	IEEE14TestSubAreaSearch.class,
-	
 	IEEE14TestAclfNetPiesewise.class,
 	IEEE14TestAclfSubNetBuild.class,
+	
+	Acsc5BusTestSubAreaNet.class,
 })
 public class PiecewiseAlgoTestSuite {
 }

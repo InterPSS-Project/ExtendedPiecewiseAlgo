@@ -33,13 +33,12 @@ import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
 import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.numeric.datatype.ComplexFunc;
-import org.interpss.piecewise.PiecewiseAlgorithm;
-import org.interpss.piecewise.SubAreaNetProcessor.SubAreaNetType;
 import org.interpss.piecewise.seqPos.CuttingBranchPos;
 import org.interpss.piecewise.seqPos.SubAreaPos;
 import org.interpss.piecewise.seqPos.SubNetworkPos;
 import org.interpss.piecewise.seqPos.algo.PiecewiseAlgoPosImpl;
-import org.interpss.piecewise.seqPos.impl.SubAreaNetPosProcessorImpl;
+import org.interpss.piecewise.seqPos.impl.SubAreaPosProcessorImpl;
+import org.interpss.piecewise.seqPos.impl.SubNetworkPosProcessorImpl;
 
 import com.interpss.CoreObjectFactory;
 import com.interpss.core.aclf.AclfBus;
@@ -79,7 +78,7 @@ public class IEEE14BusPiesewiseAlgoSample {
 		
 		// process the SubArea or SubNetwork
 		List<SubAreaPos> subAreaList = 
-				new SubAreaNetPosProcessorImpl<SubAreaPos>(net, SubAreaNetType.SubArea, cuttingBranches)
+				new SubAreaPosProcessorImpl<SubAreaPos>(net, cuttingBranches)
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
@@ -113,7 +112,7 @@ public class IEEE14BusPiesewiseAlgoSample {
 		
 		// process the SubArea or SubNetwork
 		List<SubNetworkPos> subAreaList = 
-				new SubAreaNetPosProcessorImpl<SubNetworkPos>(net, SubAreaNetType.SubNetwork, cuttingBranches)
+				new SubNetworkPosProcessorImpl<SubNetworkPos>(net, cuttingBranches)
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage

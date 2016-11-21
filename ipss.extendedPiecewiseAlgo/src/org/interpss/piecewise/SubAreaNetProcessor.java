@@ -50,7 +50,7 @@ public interface SubAreaNetProcessor <TBus, TBra, TSub, TState> {
 	/**
 	 * enum for defining indicator for SubArea or SubNetwork based processing
 	 */
-	public static enum SubAreaNetType { SubArea, SubNetwork};
+	//public static enum SubAreaNetType { SubArea, SubNetwork};
 	
 	/**
 	 * return the cutting branch set

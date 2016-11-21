@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAreaNetPosProcessorImpl.java   
+  * @(#)SubNetwork012ProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -15,31 +15,32 @@
   *
   * @Author Mike Zhou
   * @Version 1.0
-  * @Date 04/15/2016
+  * @Date 11/15/2016
   * 
   *   Revision History
   *   ================
   *
   */
 
-package org.interpss.piecewise.seqPos.impl;
+package org.interpss.piecewise.seq012.impl;
 
 import java.util.List;
 
-import org.apache.commons.math3.complex.Complex;
+import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
-import org.interpss.piecewise.seqPos.SubAreaPos;
+import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
+import org.interpss.piecewise.seq012.SubArea012;
+import org.interpss.piecewise.seq012.SubNetwork012;
 import org.interpss.piecewise.seqPos.SubNetworkPos;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.core.aclf.AclfBranch;
-import com.interpss.core.aclf.AclfBus;
-import com.interpss.core.aclf.AclfNetwork;
+import com.interpss.core.acsc.AcscBranch;
+import com.interpss.core.acsc.AcscBus;
+import com.interpss.core.acsc.AcscNetwork;
 
 /**
- * Class for single phase SubNetwork processing. It begins by defining a set of cutting branches.
+ * Class for 012 SubNetwork processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses. Then it "moves" the bus and branch 
  * objects to corresponding SubNetwork.
  * 
@@ -47,34 +48,29 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 		
-public class SubAreaNetPosProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
+public class SubNetwork012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
-	 * @param subType SubArea/Network processing type
 	 */
-	public SubAreaNetPosProcessorImpl(AclfNetwork net, SubAreaNetType subType) {
-		super(net, subType);
+	public SubNetwork012ProcessorImpl(AcscNetwork net) {
+		super(net);
 	}
 
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
-	 * @param subType SubArea/Network processing type
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaNetPosProcessorImpl(AclfNetwork net, SubAreaNetType subType, BaseCuttingBranch<Complex>[] cuttingBranches) {
-		super(net, subType, cuttingBranches);
+	public SubNetwork012ProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+		super(net, cuttingBranches);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Override public TSub createSubAreaNet(int flag) {
-		if (this.subType == SubAreaNetType.SubArea)
-			return (TSub)new SubAreaPos(flag);
-		else
-			return (TSub)new SubNetworkPos(flag);
+		return (TSub)new SubNetwork012(flag);
 	};
 	
 	@Override public List<TSub> processSubAreaNet() throws InterpssException {
@@ -82,8 +78,7 @@ public class SubAreaNetPosProcessorImpl<TSub extends BaseSubArea<?, ?>> extends 
 		
 		// for each SubNetwork, we build the child/parent relationship.
 		for (TSub subNet : subNetList ) {
-			if (subNet instanceof SubNetworkPos)
-				((SubNetworkPos)subNet).buildSubNet((AclfNetwork)this.getNetwork());
+			((SubNetwork012)subNet).buildSubNet((AcscNetwork)this.getNetwork());
 		};
 		
 		return subNetList;

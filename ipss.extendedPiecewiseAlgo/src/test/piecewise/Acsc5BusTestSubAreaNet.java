@@ -31,11 +31,11 @@ import org.interpss.IpssCorePlugin;
 import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.util.TestUtilFunc;
 import org.interpss.piecewise.SubAreaNetProcessor;
-import org.interpss.piecewise.SubAreaNetProcessor.SubAreaNetType;
 import org.interpss.piecewise.seq012.CuttingBranch012;
 import org.interpss.piecewise.seq012.SubArea012;
 import org.interpss.piecewise.seq012.SubNetwork012;
-import org.interpss.piecewise.seq012.impl.SubAreaNet012ProcessorImpl;
+import org.interpss.piecewise.seq012.impl.SubArea012ProcessorImpl;
+import org.interpss.piecewise.seq012.impl.SubNetwork012ProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;
@@ -58,7 +58,7 @@ public class Acsc5BusTestSubAreaNet {
 		//System.out.println(net.net2String());
 		
 		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubAreaNet012ProcessorImpl<SubArea012>(net, SubAreaNetType.SubArea, new CuttingBranch012[] { 
+				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
 						new CuttingBranch012("1->2(1)"),
 						new CuttingBranch012("1->3(1)"),
 						new CuttingBranch012("2->3(1)")});	
@@ -84,7 +84,7 @@ public class Acsc5BusTestSubAreaNet {
 		//System.out.println(net.net2String());
 		
 		SubAreaNetProcessor<AcscBus, AcscBranch, SubNetwork012, Complex3x1> proc = 
-				new SubAreaNet012ProcessorImpl<>(net, SubAreaNetType.SubNetwork, new CuttingBranch012[] { 
+				new SubNetwork012ProcessorImpl<>(net, new CuttingBranch012[] { 
 						new CuttingBranch012("1->2(1)"),
 						new CuttingBranch012("1->3(1)"),
 						new CuttingBranch012("2->3(1)")});	

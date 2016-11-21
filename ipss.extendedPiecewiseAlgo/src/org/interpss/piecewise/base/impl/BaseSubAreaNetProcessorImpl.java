@@ -1,5 +1,5 @@
  /*
-  * @(#)BaseSubAreaProcessorImpl.java   
+  * @(#)BaseSubAreaNetProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -46,13 +46,13 @@ import com.interpss.core.net.Network;
  *
  */
 		
-public abstract class BaseSubAreaProcessorImpl<
+public abstract class BaseSubAreaNetProcessorImpl<
 							TBus extends Bus, 
 							TBra extends Branch, 
 							TSub extends BaseSubArea<?, ?>, 
 							TState> implements SubAreaNetProcessor<TBus, TBra, TSub, TState> {
 	// SubArea or SubNetwork type
-	protected SubAreaNetType subType;
+	//protected SubAreaNetType subType;
 	
 	// Parent Network object
 	private Network<TBus,TBra> parentNet;
@@ -68,9 +68,9 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, SubAreaNetType subType) {
+	public BaseSubAreaNetProcessorImpl(Network<TBus,TBra> net) {
 		this.parentNet = net;
-		this.subType = subType;
+		//this.subType = subType;
 		this.subAreaNetList = new ArrayList<>();
 	}
 
@@ -80,8 +80,8 @@ public abstract class BaseSubAreaProcessorImpl<
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public BaseSubAreaProcessorImpl(Network<TBus,TBra> net, SubAreaNetType subType, BaseCuttingBranch<TState>[] cuttingBranches) {
-		this(net, subType);
+	public BaseSubAreaNetProcessorImpl(Network<TBus,TBra> net, BaseCuttingBranch<TState>[] cuttingBranches) {
+		this(net);
 		this.cuttingBranches = cuttingBranches;
 	}
 	

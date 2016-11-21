@@ -30,7 +30,7 @@ import org.apache.commons.math3.complex.Complex;
 import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.seqPos.CuttingBranchPos;
 import org.interpss.piecewise.seqPos.SubNetworkPos;
-import org.interpss.piecewise.seqPos.impl.SubAreaNetPosProcessorImpl;
+import org.interpss.piecewise.seqPos.impl.SubNetworkPosProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
@@ -47,7 +47,7 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 		
 		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetworkPos, Complex> 
-				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranchPos[] { 
+				proc = new SubNetworkPosProcessorImpl<>(net, new CuttingBranchPos[] { 
 							new CuttingBranchPos("4->71(1)"),
 							new CuttingBranchPos("4->91(1)"),
 							new CuttingBranchPos("5->61(1)")});	
@@ -72,7 +72,7 @@ public class IEEE14TestAclfSubNetBuild extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = IEEE14TestSubAreaSearch.getTestNet();
 		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubNetworkPos, Complex> 
-				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubNetwork, new CuttingBranchPos[] { 
+				proc = new SubNetworkPosProcessorImpl<>(net, new CuttingBranchPos[] { 
 							new CuttingBranchPos("4->71(1)"),
 							new CuttingBranchPos("4->91(1)"),
 							new CuttingBranchPos("5->61(1)"),

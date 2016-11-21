@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAreaNet012ProcessorImpl.java   
+  * @(#)SubArea012ProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -29,7 +29,7 @@ import java.util.List;
 import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
-import org.interpss.piecewise.base.impl.BaseSubAreaProcessorImpl;
+import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
 import org.interpss.piecewise.seq012.SubArea012;
 import org.interpss.piecewise.seq012.SubNetwork012;
 import org.interpss.piecewise.seqPos.SubNetworkPos;
@@ -40,23 +40,22 @@ import com.interpss.core.acsc.AcscBus;
 import com.interpss.core.acsc.AcscNetwork;
 
 /**
- * Class for 012 SubNetwork processing. It begins by defining a set of cutting branches.
- * It finds SubAreas in the network and SubArea interface buses. Then it "moves" the bus and branch 
- * objects to corresponding SubNetwork.
+ * Class for 012 SubArea processing. It begins by defining a set of cutting branches.
+ * It finds SubAreas in the network and SubArea interface buses. 
  * 
  * @author Mike
  *
  */
 		
-public class SubAreaNet012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
+public class SubArea012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 * @param subType SubArea/Network processing type
 	 */
-	public SubAreaNet012ProcessorImpl(AcscNetwork net, SubAreaNetType subType) {
-		super(net, subType);
+	public SubArea012ProcessorImpl(AcscNetwork net) {
+		super(net);
 	}
 
 	/**
@@ -66,27 +65,12 @@ public class SubAreaNet012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends 
 	 * @param subType SubArea/Network processing type
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAreaNet012ProcessorImpl(AcscNetwork net, SubAreaNetType subType, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
-		super(net, subType, cuttingBranches);
+	public SubArea012ProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+		super(net, cuttingBranches);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Override public TSub createSubAreaNet(int flag) {
-		if (this.subType == SubAreaNetType.SubArea)
-			return (TSub)new SubArea012(flag);
-		else
-			return (TSub)new SubNetwork012(flag);
+		return (TSub)new SubArea012(flag);
 	};
-	
-	@Override public List<TSub> processSubAreaNet() throws InterpssException {
-		List<TSub> subNetList = super.processSubAreaNet();
-		
-		// for each SubNetwork, we build the child/parent relationship.
-		for (TSub subNet : subNetList ) {
-			if (subNet instanceof SubNetwork012)
-				((SubNetwork012)subNet).buildSubNet((AcscNetwork)this.getNetwork());
-		};
-		
-		return subNetList;
-	}
 }

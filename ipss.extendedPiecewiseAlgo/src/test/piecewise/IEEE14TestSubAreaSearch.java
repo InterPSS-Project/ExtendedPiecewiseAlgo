@@ -32,7 +32,8 @@ import org.interpss.fadapter.IpssFileAdapter;
 import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.seqPos.CuttingBranchPos;
 import org.interpss.piecewise.seqPos.SubAreaPos;
-import org.interpss.piecewise.seqPos.impl.SubAreaNetPosProcessorImpl;
+import org.interpss.piecewise.seqPos.impl.SubAreaPosProcessorImpl;
+import org.interpss.piecewise.seqPos.impl.SubNetworkPosProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;
@@ -51,7 +52,7 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 		
 		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubAreaPos, Complex> proc = 
-				new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranchPos[] { 
+				new SubAreaPosProcessorImpl<>(net, new CuttingBranchPos[] { 
 						new CuttingBranchPos("4->71(1)"),
 						new CuttingBranchPos("4->91(1)"),
 						new CuttingBranchPos("5->61(1)")});	
@@ -97,7 +98,7 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
 		AclfNetwork net = getTestNet();
 		
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubAreaPos, Complex> 
-				proc = new SubAreaNetPosProcessorImpl<>(net, SubAreaNetProcessor.SubAreaNetType.SubArea, new CuttingBranchPos[] { 
+				proc = new SubAreaPosProcessorImpl<>(net, new CuttingBranchPos[] { 
 							new CuttingBranchPos("4->71(1)"),
 							new CuttingBranchPos("4->91(1)"),
 							new CuttingBranchPos("5->61(1)"),
