@@ -170,12 +170,10 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
     	Complex[] curAry0 = this.equivZMatrixEqn[0].solveEqn(eCutBranchAry[0], false);	
     	Complex[] curAry1 = this.equivZMatrixEqn[1].solveEqn(eCutBranchAry[1], false);	
     	Complex[] curAry2 = this.equivZMatrixEqn[2].solveEqn(eCutBranchAry[2], false);	
-    	// transfer Complex[] to Complex3x1
-    	Complex3x1[] curAry3x1 = MatrixUtil.toComplex3x1Ary(curAry0, curAry1, curAry2);
     	// cache the branch current 
     	for (int i = 0; i < cuttingBranches.length; i++) {
     		//System.out.println("Branch cur: " + cuttingBranches[i] + " " + curAry3x1[i]);
-    		cuttingBranches[i].setCurrent(curAry3x1[i]);
+    		cuttingBranches[i].setCurrent(new Complex3x1(curAry0[i], curAry1[i], curAry2[i]));
     	}
 	}
 	
@@ -196,7 +194,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   			// current positive direction - into the sub-area network
   			eCutBranch3x1[i] = getNetVoltage().get(branch.getFromBus().getId())
   					        	.subtract(getNetVoltage().get(branch.getToBus().getId()));
-  			//System.out.println("E open: " + cnt + ", " + ComplexFunc.toStr(eCutBranch[cnt]));
+  			//System.out.println("E open: " + i + ", " + eCutBranch3x1[i]);
   		}
   		return eCutBranch3x1;
 	}
@@ -310,11 +308,16 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
   			AcscBranch branch = net.getBranch(cuttingBranches[cnt].getBranchId());
   			// current into the network as the positive direction
-  			int sortNumber = branch.getFromBus().getIntFlag() == subArea.getFlag()? 
-  								branch.getFromBus().getSortNumber() : branch.getFromBus().getSortNumber();
-			yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0.multiply(-1.0), sortNumber);
-			yMatrixAry[Complex3x1.Index_1].addToB(cuttingBranches[cnt].getCurrent().b_1.multiply(-1.0), sortNumber);
-			yMatrixAry[Complex3x1.Index_2].addToB(cuttingBranches[cnt].getCurrent().c_2.multiply(-1.0), sortNumber);
+  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
+  				yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0.multiply(-1.0), branch.getFromBus().getSortNumber());
+  				yMatrixAry[Complex3x1.Index_1].addToB(cuttingBranches[cnt].getCurrent().b_1.multiply(-1.0), branch.getFromBus().getSortNumber());
+  				yMatrixAry[Complex3x1.Index_2].addToB(cuttingBranches[cnt].getCurrent().c_2.multiply(-1.0), branch.getFromBus().getSortNumber());
+  			}
+  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
+  				yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0, branch.getToBus().getSortNumber());
+  				yMatrixAry[Complex3x1.Index_1].addToB(cuttingBranches[cnt].getCurrent().b_1, branch.getToBus().getSortNumber());
+  				yMatrixAry[Complex3x1.Index_2].addToB(cuttingBranches[cnt].getCurrent().c_2, branch.getToBus().getSortNumber());
+  			}
   		}
   		//System.out.println(yMatrix);
   		

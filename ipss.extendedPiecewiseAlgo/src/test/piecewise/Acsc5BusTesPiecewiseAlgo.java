@@ -31,6 +31,8 @@ import java.util.function.Function;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.IpssCorePlugin;
 import org.interpss.numeric.datatype.Complex3x1;
+import org.interpss.numeric.datatype.ComplexFunc;
+import org.interpss.numeric.datatype.Unit.UnitType;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
 import org.interpss.piecewise.PiecewiseAlgorithm;
@@ -41,14 +43,22 @@ import org.interpss.piecewise.seq012.SubArea012;
 import org.interpss.piecewise.seq012.SubNetwork012;
 import org.interpss.piecewise.seq012.algo.PiecewiseAlgo012Impl;
 import org.interpss.piecewise.seq012.impl.SubArea012ProcessorImpl;
+import org.interpss.pssl.simu.net.IpssAcscNet;
+import org.interpss.pssl.simu.net.IpssAcscNet.AcscNetworkDSL;
 import org.interpss.pssl.util.AcscSample;
 import org.junit.Test;
 
 import com.interpss.CoreObjectFactory;
+import com.interpss.common.exp.InterpssException;
+import com.interpss.core.aclf.AclfBranchCode;
+import com.interpss.core.aclf.AclfGenCode;
+import com.interpss.core.aclf.AclfLoadCode;
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
 import com.interpss.core.acsc.AcscNetwork;
+import com.interpss.core.acsc.BusScCode;
 import com.interpss.core.acsc.SequenceCode;
+import com.interpss.core.acsc.XfrConnectCode;
 import com.interpss.core.algo.LoadflowAlgorithm;
 
 public class Acsc5BusTesPiecewiseAlgo {
@@ -60,9 +70,8 @@ public class Acsc5BusTesPiecewiseAlgo {
   		
 		SubAreaNetProcessor<AcscBus, AcscBranch, SubNetwork012, Complex3x1> proc = 
 				new SubArea012ProcessorImpl<SubNetwork012>(net, new CuttingBranch012[] { 
-						new CuttingBranch012("1->2(1)"),
-						new CuttingBranch012("1->3(1)"),
-						new CuttingBranch012("2->3(1)")});	
+						new CuttingBranch012("2->21(1)"),
+						new CuttingBranch012("2->22(1)")});	
   		
   		proc.processSubAreaNet(); 		
   		
@@ -81,162 +90,10 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 */
   		Function<AcscBus, Complex3x1> injCurFunc = bus -> {
   			if (bus.getId().equals("2")) {  // Bus '2' (0.0001,0.0), (1.0,0.0),  (0.05,0.0)
-  				return new Complex3x1(new Complex(0.0001,0.0), new Complex(1.0,0.0),  new Complex(0.05,0.0));
+  				return new Complex3x1(new Complex(0.01,0.0), new Complex(1.0,0.0),  new Complex(0.05,0.0));
   			}
   			else if (bus.getId().equals("3")) {  // Bus '3'
-  				return new Complex3x1(new Complex(-0.0001,0.0), new Complex(-1.0,0.0),  new Complex(-0.05,0.0));
-  			}
-  			else 
-  				return new Complex3x1();
-  		};
-
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
-  		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.0034, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00017, 1.0e-4));
-  		
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1000000.0000, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00045, 1.0e-4));
-
-  		/*/////////////////////////////
-  		 * Step-2: calculate cutting branch current
-  		 */////////////////////////////
- 
-    	pieceWiseAlgo.calculateCuttingBranchCurrent(proc.getCuttingBranches());
-    	for (BaseCuttingBranch<Complex3x1> cbra : proc.getCuttingBranches()) {
-  			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
-  		}
-		
-  		/*//////////////////////////////////////////
-  		 * Step-3
-  		 *//////////////////////////////////////////
-		
-		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
-  		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.00372, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00019, 1.0e-4));
-  		
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1693876.06345, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00049, 1.0e-4));
-	}
-
-	@Test
-	public void subAreaTest() throws Exception {
-		IpssCorePlugin.init();
-		
-  		AcscNetwork net = getAcscNet();  	
-  		
-		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
-						new CuttingBranch012("1->2(1)"),
-						new CuttingBranch012("1->3(1)"),
-						new CuttingBranch012("2->3(1)")});	
-  		
-  		proc.processSubAreaNet(); 		
-  		
-  		/*
-  		 * Solve [Y][I] = [V] using the piecewise method
-  		 * =============================================
-  		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
-  		
-  		/*//////////////////////////////////
-  		 * Step-1: Solve for the open-circuit voltage
-  		 *//////////////////////////////////
-  		
-  		/*
-  		 * Function to compute bus injection current for the testing purpose
-  		 */
-  		Function<AcscBus, Complex3x1> injCurFunc = bus -> {
-  			if (bus.getId().equals("2")) {  // Bus '2' (0.0001,0.0), (1.0,0.0),  (0.05,0.0)
-  				return new Complex3x1(new Complex(0.0001,0.0), new Complex(1.0,0.0),  new Complex(0.05,0.0));
-  			}
-  			else if (bus.getId().equals("3")) {  // Bus '3'
-  				return new Complex3x1(new Complex(-0.0001,0.0), new Complex(-1.0,0.0),  new Complex(-0.05,0.0));
-  			}
-  			else 
-  				return new Complex3x1();
-  		};
-
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
-  		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-/*
-5=-0.0000 + j0.0000         -0.0034 + j-0.01908   -0.00017 + j-0.00095, 
-4=-0.0000 + j0.0000          0.0013 + j0.02024     0.00007 + j0.00101, 
-3=-0.0000 + j-1000000.0000  -0.00892 + j-0.05009  -0.00045 + j-0.0025, 
-2=-0.0000 + j1000000.0000    0.00239 + j0.03719    0.00012 + j0.00186, 
-1=-0.0000 + j0.0000          0.0000 + j0.0000      0.0000 + j0.0000
- */
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.0034, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00017, 1.0e-4));
-  		
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1000000.0000, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00045, 1.0e-4));
-
-  		/*/////////////////////////////
-  		 * Step-2: calculate cutting branch current
-  		 */////////////////////////////
- 
-    	pieceWiseAlgo.calculateCuttingBranchCurrent(proc.getCuttingBranches());
-    	for (BaseCuttingBranch<Complex3x1> cbra : proc.getCuttingBranches()) {
-  			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
-  		}
-		
-  		/*//////////////////////////////////////////
-  		 * Step-3
-  		 *//////////////////////////////////////////
-		
-		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
-  		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-/*
-5=-0.0000 + j0.0000          -0.00372 + j-0.0229   -0.00019 + j-0.00115, 
-4=-0.0000 + j0.0000           0.00141 + j0.01623    0.00007 + j0.00081, 
-3=-0.0000 + j-1693876.06345  -0.00976 + j-0.06012  -0.00049 + j-0.00301, 
-2=-0.0000 + j306123.93655     0.0026 + j0.02983     0.00013 + j0.00149, 
-1=-0.0000 + j-693876.06345   -0.06979 + j-0.04336  -0.00349 + j-0.00217}
- */
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.00372, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00019, 1.0e-4));
-  		
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1693876.06345, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00049, 1.0e-4));
-	}
-	
-	@Test
-	public void subAreaPosSeqOnlyTest() throws Exception {
-		IpssCorePlugin.init();
-		
-  		AcscNetwork net = getAcscNet();  	
-  		
-		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
-						new CuttingBranch012("1->2(1)"),
-						new CuttingBranch012("1->3(1)"),
-						new CuttingBranch012("2->3(1)")});	
-  		
-  		proc.processSubAreaNet(); 		
-  		
-  		/*
-  		 * Solve [Y][I] = [V] using the piecewise method
-  		 * =============================================
-  		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
-  		
-  		System.out.println("================== Pos Seq Only ====================");
-  		
-  		/*//////////////////////////////////
-  		 * Step-1: Solve for the open-circuit voltage
-  		 *//////////////////////////////////
-  		
-  		/*
-  		 * Function to compute bus injection current for the testing purpose
-  		 */
-  		Function<AcscBus, Complex3x1> injCurFunc = bus -> {
-  			if (bus.getId().equals("2")) {  // Bus '2' (0.0001,0.0), (1.0,0.0),  (0.05,0.0)
-  				return new Complex3x1(new Complex(0.0,0.0), new Complex(1.0,0.0),  new Complex(0.0,0.0));
-  			}
-  			else if (bus.getId().equals("3")) {  // Bus '3'
-  				return new Complex3x1(new Complex(0.0,0.0), new Complex(-1.0,0.0),  new Complex(0.0,0.0));
+  				return new Complex3x1(new Complex(-0.01,0.0), new Complex(-1.0,0.0),  new Complex(-0.05,0.0));
   			}
   			else 
   				return new Complex3x1();
@@ -245,15 +102,13 @@ public class Acsc5BusTesPiecewiseAlgo {
   		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.0034, 1.0e-4));
-  		
   		/*/////////////////////////////
   		 * Step-2: calculate cutting branch current
   		 */////////////////////////////
  
     	pieceWiseAlgo.calculateCuttingBranchCurrent(proc.getCuttingBranches());
     	for (BaseCuttingBranch<Complex3x1> cbra : proc.getCuttingBranches()) {
-  			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
+  			System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
   		}
 		
   		/*//////////////////////////////////////////
@@ -261,139 +116,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 *//////////////////////////////////////////
 		
 		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
-  		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").b_1.getReal(), -0.00372, 1.0e-4));
-	}
-
-	@Test
-	public void subAreaNegSeqOnlyTest() throws Exception {
-		IpssCorePlugin.init();
-		
-  		AcscNetwork net = getAcscNet();  	
-  		
-		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
-						new CuttingBranch012("1->2(1)"),
-						new CuttingBranch012("1->3(1)"),
-						new CuttingBranch012("2->3(1)")});	
-  		
-  		proc.processSubAreaNet(); 		
-
-  		System.out.println("================== Neg Seq Only ====================");
-  		
-  		/*
-  		 * Solve [Y][I] = [V] using the piecewise method
-  		 * =============================================
-  		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
-  		
-  		/*//////////////////////////////////
-  		 * Step-1: Solve for the open-circuit voltage
-  		 *//////////////////////////////////
-  		
-  		/*
-  		 * Function to compute bus injection current for the testing purpose
-  		 */
-  		Function<AcscBus, Complex3x1> injCurFunc = bus -> {
-  			if (bus.getId().equals("2")) {  // Bus '2' (0.0001,0.0), (1.0,0.0),  (0.05,0.0)
-  				return new Complex3x1(new Complex(0.0,0.0), new Complex(0.0,0.0),  new Complex(0.05,0.0));
-  			}
-  			else if (bus.getId().equals("3")) {  // Bus '3'
-  				return new Complex3x1(new Complex(0.0,0.0), new Complex(0.0,0.0),  new Complex(-0.05,0.0));
-  			}
-  			else 
-  				return new Complex3x1();
-  		};
-
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
-  		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00017, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00045, 1.0e-4));
-  		
-  		/*/////////////////////////////
-  		 * Step-2: calculate cutting branch current
-  		 */////////////////////////////
- 
-    	pieceWiseAlgo.calculateCuttingBranchCurrent(proc.getCuttingBranches());
-    	for (BaseCuttingBranch<Complex3x1> cbra : proc.getCuttingBranches()) {
-  			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
-  		}
-		
-  		/*//////////////////////////////////////////
-  		 * Step-3
-  		 *//////////////////////////////////////////
-		
-		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
-  		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("5").c_2.getReal(), -0.00019, 1.0e-4));
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2.getReal(), -0.00049, 1.0e-4));
-	}
-
-	@Test
-	public void subAreaZeroSeqOnlyTest() throws Exception {
-		IpssCorePlugin.init();
-		
-  		AcscNetwork net = getAcscNet();  	
-  		
-		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
-						new CuttingBranch012("1->2(1)"),
-						new CuttingBranch012("1->3(1)"),
-						new CuttingBranch012("2->3(1)")});	
-  		
-  		proc.processSubAreaNet(); 		
-  		
-  		/*
-  		 * Solve [Y][I] = [V] using the piecewise method
-  		 * =============================================
-  		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
-
-  		System.out.println("================== Zero Seq Only ====================");
-  		
-  		/*//////////////////////////////////
-  		 * Step-1: Solve for the open-circuit voltage
-  		 *//////////////////////////////////
-  		
-  		/*
-  		 * Function to compute bus injection current for the testing purpose
-  		 */
-  		Function<AcscBus, Complex3x1> injCurFunc = bus -> {
-  			if (bus.getId().equals("2")) {  // Bus '2' (0.0001,0.0), (1.0,0.0),  (0.05,0.0)
-  				return new Complex3x1(new Complex(0.0001,0.0), new Complex(0.0,0.0),  new Complex(0.0,0.0));
-  			}
-  			else if (bus.getId().equals("3")) {  // Bus '3'
-  				return new Complex3x1(new Complex(-0.0001,0.0), new Complex(0.0,0.0),  new Complex(0.0,0.0));
-  			}
-  			else 
-  				return new Complex3x1();
-  		};
-
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
-  		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1000000.0000, 1.0e-4));
-  		
-  		/*/////////////////////////////
-  		 * Step-2: calculate cutting branch current
-  		 */////////////////////////////
- 
-    	pieceWiseAlgo.calculateCuttingBranchCurrent(proc.getCuttingBranches());
-    	for (BaseCuttingBranch<Complex3x1> cbra : proc.getCuttingBranches()) {
-  			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
-  		}
-		
-  		/*//////////////////////////////////////////
-  		 * Step-3
-  		 *//////////////////////////////////////////
-		
-		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
-  		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-
-  		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0.getImaginary(), -1693876.06345, 1.0e-4));
+  		System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 	}
 	
 	/*
@@ -407,109 +130,94 @@ public class Acsc5BusTesPiecewiseAlgo {
 /*
 a(0,0,'1'): 0.0000 + j-2.42857
 a(1,1,'2'): 0.0000 + j-2.7619
-a(2,2,'3'): 0.0000 + j-2.33333
-a(3,3,'4'): 0.0000 + j-0.0000
-a(4,4,'5'): 0.0000 + j-0.0000
+a(2,2,'21'): 0.0000 + j-2.7619
+a(3,3,'22'): 0.0000 + j-2.7619
+a(4,4,'3'): 0.0000 + j-2.33333
+a(5,5,'4'): 0.0000 + j-0.0000
+a(6,6,'5'): 0.0000 + j-0.0000
 
 Bus '2' injection current [(0.0001,0.0), (1.0,0.0),  (0.05,0.0)]
 Bus '3' injection current [(-0.0001,0.0), (-1.0,0.0), (-0.05,0.0)]
 */
   		ISparseEqnComplex y1 = net.formScYMatrix(SequenceCode.POSITIVE, false);
   		y1.setBi(new Complex(1.0,0.0), 1);
-  		y1.setBi(new Complex(-1.0,0.0), 2);
+  		y1.setBi(new Complex(-1.0,0.0), 4);
   		y1.solveEqn();
   		//System.out.println(y1);
+  		/*
+  		Complex cur2_21 = y1.getX(1).subtract(y1.getX(2)).multiply(net.getBranch("2->21(1)").getY());
+  		System.out.println("cur(1) 2->21: " + ComplexFunc.toStr(cur2_21));
+  		Complex cur2_22 = y1.getX(1).subtract(y1.getX(3)).multiply(net.getBranch("2->22(1)").getY());
+  		System.out.println("cur(1) 2->22: " + ComplexFunc.toStr(cur2_22));
+  		*/
 /*
-b(0): 0.00036 + j0.00061
-b(1): 0.00271 + j0.02638
-b(2): -0.00765 + j-0.03522
-b(3): 0.00147 + j0.01436
-b(4): -0.00291 + j-0.01342 		
+cur(1) 2->21: 0.19328 + j0.01941
+cur(1) 2->22: 0.09527 + j0.00752
+ */
+  		
+/*
+b(0): 0.00035 + j0.00057
+b(1): 0.0027 + j0.0264
+b(2): 0.00272 + j0.0262
+b(3): 0.00271 + j0.0263
+b(4): -0.00765 + j-0.03524
+b(5): 0.00147 + j0.01437
+b(6): -0.00291 + j-0.01343 		
  */
   		
   		ISparseEqnComplex y2 = net.formScYMatrix(SequenceCode.NEGATIVE, false);
   		y2.setBi(new Complex(0.05,0.0), 1);
-  		y2.setBi(new Complex(-0.05,0.0), 2);
+  		y2.setBi(new Complex(-0.05,0.0), 4);
   		y2.solveEqn();
   		//System.out.println(y2);
-/*
+  		/*
+  		cur2_21 = y2.getX(1).subtract(y2.getX(2)).multiply(net.getBranch("2->21(1)").getY());
+  		System.out.println("cur(2) 2->21: " + ComplexFunc.toStr(cur2_21));
+  		cur2_22 = y2.getX(1).subtract(y2.getX(3)).multiply(net.getBranch("2->22(1)").getY());
+  		System.out.println("cur(2) 2->22: " + ComplexFunc.toStr(cur2_22));
+  		/*
+  		cur(2) 2->21: 0.00966 + j0.00097
+  		cur(2) 2->22: 0.00476 + j0.00038
+  		 */
+
+  		/*
 b(0): 0.00002 + j0.00003
 b(1): 0.00014 + j0.00132
-b(2): -0.00038 + j-0.00176
-b(3): 0.00007 + j0.00072
-b(4): -0.00015 + j-0.00067 		
+b(2): 0.00014 + j0.00131
+b(3): 0.00014 + j0.00132
+b(4): -0.00038 + j-0.00176
+b(5): 0.00007 + j0.00072
+b(6): -0.00015 + j-0.00067 		
  */
   		ISparseEqnComplex y0 = net.formScYMatrix(SequenceCode.ZERO, false);
-  		y0.setBi(new Complex(0.0001,0.0), 1);
-  		y0.setBi(new Complex(-0.0001,0.0), 2);
+  		y0.setBi(new Complex(0.01,0.0), 1);
+  		y0.setBi(new Complex(-0.01,0.0), 4);
   		y0.solveEqn();
   		//System.out.println(y0);
-/*
-b(0): -0.0000 + j0.0000
-b(1): -0.0000 + j0.00002
-b(2): -0.0000 + j-0.00003
-b(3): -0.0000 + j0.0000
-b(4): -0.0000 + j0.0000   		
- */
-  	}
-	
-	/*
-	 * Full matrix for calculating open circuit voltage
-	 */
-	@Test
-	public void fullMatrixOpenCircuitTest() throws Exception {
-		IpssCorePlugin.init();
-		
-  		AcscNetwork net = getAcscNet();
+  		/*
+  		cur2_21 = y0.getX(1).subtract(y0.getX(2)).multiply(net.getBranch("2->21(1)").getY0());
+  		System.out.println("cur(0) 2->21: " + ComplexFunc.toStr(cur2_21));
+  		cur2_22 = y0.getX(1).subtract(y0.getX(3)).multiply(net.getBranch("2->22(1)").getY0());
+  		System.out.println("cur(0) 2->22: " + ComplexFunc.toStr(cur2_22));
+
+  		/*
+  		cur(0) 2->21: 0.00694 + j0.0000
+  		cur(0) 2->22: 0.00306 + j0.0000
+  		 */
   		
-  		net.getBranch("1->2(1)").setStatus(false);
-  		net.getBranch("1->3(1)").setStatus(false);
-  		net.getBranch("2->3(1)").setStatus(false);
-/*
-Bus '2' injection current [(0.0001,0.0), (1.0,0.0),  (0.05,0.0)]
-Bus '3' injection current [(-0.0001,0.0), (-1.0,0.0), (-0.05,0.0)]
-*/
-  		ISparseEqnComplex y1 = net.formScYMatrix(SequenceCode.POSITIVE, false);
-  		y1.setBi(new Complex(1.0,0.0), 1);
-  		y1.setBi(new Complex(-1.0,0.0), 2);
-  		y1.solveEqn();
-  		//System.out.println(y1);
-/*
-b(0): 0.0000 + j0.0000
-b(1): 0.00239 + j0.03719
-b(2): -0.00892 + j-0.05009
-b(3): 0.0013 + j0.02024
-b(4): -0.0034 + j-0.01908	
+  		/*
+b(0): -0.0000 + j-0.00067
+b(1): -0.0000 + j0.00147
+b(2): -0.0000 + j0.00147
+b(3): -0.0000 + j0.00147
+b(4): -0.0000 + j-0.00374
+b(5): -0.0000 + j0.0000
+b(6): -0.0000 + j0.0000 		
  */
-  		
-  		ISparseEqnComplex y2 = net.formScYMatrix(SequenceCode.NEGATIVE, false);
-  		y2.setBi(new Complex(0.05,0.0), 1);
-  		y2.setBi(new Complex(-0.05,0.0), 2);
-  		y2.solveEqn();
-  		//System.out.println(y2);
-/*
-b(0): 0.0000 + j0.0000
-b(1): 0.00012 + j0.00186
-b(2): -0.00045 + j-0.0025
-b(3): 0.00007 + j0.00101
-b(4): -0.00017 + j-0.00095
- */
-  		ISparseEqnComplex y0 = net.formScYMatrix(SequenceCode.ZERO, false);
-  		y0.setBi(new Complex(0.0001,0.0), 1);
-  		y0.setBi(new Complex(-0.0001,0.0), 2);
-  		y0.solveEqn();
-  		//System.out.println(y0);
-/*
-b(0): -0.0000 + j0.0000
-b(1): -0.0000 + j1000000.0000
-b(2): -0.0000 + j-1000000.0000
-b(3): -0.0000 + j0.0000
-b(4): -0.0000 + j0.0000		
- */
-  	}
+  	}	
 
 	private AcscNetwork getAcscNet() throws Exception {
-  		AcscNetwork net = AcscSample.create5BusSampleNet();
+  		AcscNetwork net = create5BusSampleNet();
   		//System.out.println(net.net2String());
   		
 	  	LoadflowAlgorithm algo = CoreObjectFactory.createLoadflowAlgorithm(net);
@@ -520,5 +228,104 @@ b(4): -0.0000 + j0.0000
   		
   		return net;
 	}
+	
+	private AcscNetwork create5BusSampleNet() throws InterpssException {
+		AcscNetworkDSL netDsl = IpssAcscNet.createAcscNetwork("Sample AcscNetwork");
+		netDsl.baseMva(100.0);
+
+		netDsl.addAcscBus("1", "name-Bus 1")
+		            .baseVoltage(13800.0)
+		            .loadCode(AclfLoadCode.CONST_P)
+		            .load(new Complex(1.6, 0.8), UnitType.PU)
+		            .scCode(BusScCode.NON_CONTRI);
+		         
+		netDsl.addAcscBus("2", "name-Bus 2")
+		            .baseVoltage(13800.0)  
+		            .loadCode(AclfLoadCode.CONST_P)
+		            .load(new Complex(2.0, 1.0), UnitType.PU)
+		            .scCode(BusScCode.NON_CONTRI);
+
+		netDsl.addAcscBus("21", "name-Bus 21")
+        			.baseVoltage(13800.0)  
+        			.scCode(BusScCode.NON_CONTRI);
+		
+		netDsl.addAcscBus("22", "name-Bus 22")
+					.baseVoltage(13800.0)  
+					.scCode(BusScCode.NON_CONTRI);
+
+		netDsl.addAcscBus("3", "name-Bus 3")
+        			.baseVoltage(13800.0)  
+        			.loadCode(AclfLoadCode.CONST_P)
+        			.load(new Complex(3.7, 1.3), UnitType.PU)
+        			.scCode(BusScCode.NON_CONTRI);		
+		
+		netDsl.addAcscBus("4", "name-Bus 4")
+        			.baseVoltage(1000.0)  
+        			.genCode(AclfGenCode.GEN_PV)
+        			.genP_vMag(5.0, UnitType.PU, 1.05, UnitType.PU)
+        			.scCode(BusScCode.CONTRIBUTE)
+        			.z(new Complex(0.0,0.02), SequenceCode.POSITIVE, UnitType.PU) 
+        			.z(new Complex(0.0,0.02), SequenceCode.NEGATIVE, UnitType.PU) 
+        			.z(new Complex(0.0,1.0e10), SequenceCode.ZERO, UnitType.PU) 
+        			.groundCode("SolidGrounded")
+        			.groundZ(new Complex(0.0, 0.0), UnitType.PU);	
+		
+		netDsl.addAcscBus("5", "name-Bus 5")
+        			.baseVoltage(4000.0)  
+        			.genCode(AclfGenCode.SWING)
+        			.voltageSpec(1.05, UnitType.PU, 5.0, UnitType.Deg)
+        			.scCode(BusScCode.CONTRIBUTE)
+        			.z(new Complex(0.0,0.02), SequenceCode.POSITIVE, UnitType.PU) 
+        			.z(new Complex(0.0,0.02), SequenceCode.NEGATIVE, UnitType.PU) 
+        			.z(new Complex(0.0,1.0e10), SequenceCode.ZERO, UnitType.PU) 
+        			.groundCode("SolidGrounded")
+        			.groundZ(new Complex(0.0, 0.0), UnitType.PU);	
+		
+		netDsl.addAcscBranch("2", "21")
+        			.branchCode(AclfBranchCode.LINE)
+        			.z(new Complex(0.0, 0.001), UnitType.PU)
+        			.z0(new Complex(0.0, 0.001), UnitType.PU);  
+		
+		netDsl.addAcscBranch("2", "22")
+        			.branchCode(AclfBranchCode.LINE)
+        			.z(new Complex(0.0, 0.001), UnitType.PU)
+        			.z0(new Complex(0.0, 0.001), UnitType.PU);  
+		
+		netDsl.addAcscBranch("1", "22")
+		            .branchCode(AclfBranchCode.LINE)
+		            .z(new Complex(0.04, 0.25), UnitType.PU)
+		            .shuntB(0.5, UnitType.PU)
+		            .z0(new Complex(0.0, 0.7), UnitType.PU);     
+		
+		netDsl.addAcscBranch("1", "3")
+        			.branchCode(AclfBranchCode.LINE)
+        			.z(new Complex(0.1, 0.35), UnitType.PU) 
+        			.z0(new Complex(0.0,1.0), UnitType.PU);
+		
+		netDsl.addAcscBranch("21", "3")
+        			.branchCode(AclfBranchCode.LINE)
+        			.z(new Complex(0.08, 0.3), UnitType.PU)
+        			.shuntB(0.5, UnitType.PU)
+        			.z0(new Complex(0.0,0.75), UnitType.PU);
+		
+		netDsl.addAcscBranch("4", "2")
+					.branchCode(AclfBranchCode.XFORMER)
+					.z(new Complex(0.0, 0.015), UnitType.PU)
+					.turnRatio(1.0,  1.05, UnitType.PU)
+					.z0( new Complex(0.0, 0.03), UnitType.PU)
+					.fromGrounding(XfrConnectCode.WYE_UNGROUNDED)
+					.toGrounding(XfrConnectCode.DELTA);
+		
+		netDsl.addAcscBranch("5", "3")
+					.branchCode(AclfBranchCode.XFORMER)
+					.z(new Complex(0.0, 0.03), UnitType.PU)
+					.turnRatio(1.0,  1.05, UnitType.PU)
+					.z0(new Complex(0.0, 0.03), UnitType.PU)
+					.fromGrounding(XfrConnectCode.WYE_UNGROUNDED)
+					.toGrounding(XfrConnectCode.DELTA);
+
+		//System.out.println(netDsl.getAcscNet().net2String());
+		return (AcscNetwork)netDsl.getAclfNet();
+	}	
 }
 
