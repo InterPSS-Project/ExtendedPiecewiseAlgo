@@ -56,13 +56,13 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	// AclfNetwork object
 	private AcscNetwork net;
 	
-	// Equivalent Z-matrix for cutting branch current calculation
+	// Equivalent 012 Z-matrix for cutting branch current calculation
 	private ComplexMatrixEqn[] equivZMatrixEqn = new ComplexMatrixEqn[3];
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param net AclfNetwork object
+	 * @param net AcscNetwork object
 	 */
 	public PiecewiseAlgo012Impl(AcscNetwork net) {
 		super();
@@ -72,7 +72,8 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	/**
 	 * Constructor
 	 * 
-	 * @param net AclfNetwork object
+	 * @param net AcscNetwork object
+	 * @param subAreaList SubArea/Network object list
 	 */
 	public PiecewiseAlgo012Impl(AcscNetwork net, List<TSub> subAreaNetList) {
 		super();
@@ -83,6 +84,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	@Override
 	public void calculateOpenCircuitVoltage(Function<AcscBus, Complex3x1> injCurrentFunc) throws IpssNumericException {
   		for (TSub subarea: this.subAreaNetList) {
+  			// calculate open circuit SubArea/Network voltage
   			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
   	  		//System.out.println("y1: \n" + y1.toString());
   			
@@ -108,9 +110,11 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 * @throws IpssNumericException
 	 */
 	private void solveSubAreaNet(int areaFlag, Function<AcscBus,Complex3x1> injCurrentFunc) throws IpssNumericException {
-		// there is no need to form the Y matrix if it has not changed
 		TSub subArea = this.getSubArea(areaFlag);
-  		if (this.netYmatrixDirty) {
+
+		// form Y-matrix (012) for each SubArea/Network
+		if (this.netYmatrixDirty) {
+  			// there is no need to form the Y matrix if it has not changed
   			if (subArea instanceof SubNetwork012)
   				((SubNetwork012)subArea).formYMatrix();
   			else	
@@ -126,6 +130,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   		//for ( ISparseEqnComplex eqn : subArea.getYSparseEqn())
   		//	System.out.println(eqn.toString());
   		
+		// set bus injection current to the [b] vector in the [A][x] = [b] eqn
   		net.getBusList().forEach(bus -> {
 				if (bus.getIntFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
@@ -136,6 +141,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 				}
 			});
   		
+  		// solve the [A][x] = [b] eqn for 012 seq 
   		for ( ISparseEqnComplex eqn : subArea.getYSparseEqn())
   			eqn.solveEqn();	
 	}	
@@ -143,6 +149,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	@Override
 	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex3x1>[] cuttingBranches)
 			throws IpssNumericException {
+		// calculate voltage difference across the cutting branches
 		Complex3x1[] eCutBranch3x1 = cuttingBranchOpenCircuitVoltage(cuttingBranches); 
 		
 		// we build the equiv Z only if the network Y matrix has changed
@@ -150,24 +157,27 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 			Complex3x1[][] equivZMatrix = buildEquivZMtrix(cuttingBranches);
 			// transform Complex3x1 to Complex[3]
 			Complex[][][] matrix = MatrixUtil.toComplexMatrix(equivZMatrix);
+			// compute inverse of the Z-matrix (012) 
 			for ( int i = 0; i < 3; i++ ) {
 				this.equivZMatrixEqn[i] = new ComplexMatrixEqn(matrix[i]);
 				this.equivZMatrixEqn[i].inverseMatrix();
 			}
 		}
+		
 		// transfer Complex3x1 to Complex[3]
 		Complex[][] eCutBranchAry = MatrixUtil.toComplexAry(eCutBranch3x1);
+		// solve branch current [I] = [Z]-1 [V] for 012 seq
     	Complex[] curAry0 = this.equivZMatrixEqn[0].solveEqn(eCutBranchAry[0], false);	
     	Complex[] curAry1 = this.equivZMatrixEqn[1].solveEqn(eCutBranchAry[1], false);	
     	Complex[] curAry2 = this.equivZMatrixEqn[2].solveEqn(eCutBranchAry[2], false);	
     	// transfer Complex[] to Complex3x1
     	Complex3x1[] curAry3x1 = MatrixUtil.toComplex3x1Ary(curAry0, curAry1, curAry2);
+    	// cache the branch current 
     	for (int i = 0; i < cuttingBranches.length; i++) {
-    		System.out.println("Branch cur: " + cuttingBranches[i] + " " + curAry3x1[i]);
+    		//System.out.println("Branch cur: " + cuttingBranches[i] + " " + curAry3x1[i]);
     		cuttingBranches[i].setCurrent(curAry3x1[i]);
     	}
 	}
-
 	
 	/**
 	 * calculate open circuit voltage difference for the cutting branches. 
@@ -207,10 +217,9 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		for ( int i = 0; i < nCutBranches; i++) {
   			AcscBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
   			for (int j = 0; j < nCutBranches; j++) {
-  				matrix3x1[i][j] = i == j? new Complex3x1(
-  						branch.getZ0(), 
-  						branch.getZ(), 
-  						branch.getZ()) : new Complex3x1();
+  				matrix3x1[i][j] = i == j? 
+  						new Complex3x1(	branch.getZ0(), branch.getZ(), branch.getZ()) : 
+  						new Complex3x1();
   			}
 		}
 		
@@ -246,11 +255,10 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	}
 	
 	/**
-	 * calculate subarea interface bus z-matrix. The matrix is stored in
+	 * calculate subarea interface bus z-matrix (012). The matrix is stored in
 	 * SubArea.zMatrix field.
 	 * 
 	 * @param subarea the subarea object
-	 * @return the z-matrix
 	 * @throws IpssNumericException
 	 */
 	private void formSubAreaZMatrix(TSub subarea) throws IpssNumericException {
@@ -263,14 +271,10 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
 			}
 
-			subarea.getYSparseEqn()[Complex3x1.Index_1].setB2Unity(row);
-			subarea.getYSparseEqn()[Complex3x1.Index_1].solveEqn();
-
-			subarea.getYSparseEqn()[Complex3x1.Index_2].setB2Unity(row);
-			subarea.getYSparseEqn()[Complex3x1.Index_2].solveEqn();
-
-			subarea.getYSparseEqn()[Complex3x1.Index_0].setB2Unity(row);
-			subarea.getYSparseEqn()[Complex3x1.Index_0].solveEqn();
+			for ( ISparseEqnComplex eqn : subarea.getYSparseEqn()) {
+				eqn.setB2Unity(row);
+				eqn.solveEqn();
+			}
 			
 			for (int j = 0; j < areaNodes; j++) {
 				int col = net.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
