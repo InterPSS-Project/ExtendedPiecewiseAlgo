@@ -48,9 +48,9 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
-					extends AbstractPiecewiseAlgoAdapter<AclfBus, Complex, TSub> {
+					extends AbstractPiecewiseAlgoAdapter<AclfBus, AclfNetwork, Complex, TSub> {
 	// AclfNetwork object
-	private AclfNetwork net;
+	//private AclfNetwork net;
 	
 	// Equivalent Z-matrix for cutting branch current calculation
 	private ComplexMatrixEqn equivZMatrixEqn;
@@ -62,7 +62,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 	 */
 	public PiecewiseAlgoPosImpl(AclfNetwork net) {
 		super();
-		this.net = net;
+		this.parentNet = net;
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 	 */
 	public PiecewiseAlgoPosImpl(AclfNetwork net, List<TSub> subAreaNetList) {
 		super();
-		this.net = net;
+		this.parentNet = net;
 		this.subAreaNetList = subAreaNetList;
 	}
 	
@@ -83,7 +83,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   	  		//System.out.println("y1: \n" + y1.toString());
   			
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
-  	  		net.getBusList().forEach(bus -> {
+  	  		parentNet.getBusList().forEach(bus -> {
   	  			if (bus.getIntFlag() == subarea.getFlag()) {
   	  				this.netVoltage.put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
   	  			}
@@ -107,12 +107,12 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   			if (subArea instanceof SubNetworkPos)
   				((SubNetworkPos)subArea).formYMatrix();
   			else	
-  				subArea.setYSparseEqn(net.formYMatrix(areaFlag));
+  				subArea.setYSparseEqn(parentNet.formYMatrix(areaFlag));
   			subArea.getYSparseEqn().luMatrix(1.0e-10);
   		}
   		//System.out.println("y1: \n" + y1.toString());
   		
-  		net.getBusList().forEach(bus -> {
+  		parentNet.getBusList().forEach(bus -> {
 				if (bus.getIntFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
 					subArea.getYSparseEqn().setBi(injCurrentFunc.apply(bus), bus.getSortNumber());
@@ -121,50 +121,6 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   		
   		subArea.getYSparseEqn().solveEqn();	
 	}
-	
-	@Override
-	public void calcuateSubAreaNetVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
-		for(TSub subarea : this.subAreaNetList)
-			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
-	}
-	
-	/**
-	 * calculate the bus voltage for the subarea based on the cutting branch current and the bus open circuit voltage,
-	 * according to the superposition principle.
-	 * 
-	 * @param subArea subarea
-	 * @param cuttingBranches cutting branch storing the branch current
-	 * @throws IpssNumericException
-	 */
-	private void calcuateSubAreaVoltage(TSub subArea, BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
-  		// calculate the cutting branch current injection
-		ISparseEqnComplex yMatrix = subArea.getYSparseEqn();
-		yMatrix.setB2Zero();
-  		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[cnt].getBranchId());
-  			// current into the network as the positive direction
-  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
-  				yMatrix.addToB(cuttingBranches[cnt].getCurrent().multiply(-1.0), branch.getFromBus().getSortNumber());
-  			}
-  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
-  				yMatrix.addToB(cuttingBranches[cnt].getCurrent(), branch.getToBus().getSortNumber());
-  			}
-  		}
-  		//System.out.println(yMatrix);
-  		
-  		// calculate sub-area bus voltage due to the cutting branch current injection
-  		subArea.getYSparseEqn().solveEqn();
-  		//System.out.println(ySubArea);
-  		
-  		// update the bus voltage based on the superposition principle
-  		for (int i = 0; i < yMatrix.getDimension(); i++) {
-  			String id = yMatrix.getBusId(i);
-  			Complex v = netVoltage.get(id).add(yMatrix.getX(i));
-  			//System.out.println("area1 voltage update -- " + id + ", " + netVoltage.get(id) + ", " + yAreaNet1.getX(i) + ", " + v.abs());
-  			netVoltage.put(id, v);
-  		}		
-	}	
-	
 	
 	@Override
 	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex>[] cuttingBranches) throws IpssNumericException { 
@@ -198,7 +154,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 		int nCutBranches = cuttingBranches.length;
 		Complex[] eCutBranch = new Complex[nCutBranches];    // transport[M] x open circuit[E]
   		for ( int i = 0; i < nCutBranches; i++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+  			AclfBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			// assume branch current from bus -> to bus
   			// current positive direction - into the sub-area network
   			eCutBranch[i] = getNetVoltage().get(branch.getFromBus().getId())
@@ -222,7 +178,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 		 * first add the cutting branch [Zl] part
 		 */
 		for ( int i = 0; i < nCutBranches; i++) {
-  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+  			AclfBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			for (int j = 0; j < nCutBranches; j++) {
   				matrix[i][j] = i == j? branch.getZ() : new Complex(0.0,0.0);
   			}
@@ -240,7 +196,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 			 */
 			int[][] M = new int[subarea.getInterfaceBusIdList().size()][nCutBranches];
 			for ( int i = 0; i < nCutBranches; i++) {
-	  			AclfBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+	  			AclfBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
 	  			for (int j = 0; j < subarea.getInterfaceBusIdList().size(); j++)
 	  				/*
 	  				 * branch current positive direction fromBus -> toBus
@@ -271,7 +227,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 		int areaNodes = subarea.getInterfaceBusIdList().size();
 		subarea.setZMatrix(new Complex[areaNodes][areaNodes]);
 		for (int i = 0; i < areaNodes; i++) {
-			int row = net.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
+			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
 			if (!subarea.getYSparseEqn().getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
 				// the y-matrix row number and the bus.sortNumber should match
 				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
@@ -281,7 +237,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 			subarea.getYSparseEqn().solveEqn();
 			
 			for (int j = 0; j < areaNodes; j++) {
-				int col = net.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
+				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
 				subarea.getZMatrix()[j][i] = subarea.getYSparseEqn().getX(col);
 			}
 		}
@@ -290,6 +246,49 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
  	 		for (int j = 0; j < area1Nodes; j++)
  	 			System.out.println("zMatrix [" + i + "," + j + "]" + ComplexFunc.toStr(zMatrix[i][j]));
 		*/
+	}
+	
+	@Override
+	public void calcuateSubAreaNetVoltage(BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
+		for(TSub subarea : this.subAreaNetList)
+			calcuateSubAreaVoltage(subarea, cuttingBranches);  		
+	}
+	
+	/**
+	 * calculate the bus voltage for the subarea based on the cutting branch current and the bus open circuit voltage,
+	 * according to the superposition principle.
+	 * 
+	 * @param subArea subarea
+	 * @param cuttingBranches cutting branch storing the branch current
+	 * @throws IpssNumericException
+	 */
+	private void calcuateSubAreaVoltage(TSub subArea, BaseCuttingBranch<Complex>[] cuttingBranches)  throws IpssNumericException {
+  		// calculate the cutting branch current injection
+		ISparseEqnComplex yMatrix = subArea.getYSparseEqn();
+		yMatrix.setB2Zero();
+  		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
+  			AclfBranch branch = parentNet.getBranch(cuttingBranches[cnt].getBranchId());
+  			// current into the network as the positive direction
+  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
+  				yMatrix.addToB(cuttingBranches[cnt].getCurrent().multiply(-1.0), branch.getFromBus().getSortNumber());
+  			}
+  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
+  				yMatrix.addToB(cuttingBranches[cnt].getCurrent(), branch.getToBus().getSortNumber());
+  			}
+  		}
+  		//System.out.println(yMatrix);
+  		
+  		// calculate sub-area bus voltage due to the cutting branch current injection
+  		subArea.getYSparseEqn().solveEqn();
+  		//System.out.println(ySubArea);
+  		
+  		// update the bus voltage based on the superposition principle
+  		for (int i = 0; i < yMatrix.getDimension(); i++) {
+  			String id = yMatrix.getBusId(i);
+  			Complex v = netVoltage.get(id).add(yMatrix.getX(i));
+  			//System.out.println("area1 voltage update -- " + id + ", " + netVoltage.get(id) + ", " + yAreaNet1.getX(i) + ", " + v.abs());
+  			netVoltage.put(id, v);
+  		}		
 	}	
 }
 

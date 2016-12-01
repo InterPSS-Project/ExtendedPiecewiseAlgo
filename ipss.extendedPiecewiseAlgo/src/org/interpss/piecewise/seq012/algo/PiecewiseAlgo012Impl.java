@@ -52,9 +52,9 @@ import com.interpss.core.acsc.SequenceCode;
  *
  */
 public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
-					extends AbstractPiecewiseAlgoAdapter<AcscBus, Complex3x1, TSub> {
+					extends AbstractPiecewiseAlgoAdapter<AcscBus, AcscNetwork, Complex3x1, TSub> {
 	// AclfNetwork object
-	private AcscNetwork net;
+	//private AcscNetwork net;
 	
 	// Equivalent 012 Z-matrix for cutting branch current calculation
 	private ComplexMatrixEqn[] equivZMatrixEqn = new ComplexMatrixEqn[3];
@@ -66,7 +66,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 */
 	public PiecewiseAlgo012Impl(AcscNetwork net) {
 		super();
-		this.net = net;
+		this.parentNet = net;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 */
 	public PiecewiseAlgo012Impl(AcscNetwork net, List<TSub> subAreaNetList) {
 		super();
-		this.net = net;
+		this.parentNet = net;
 		this.subAreaNetList = subAreaNetList;
 	}
 
@@ -89,7 +89,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   	  		//System.out.println("y1: \n" + y1.toString());
   			
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
-  	  		net.getBusList().forEach(bus -> {
+  	  		parentNet.getBusList().forEach(bus -> {
   	  			if (bus.getIntFlag() == subarea.getFlag()) {
   	  				this.netVoltage.put(bus.getId(), new Complex3x1(
   	  						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(bus.getSortNumber()),
@@ -119,9 +119,9 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   				((SubNetwork012)subArea).formYMatrix();
   			else	
   				subArea.setYSparseEqn( new ISparseEqnComplex[] {
-  						net.formScYMatrix(SequenceCode.ZERO, subArea.getFlag()),
-  						net.formScYMatrix(SequenceCode.POSITIVE, subArea.getFlag()),		
-  						net.formScYMatrix(SequenceCode.NEGATIVE, subArea.getFlag())
+  						parentNet.formScYMatrix(SequenceCode.ZERO, subArea.getFlag()),
+  						parentNet.formScYMatrix(SequenceCode.POSITIVE, subArea.getFlag()),		
+  						parentNet.formScYMatrix(SequenceCode.NEGATIVE, subArea.getFlag())
   					});
   			
   	  		for ( ISparseEqnComplex eqn : subArea.getYSparseEqn())
@@ -131,7 +131,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   		//	System.out.println(eqn.toString());
   		
 		// set bus injection current to the [b] vector in the [A][x] = [b] eqn
-  		net.getBusList().forEach(bus -> {
+  		parentNet.getBusList().forEach(bus -> {
 				if (bus.getIntFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
 					Complex3x1 cur = injCurrentFunc.apply(bus);
@@ -189,7 +189,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		int nCutBranches = cuttingBranches.length;
 		Complex3x1[] eCutBranch3x1 = new Complex3x1[nCutBranches];    // transport[M] x open circuit[E]
   		for ( int i = 0; i < nCutBranches; i++) {
-  			AcscBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+  			AcscBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			// assume branch current from bus -> to bus
   			// current positive direction - into the sub-area network
   			eCutBranch3x1[i] = getNetVoltage().get(branch.getFromBus().getId())
@@ -213,7 +213,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		 * first add the cutting branch [Zl] part
 		 */
 		for ( int i = 0; i < nCutBranches; i++) {
-  			AcscBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+  			AcscBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			for (int j = 0; j < nCutBranches; j++) {
   				matrix3x1[i][j] = i == j? 
   						new Complex3x1(	branch.getZ0(), branch.getZ(), branch.getZ()) : 
@@ -233,7 +233,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 			 */
 			int[][] M = new int[subarea.getInterfaceBusIdList().size()][nCutBranches];
 			for ( int i = 0; i < nCutBranches; i++) {
-	  			AcscBranch branch = net.getBranch(cuttingBranches[i].getBranchId());
+	  			AcscBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
 	  			for (int j = 0; j < subarea.getInterfaceBusIdList().size(); j++)
 	  				/*
 	  				 * branch current positive direction fromBus -> toBus
@@ -263,7 +263,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		int areaNodes = subarea.getInterfaceBusIdList().size();
 		subarea.setZMatrix(new Complex3x1[areaNodes][areaNodes]);
 		for (int i = 0; i < areaNodes; i++) {
-			int row = net.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
+			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
 			if (!subarea.getYSparseEqn()[Complex3x1.Index_0].getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
 				// the y-matrix row number and the bus.sortNumber should match
 				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
@@ -275,7 +275,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 			}
 			
 			for (int j = 0; j < areaNodes; j++) {
-				int col = net.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
+				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
 				subarea.getZMatrix()[j][i] = new Complex3x1(
 						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(col),
 						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(col),
@@ -306,7 +306,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 			yMatrix.setB2Zero();
 		
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
-  			AcscBranch branch = net.getBranch(cuttingBranches[cnt].getBranchId());
+  			AcscBranch branch = parentNet.getBranch(cuttingBranches[cnt].getBranchId());
   			// current into the network as the positive direction
   			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
   				yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0.multiply(-1.0), branch.getFromBus().getSortNumber());

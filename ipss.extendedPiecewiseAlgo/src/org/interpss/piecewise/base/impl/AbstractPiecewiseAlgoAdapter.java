@@ -29,12 +29,14 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Function;
 
+import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 
 import com.interpss.common.exp.InterpssException;
+import com.interpss.core.acsc.AcscNetwork;
 
 /**
  * Abstract Piecewise Algorithm implementation adapter.
@@ -42,8 +44,11 @@ import com.interpss.common.exp.InterpssException;
  * @author Mike
  *
  */
-public abstract class AbstractPiecewiseAlgoAdapter<TBus, TState, TSub extends BaseSubArea<?, ?>> 
+public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub extends BaseSubArea<?, ?>> 
 					implements  PiecewiseAlgorithm<TBus, TState, TSub> {
+	// Parent Network object
+	protected TNet parentNet;
+	
 	// flag to indicate if the network subarea Y-matrix needs to be formed for the 
 	// calculation
 	protected boolean netYmatrixDirty;
@@ -57,7 +62,7 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TState, TSub extends Ba
 	/**
 	 * Constructor
 	 * 
-	 * @param net AclfNetwork object
+	 * @param parentNet AclfNetwork object
 	 */
 	public AbstractPiecewiseAlgoAdapter() {
 		this.netYmatrixDirty = true;
