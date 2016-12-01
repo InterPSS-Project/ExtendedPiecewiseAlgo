@@ -31,6 +31,7 @@ import java.util.function.Function;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.IpssCorePlugin;
 import org.interpss.numeric.datatype.Complex3x1;
+import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.datatype.Unit.UnitType;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
@@ -102,16 +103,16 @@ public class Acsc5BusTesPiecewiseAlgo {
   		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 /*
-5= -0.0000 + j0.0000           -0.00419 + j-0.01832  -0.00021 + j-0.00092, 
-4= -0.0000 + j0.0000            0.0013 + j0.02024     0.00007 + j0.00101, 
-3= -0.0000 + j-25000018.74819  -0.0110 + j-0.0481    -0.00055 + j-0.0024, 
-22=-0.0000 + j-25000018.74144  -0.02139 + j-0.02564  -0.00107 + j-0.00128, 
-21=-0.0000 + j-25000018.74631  -0.01301 + j-0.05171  -0.00065 + j-0.00259}
-2= -0.0000 + j100000000.0000    0.00239 + j0.03719    0.00012 + j0.00186, 
-1= -0.0000 + j-25000018.74319  -0.0198 + j-0.02425   -0.00099 + j-0.00121, 
+5=-0.0000 + j-0.0021  -0.00419 + j-0.01832  -0.00021 + j-0.00092, 
+4=-0.0000 + j0.0021  0.0013 + j0.02024  0.00007 + j0.00101, 
+3=-0.0000 + j-0.00254  -0.0110 + j-0.0481  -0.00055 + j-0.0024, 
+22=-0.0000 + j-0.00254  -0.02139 + j-0.02564  -0.00107 + j-0.00128, 
+21=-0.0000 + j-0.00254  -0.01301 + j-0.05171  -0.00065 + j-0.00259}
+2=0.0000 + j0.00254  0.00239 + j0.03719  0.00012 + j0.00186, 
+1=-0.0000 + j-0.00254  -0.0198 + j-0.02425  -0.00099 + j-0.00121, 
  */
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
-				     	new Complex(-0.0000, -25000018.74819), 1.0e-5));
+				     	new Complex(-0.0000, -0.00254), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
 			     		new Complex(-0.0110, -0.0481), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
@@ -126,11 +127,11 @@ public class Acsc5BusTesPiecewiseAlgo {
   			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
   		}
 /*
-2->21(1): 0.00694 + j0.0000  0.19328 + j0.01941  0.00966 + j0.00097
-2->22(1): 0.00306 + j0.0000  0.09527 + j0.00752  0.00476 + j0.00038
+2->21(1): 0.00342 + j0.0000  0.19328 + j0.01941  0.00966 + j0.00097
+2->22(1): 0.00151 + j0.0000  0.09527 + j0.00752  0.00476 + j0.00038
  */
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().a_0, 
-		     	new Complex(0.00694, 0.0000), 1.0e-5));
+		     	new Complex(0.00342, 0.0000), 1.0e-5));
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().b_1, 
 		     	new Complex(0.19328, 0.01941), 1.0e-5));
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().c_2, 
@@ -142,17 +143,16 @@ public class Acsc5BusTesPiecewiseAlgo {
 		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
   		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 /*
-5= -0.0000 + j0.0000    -0.00291 + j-0.01343  -0.00015 + j-0.00067, 
-4= -0.0000 + j0.0000     0.00147 + j0.01437    0.00007 + j0.00072, 
-3= -0.0000 + j-5.21878  -0.00765 + j-0.03524  -0.00038 + j-0.00176, 
-22=-0.0000 + j-5.21357   0.00271 + j0.0263     0.00014 + j0.00132, 
-21=-0.0000 + j-5.21358   0.00272 + j0.0262     0.00014 + j0.00131}
-2= -0.0000 + j20.86163   0.0027 + j0.0264      0.00014 + j0.00132, 
-1= -0.0000 + j-5.21572   0.00035 + j0.00057    0.00002 + j0.00003, 
+5= -0.0000 + j-0.00106  -0.00291 + j-0.01343  -0.00015 + j-0.00067, 
+4= -0.0000 + j0.00106    0.00147 + j0.01437    0.00007 + j0.00072, 
+3= -0.0000 + j-0.00128  -0.00765 + j-0.03524  -0.00038 + j-0.00176, 
+22=-0.0000 + j0.00128    0.00271 + j0.0263     0.00014 + j0.00132, 
+21=-0.0000 + j0.00128    0.00272 + j0.0262     0.00014 + j0.00131}
+2=  0.0000 + j0.00128    0.0027 + j0.0264      0.00014 + j0.00132, 
+1= -0.0000 + j0.00023    0.00035 + j0.00057    0.00002 + j0.00003, 
  */
-		// TODO the zero seq voltage part cannot match the numbers in the fullMatrixTest()! 		
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
-			     	new Complex(-0.0000, -5.21878), 1.0e-5));
+			     	new Complex(-0.0000, -0.00128), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
 					new Complex(-0.00765, -0.03524), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
@@ -184,7 +184,7 @@ public class Acsc5BusTesPiecewiseAlgo {
    		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
-		     	new Complex(-0.0000, -25000018.74819), 1.0e-5));
+		     	new Complex(-0.0000, -0.00254), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
 	     		new Complex(-0.0110, -0.0481), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
@@ -199,7 +199,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   			//System.out.println(cbra.getBranchId() + ": " + cbra.getCurrent());
   		}
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().a_0, 
-		     	new Complex(0.00694, 0.0000), 1.0e-5));
+		     	new Complex(0.00342, 0.0000), 1.0e-5));
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().b_1, 
 		     	new Complex(0.19328, 0.01941), 1.0e-5));
 		assertTrue(NumericUtil.equals(proc.getCuttingBranches()[0].getCurrent().c_2, 
@@ -212,7 +212,7 @@ public class Acsc5BusTesPiecewiseAlgo {
 		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
   		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
-		     	new Complex(-0.0000, -5.21878), 1.0e-5));
+		     	new Complex(-0.0000, -0.00128), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
 				new Complex(-0.00765, -0.03524), 1.0e-5));
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
@@ -296,24 +296,24 @@ b(6): -0.00015 + j-0.00067
   		y0.solveEqn();
   		//System.out.println(y0);
   		/*
-  		cur2_21 = y0.getX(1).subtract(y0.getX(2)).multiply(net.getBranch("2->21(1)").getY0());
+  		Complex cur2_21 = y0.getX(1).subtract(y0.getX(2)).multiply(net.getBranch("2->21(1)").getY0());
   		System.out.println("cur(0) 2->21: " + ComplexFunc.toStr(cur2_21));
-  		cur2_22 = y0.getX(1).subtract(y0.getX(3)).multiply(net.getBranch("2->22(1)").getY0());
+  		Complex cur2_22 = y0.getX(1).subtract(y0.getX(3)).multiply(net.getBranch("2->22(1)").getY0());
   		System.out.println("cur(0) 2->22: " + ComplexFunc.toStr(cur2_22));
-
+        */
   		/*
-  		cur(0) 2->21: 0.00694 + j0.0000
-  		cur(0) 2->22: 0.00306 + j0.0000
+cur(0) 2->21: 0.00342 + j0.0000
+cur(0) 2->22: 0.00151 + j0.0000
   		 */
   		
   		/*
-b(0): -0.0000 + j-0.00067
-b(1): -0.0000 + j0.00147
-b(2): -0.0000 + j0.00147
-b(3): -0.0000 + j0.00147
-b(4): -0.0000 + j-0.00374
-b(5): -0.0000 + j0.0000
-b(6): -0.0000 + j0.0000 		
+b(0): -0.0000 + j0.00023
+b(1): -0.0000 + j0.00128
+b(2): -0.0000 + j0.00128
+b(3): -0.0000 + j0.00128
+b(4): -0.0000 + j-0.00128
+b(5): -0.0000 + j0.00106
+b(6): -0.0000 + j-0.00106
  */
   	}	
 
@@ -367,7 +367,7 @@ b(6): -0.0000 + j0.0000
         			.scCode(BusScCode.CONTRIBUTE)
         			.z(new Complex(0.0,0.02), SequenceCode.POSITIVE, UnitType.PU) 
         			.z(new Complex(0.0,0.02), SequenceCode.NEGATIVE, UnitType.PU) 
-        			.z(new Complex(0.0,1.0e10), SequenceCode.ZERO, UnitType.PU) 
+        			.z(new Complex(0.0,0.2), SequenceCode.ZERO, UnitType.PU) 
         			.groundCode("SolidGrounded")
         			.groundZ(new Complex(0.0, 0.0), UnitType.PU);	
 		
@@ -378,7 +378,7 @@ b(6): -0.0000 + j0.0000
         			.scCode(BusScCode.CONTRIBUTE)
         			.z(new Complex(0.0,0.02), SequenceCode.POSITIVE, UnitType.PU) 
         			.z(new Complex(0.0,0.02), SequenceCode.NEGATIVE, UnitType.PU) 
-        			.z(new Complex(0.0,1.0e10), SequenceCode.ZERO, UnitType.PU) 
+        			.z(new Complex(0.0,0.2), SequenceCode.ZERO, UnitType.PU) 
         			.groundCode("SolidGrounded")
         			.groundZ(new Complex(0.0, 0.0), UnitType.PU);	
 		
@@ -414,16 +414,16 @@ b(6): -0.0000 + j0.0000
 					.z(new Complex(0.0, 0.015), UnitType.PU)
 					.turnRatio(1.0,  1.05, UnitType.PU)
 					.z0( new Complex(0.0, 0.03), UnitType.PU)
-					.fromGrounding(XfrConnectCode.WYE_UNGROUNDED)
-					.toGrounding(XfrConnectCode.DELTA);
+					.fromGrounding(XfrConnectCode.WYE_SOLID_GROUNDED)
+					.toGrounding(XfrConnectCode.WYE_SOLID_GROUNDED);
 		
 		netDsl.addAcscBranch("5", "3")
 					.branchCode(AclfBranchCode.XFORMER)
 					.z(new Complex(0.0, 0.03), UnitType.PU)
 					.turnRatio(1.0,  1.05, UnitType.PU)
 					.z0(new Complex(0.0, 0.03), UnitType.PU)
-					.fromGrounding(XfrConnectCode.WYE_UNGROUNDED)
-					.toGrounding(XfrConnectCode.DELTA);
+					.fromGrounding(XfrConnectCode.WYE_SOLID_GROUNDED)
+					.toGrounding(XfrConnectCode.WYE_SOLID_GROUNDED);
 
 		//System.out.println(netDsl.getAcscNet().net2String());
 		return (AcscNetwork)netDsl.getAclfNet();
