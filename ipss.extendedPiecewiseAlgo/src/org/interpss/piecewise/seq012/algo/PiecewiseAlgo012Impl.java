@@ -38,7 +38,6 @@ import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.AbstractPiecewiseAlgoAdapter;
 import org.interpss.piecewise.seq012.SubNetwork012;
 
-import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
 import com.interpss.core.acsc.AcscNetwork;
@@ -82,7 +81,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	}
 
 	@Override
-	public void calculateOpenCircuitVoltage(Function<AcscBus, Complex3x1> injCurrentFunc) throws IpssNumericException {
+	public void buildNortonEquivNet(Function<AcscBus, Complex3x1> injCurrentFunc) throws IpssNumericException {
   		for (TSub subarea: this.subAreaNetList) {
   			// calculate open circuit SubArea/Network voltage
   			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
@@ -96,7 +95,9 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   	  						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(bus.getSortNumber()),
   	  						subarea.getYSparseEqn()[Complex3x1.Index_2].getX(bus.getSortNumber())));
   	  			}
-  	  		});   	  		
+  	  		}); 
+  	  		
+			formSubAreaZMatrix(subarea);
   		}
 	}
 	
@@ -146,6 +147,39 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   			eqn.solveEqn();	
 	}	
 
+	
+	/**
+	 * calculate subarea interface bus z-matrix (012). The matrix is stored in
+	 * SubArea.zMatrix field.
+	 * 
+	 * @param subarea the subarea object
+	 * @throws IpssNumericException
+	 */
+	private void formSubAreaZMatrix(TSub subarea) throws IpssNumericException {
+		int areaNodes = subarea.getInterfaceBusIdList().size();
+		subarea.setZMatrix(new Complex3x1[areaNodes][areaNodes]);
+		for (int i = 0; i < areaNodes; i++) {
+			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
+			if (!subarea.getYSparseEqn()[Complex3x1.Index_0].getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
+				// the y-matrix row number and the bus.sortNumber should match
+				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
+			}
+
+			for ( ISparseEqnComplex eqn : subarea.getYSparseEqn()) {
+				eqn.setB2Unity(row);
+				eqn.solveEqn();
+			}
+			
+			for (int j = 0; j < areaNodes; j++) {
+				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
+				subarea.getZMatrix()[j][i] = new Complex3x1(
+						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(col),
+						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(col),
+						subarea.getYSparseEqn()[Complex3x1.Index_2].getX(col));
+			}
+		}
+	}
+	
 	@Override
 	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex3x1>[] cuttingBranches)
 			throws IpssNumericException {
@@ -225,8 +259,6 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		 * process the transpose[Mi]x[Zi]x[M] part.
 		 */
 		for (TSub subarea : this.subAreaNetList) {
-			formSubAreaZMatrix(subarea);
-			
 			/*
 			 * form Mi matrix. Mi is the connection relationship matrix for
 			 * the subarea interface bus and the cutting branch for SubArea i 
@@ -251,39 +283,6 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 		
 		return matrix3x1;
 	}
-	
-	/**
-	 * calculate subarea interface bus z-matrix (012). The matrix is stored in
-	 * SubArea.zMatrix field.
-	 * 
-	 * @param subarea the subarea object
-	 * @throws IpssNumericException
-	 */
-	private void formSubAreaZMatrix(TSub subarea) throws IpssNumericException {
-		int areaNodes = subarea.getInterfaceBusIdList().size();
-		subarea.setZMatrix(new Complex3x1[areaNodes][areaNodes]);
-		for (int i = 0; i < areaNodes; i++) {
-			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
-			if (!subarea.getYSparseEqn()[Complex3x1.Index_0].getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
-				// the y-matrix row number and the bus.sortNumber should match
-				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
-			}
-
-			for ( ISparseEqnComplex eqn : subarea.getYSparseEqn()) {
-				eqn.setB2Unity(row);
-				eqn.solveEqn();
-			}
-			
-			for (int j = 0; j < areaNodes; j++) {
-				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
-				subarea.getZMatrix()[j][i] = new Complex3x1(
-						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(col),
-						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(col),
-						subarea.getYSparseEqn()[Complex3x1.Index_2].getX(col));
-			}
-		}
-	}	
-	
 	
 	@Override
 	public void calcuateSubAreaNetVoltage(BaseCuttingBranch<Complex3x1>[] cuttingBranches) throws IpssNumericException {

@@ -85,13 +85,14 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub> {
 	TSub getSubArea(int flag);
 	
 	/**
-	 * Solve for SubArea/Network open circuit bus voltage based on the bus inject current function. The 
+	 * Build Norton equivalent network, including: 1) solve for SubArea/Network open circuit bus voltage based on the 
+	 * bus inject current function; 2) calculate the SubArea/Network interface equivalent bus Z-matrix. The 
 	 * bus voltage results are stored in the netVoltage hashtable.
 	 * 
 	 * @param injCurrentFunc bus inject current calculation function
 	 * @throws IpssNumericException
 	 */
-	void calculateOpenCircuitVoltage(Function<TBus, TState> injCurrentFunc)  throws IpssNumericException;
+	void buildNortonEquivNet(Function<TBus, TState> injCurrentFunc)  throws IpssNumericException;
 	
 	/**
 	 * calculate the SubArea/Network bus voltage based on 1) the cutting branch current; and  

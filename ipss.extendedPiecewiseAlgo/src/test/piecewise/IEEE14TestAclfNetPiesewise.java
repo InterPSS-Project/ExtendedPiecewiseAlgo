@@ -179,7 +179,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + pieceWiseAlgo.getNetVoltage().toString());
   		/*
@@ -263,7 +263,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + netVoltage.toString());
   		
@@ -314,7 +314,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + netVoltage.toString());
   		
@@ -399,7 +399,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + pieceWiseAlgo.getNetVoltage().toString());
   		/*
@@ -473,7 +473,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + pieceWiseAlgo.getNetVoltage().toString());
 		
@@ -590,7 +590,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
   		
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(this.injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(this.injCurFunc);
 
   		//System.out.println("\n" + pieceWiseAlgo.getNetVoltage().toString());
   		/*

@@ -129,9 +129,9 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
 		 *                    different ways. This is the place to plug-in different open circuit solution
 		 *                    methods 
 		 */
-  		// Solve for the open-circuit voltage. The voltage results are stored in
+  		// Solve for the open-circuit voltage and build the interface equiv bus z-matrix. The voltage results are stored in
 		// the this.netVoltage.
-  		calculateOpenCircuitVoltage(injCurrentFunc);
+		buildNortonEquivNet(injCurrentFunc);
 
 		/*
 		 * extension point-2: Certain SubArea/Network might be a current source, for example, an SubArea/Network

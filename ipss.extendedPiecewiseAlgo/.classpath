@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="/ipss.lib/lib/ipss/ipss_core.impl.jar"/>
 	<classpathentry kind="lib" path="/ipss.lib/lib/ipss/ipss_core.jar"/>
 	<classpathentry kind="lib" path="/ipss.lib/lib/ipss/ipss_plugin.jar"/>
+	<classpathentry kind="lib" path="/ipss.lib.3rdPty/lib/cache/hazelcast-3.6.jar"/>
+	<classpathentry kind="lib" path="/ipss.lib.3rdPty/lib/sparse/csparsej-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

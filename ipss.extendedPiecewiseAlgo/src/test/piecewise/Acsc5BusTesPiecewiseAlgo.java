@@ -100,7 +100,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		
 
 
-  		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
+  		pieceWiseAlgo.buildNortonEquivNet(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 /*
 5=-0.0000 + j-0.0021  -0.00419 + j-0.01832  -0.00021 + j-0.00092, 
@@ -181,7 +181,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
   		 *//////////////////////////////////
-   		pieceWiseAlgo.calculateOpenCircuitVoltage(injCurFunc);
+   		pieceWiseAlgo.buildNortonEquivNet(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
 		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
 		     	new Complex(-0.0000, -0.00254), 1.0e-5));

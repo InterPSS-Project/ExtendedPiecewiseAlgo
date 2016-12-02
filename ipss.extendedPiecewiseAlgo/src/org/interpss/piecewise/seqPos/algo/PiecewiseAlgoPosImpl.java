@@ -77,7 +77,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 	}
 	
 	@Override
-	public void calculateOpenCircuitVoltage(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
+	public void buildNortonEquivNet(Function<AclfBus,Complex> injCurrentFunc)  throws IpssNumericException {
   		for (TSub subarea: this.subAreaNetList) {
   			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
   	  		//System.out.println("y1: \n" + y1.toString());
@@ -87,7 +87,9 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   	  			if (bus.getIntFlag() == subarea.getFlag()) {
   	  				this.netVoltage.put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
   	  			}
-  	  		});   	  		
+  	  		}); 
+  	  		
+  	  		formSubAreaZMatrix(subarea);
   		}
 	}
 
@@ -121,6 +123,40 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   		
   		subArea.getYSparseEqn().solveEqn();	
 	}
+	
+	
+	/**
+	 * calculate subarea interface bus z-matrix. The matrix is stored in
+	 * SubArea.zMatrix field.
+	 * 
+	 * @param subarea the subarea object
+	 * @return the z-matrix
+	 * @throws IpssNumericException
+	 */
+	private void formSubAreaZMatrix(TSub subarea) throws IpssNumericException {
+		int areaNodes = subarea.getInterfaceBusIdList().size();
+		subarea.setZMatrix(new Complex[areaNodes][areaNodes]);
+		for (int i = 0; i < areaNodes; i++) {
+			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
+			if (!subarea.getYSparseEqn().getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
+				// the y-matrix row number and the bus.sortNumber should match
+				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
+			}
+			subarea.getYSparseEqn().setB2Unity(row);
+			
+			subarea.getYSparseEqn().solveEqn();
+			
+			for (int j = 0; j < areaNodes; j++) {
+				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
+				subarea.getZMatrix()[j][i] = subarea.getYSparseEqn().getX(col);
+			}
+		}
+		/*
+ 		for (int i = 0; i < area1Nodes; i++)
+ 	 		for (int j = 0; j < area1Nodes; j++)
+ 	 			System.out.println("zMatrix [" + i + "," + j + "]" + ComplexFunc.toStr(zMatrix[i][j]));
+		*/
+	}	
 	
 	@Override
 	public void calculateCuttingBranchCurrent(BaseCuttingBranch<Complex>[] cuttingBranches) throws IpssNumericException { 
@@ -188,8 +224,6 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 		 * process the transpose[Mi]x[Zi]x[M] part.
 		 */
 		for (TSub subarea : this.subAreaNetList) {
-			formSubAreaZMatrix(subarea);
-			
 			/*
 			 * form Mi matrix. Mi is the connection relationship matrix for
 			 * the subarea interface bus and the cutting branch for SubArea i 
@@ -213,39 +247,6 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
 		}	
 		
 		return matrix;
-	}
-	
-	/**
-	 * calculate subarea interface bus z-matrix. The matrix is stored in
-	 * SubArea.zMatrix field.
-	 * 
-	 * @param subarea the subarea object
-	 * @return the z-matrix
-	 * @throws IpssNumericException
-	 */
-	private void formSubAreaZMatrix(TSub subarea) throws IpssNumericException {
-		int areaNodes = subarea.getInterfaceBusIdList().size();
-		subarea.setZMatrix(new Complex[areaNodes][areaNodes]);
-		for (int i = 0; i < areaNodes; i++) {
-			int row = parentNet.getBus(subarea.getInterfaceBusIdList().get(i)).getSortNumber();
-			if (!subarea.getYSparseEqn().getBusId(row).equals(subarea.getInterfaceBusIdList().get(i))) {
-				// the y-matrix row number and the bus.sortNumber should match
-				throw new IpssNumericException("Programming error: PiecewiseAlgorithm.subAreaZMatrix()");
-			}
-			subarea.getYSparseEqn().setB2Unity(row);
-			
-			subarea.getYSparseEqn().solveEqn();
-			
-			for (int j = 0; j < areaNodes; j++) {
-				int col = parentNet.getBus(subarea.getInterfaceBusIdList().get(j)).getSortNumber();
-				subarea.getZMatrix()[j][i] = subarea.getYSparseEqn().getX(col);
-			}
-		}
-		/*
- 		for (int i = 0; i < area1Nodes; i++)
- 	 		for (int j = 0; j < area1Nodes; j++)
- 	 			System.out.println("zMatrix [" + i + "," + j + "]" + ComplexFunc.toStr(zMatrix[i][j]));
-		*/
 	}
 	
 	@Override
