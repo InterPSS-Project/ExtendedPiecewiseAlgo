@@ -1,5 +1,5 @@
  /*
-  * @(#)SubAcscNetworkProcessorImpl.java   
+  * @(#)SubNetworkAcscProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -46,13 +46,13 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 		
-public class SubAcscNetworkProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
+public class SubNetworkAcscProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 */
-	public SubAcscNetworkProcessorImpl(AcscNetwork net) {
+	public SubNetworkAcscProcessorImpl(AcscNetwork net) {
 		super(net);
 	}
 
@@ -62,7 +62,7 @@ public class SubAcscNetworkProcessorImpl<TSub extends BaseSubArea<?, ?>> extends
 	 * @param net AclfNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubAcscNetworkProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+	public SubNetworkAcscProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	

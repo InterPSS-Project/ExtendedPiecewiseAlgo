@@ -36,6 +36,8 @@ import org.junit.runners.Suite.SuiteClasses;
 	
 	Acsc5BusTestSubAreaNet.class,
 	Acsc5BusTesPiecewiseAlgo.class,
+	
+	IEEE9BusTestDStabSubAreaNet.class,
 })
 public class PiecewiseAlgoTestSuite {
 }

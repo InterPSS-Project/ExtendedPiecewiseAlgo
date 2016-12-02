@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgo012NetworkImpl.java   
+  * @(#)PiecewiseAlgo012Impl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -44,13 +44,13 @@ import com.interpss.core.acsc.BaseAcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
 /**
- * Piecewise algorithm implementation for AcscNetwork 012 sequence network. We use
+ * Piecewise algorithm implementation for 012 sequence network. We use
  * an array[3] to store 012 quantities in the sequence of [0, 1, 2]
  * 
  * @author Mike
  *
  */
-public class PiecewiseAlgo012NetworkImpl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
+public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
 					extends AbstractPiecewiseAlgoAdapter<TBus, TNet, Complex3x1, TSub> {
 	// AclfNetwork object
 	//private AcscNetwork net;
@@ -63,7 +63,7 @@ public class PiecewiseAlgo012NetworkImpl<TBus extends AcscBus, TNet extends Base
 	 * 
 	 * @param net AcscNetwork object
 	 */
-	public PiecewiseAlgo012NetworkImpl(TNet net) {
+	public PiecewiseAlgo012Impl(TNet net) {
 		super();
 		this.parentNet = net;
 	}
@@ -74,7 +74,7 @@ public class PiecewiseAlgo012NetworkImpl<TBus extends AcscBus, TNet extends Base
 	 * @param net AcscNetwork object
 	 * @param subAreaList SubArea/Network object list
 	 */
-	public PiecewiseAlgo012NetworkImpl(TNet net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgo012Impl(TNet net, List<TSub> subAreaNetList) {
 		super();
 		this.parentNet = net;
 		this.subAreaNetList = subAreaNetList;

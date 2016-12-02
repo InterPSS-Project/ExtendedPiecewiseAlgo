@@ -34,7 +34,7 @@ import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.seq012.CuttingBranch012;
 import org.interpss.piecewise.seq012.SubAcscNetwork;
 import org.interpss.piecewise.seq012.SubArea012;
-import org.interpss.piecewise.seq012.impl.SubAcscNetworkProcessorImpl;
+import org.interpss.piecewise.seq012.impl.SubNetworkAcscProcessorImpl;
 import org.interpss.piecewise.seq012.impl.SubAreaAcscProcessorImpl;
 import org.junit.Test;
 
@@ -66,7 +66,7 @@ public class Acsc5BusTestSubAreaNet {
   		proc.processSubAreaNet();
   		
   		proc.getSubAreaNetList().forEach(subarea -> {
-  			//System.out.println(subarea);
+  			System.out.println(subarea);
   		});		
   		
   		assertTrue(proc.getSubAreaNetList().size() == 3);
@@ -84,7 +84,7 @@ public class Acsc5BusTestSubAreaNet {
 		//System.out.println(net.net2String());
 		
 		SubAreaNetProcessor<AcscBus, AcscBranch, SubAcscNetwork, Complex3x1> proc = 
-				new SubAcscNetworkProcessorImpl<>(net, new CuttingBranch012[] { 
+				new SubNetworkAcscProcessorImpl<>(net, new CuttingBranch012[] { 
 						new CuttingBranch012("1->2(1)"),
 						new CuttingBranch012("1->3(1)"),
 						new CuttingBranch012("2->3(1)")});	

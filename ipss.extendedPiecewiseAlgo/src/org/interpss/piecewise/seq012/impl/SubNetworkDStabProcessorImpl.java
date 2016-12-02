@@ -1,5 +1,5 @@
  /*
-  * @(#)SubDStabNetworkProcessorImpl.java   
+  * @(#)SubNetworkDStabProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -47,14 +47,14 @@ import com.interpss.dstab.DStabilityNetwork;
  *
  */
 		
-public class SubDStabNetworkProcessorImpl<TSub extends BaseSubArea<?, ?>> 
+public class SubNetworkDStabProcessorImpl<TSub extends BaseSubArea<?, ?>> 
 				extends BaseSubAreaNetProcessorImpl<DStabBus, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net DStabilityNetwork object
 	 */
-	public SubDStabNetworkProcessorImpl(DStabilityNetwork net) {
+	public SubNetworkDStabProcessorImpl(DStabilityNetwork net) {
 		super(net);
 	}
 
@@ -64,13 +64,13 @@ public class SubDStabNetworkProcessorImpl<TSub extends BaseSubArea<?, ?>>
 	 * @param net DStabilityNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubDStabNetworkProcessorImpl(DStabilityNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+	public SubNetworkDStabProcessorImpl(DStabilityNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Override public TSub createSubAreaNet(int flag) {
-		return (TSub)new SubAcscNetwork(flag);
+		return (TSub)new SubDStabNetwork(flag);
 	};
 	
 	@Override public List<TSub> processSubAreaNet() throws InterpssException {

@@ -40,7 +40,7 @@ import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.seq012.CuttingBranch012;
 import org.interpss.piecewise.seq012.SubAcscNetwork;
 import org.interpss.piecewise.seq012.SubArea012;
-import org.interpss.piecewise.seq012.algo.PiecewiseAlgoAcscNetworkImpl;
+import org.interpss.piecewise.seq012.algo.PiecewiseAlgoAcscImpl;
 import org.interpss.piecewise.seq012.impl.SubAreaAcscProcessorImpl;
 import org.interpss.pssl.simu.net.IpssAcscNet;
 import org.interpss.pssl.simu.net.IpssAcscNet.AcscNetworkDSL;
@@ -91,7 +91,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubAcscNetwork> pieceWiseAlgo = new PiecewiseAlgoAcscNetworkImpl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubAcscNetwork> pieceWiseAlgo = new PiecewiseAlgoAcscImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -177,7 +177,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgoAcscNetworkImpl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgoAcscImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage

@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgoAcscNetworkImpl.java   
+  * @(#)PiecewiseAlgoDStabImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -30,34 +30,34 @@ import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
-import com.interpss.core.acsc.AcscBus;
-import com.interpss.core.acsc.AcscNetwork;
+import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabilityNetwork;
 
 /**
- * Piecewise algorithm implementation for AcscNetwork 012 sequence network. We use
+ * Piecewise algorithm implementation for DStabNet012 sequence network. We use
  * an array[3] to store 012 quantities in the sequence of [0, 1, 2]
  * 
  * @author Mike
  *
  */
-public class PiecewiseAlgoAcscNetworkImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
-					extends PiecewiseAlgo012NetworkImpl<AcscBus, AcscNetwork, TSub> {
+public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
+					extends PiecewiseAlgo012Impl<DStabBus, DStabilityNetwork, TSub> {
 	/**
 	 * Constructor
 	 * 
-	 * @param net AcscNetwork object
+	 * @param net DStabilityNetwork object
 	 */
-	public PiecewiseAlgoAcscNetworkImpl(AcscNetwork net) {
+	public PiecewiseAlgoDStabImpl(DStabilityNetwork net) {
 		super(net);
 	}
 
 	/**
 	 * Constructor
 	 * 
-	 * @param net AcscNetwork object
+	 * @param net DStabilityNetwork object
 	 * @param subAreaList SubArea/Network object list
 	 */
-	public PiecewiseAlgoAcscNetworkImpl(AcscNetwork net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgoDStabImpl(DStabilityNetwork net, List<TSub> subAreaNetList) {
 		super(net, subAreaNetList);
 	}
 }
