@@ -171,7 +171,7 @@ public class Acsc5BusTesPiecewiseAlgo {
 						new CuttingBranch012("2->22(1)")});	
   		
   		proc.processSubAreaNet(); 	
-  		System.out.println(net.net2String());
+  		//System.out.println(net.net2String());
   		
   		
   		/*
