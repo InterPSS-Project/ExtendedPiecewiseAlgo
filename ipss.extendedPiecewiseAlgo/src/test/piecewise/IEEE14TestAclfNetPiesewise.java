@@ -156,11 +156,11 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
   		String[][] subAreaBusSet = { {"1", "2", "3", "4", "5"},
                  {"61", "71", "91",  "6", "7", "8", "9", "10", "11", "12", "13", "14"}};
   		for(String s : subAreaBusSet[0]) {
-  			net.getBus(s).setIntFlag(areaFlag1);
+  			net.getBus(s).setSubAreaFlag(areaFlag1);
   		}
 
   		for(String s : subAreaBusSet[1]) {
-  			net.getBus(s).setIntFlag(areaFlag2);
+  			net.getBus(s).setSubAreaFlag(areaFlag2);
   		}
   		
   		// turn off the cutting branches
@@ -377,21 +377,21 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 					 { "14"}};
   		
   		for(String s : subAreaBusSet[0]) {
-  			net.getBus(s).setIntFlag(areaFlag1);
+  			net.getBus(s).setSubAreaFlag(areaFlag1);
   		}
 
   		for(String s : subAreaBusSet[1]) {
-  			net.getBus(s).setIntFlag(areaFlag2);
+  			net.getBus(s).setSubAreaFlag(areaFlag2);
   		}
   		
   		for(String s : subAreaBusSet[2]) {
-  			net.getBus(s).setIntFlag(areaFlag3);
+  			net.getBus(s).setSubAreaFlag(areaFlag3);
   		}  		
   		
   		// turn off the cutting branches
   		for (CuttingBranchPos cbra : cuttingBranches) {
   			AclfBranch branch = net.getBranch(cbra.getBranchId());
-  			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
+  			assertTrue(branch.getFromBus().getSubAreaFlag() != branch.getToBus().getSubAreaFlag());
   			branch.setStatus(false);
   		}
   		
@@ -568,21 +568,21 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 					 { "13", "14"}};
   		
   		for(String s : subAreaBusSet[0]) {
-  			net.getBus(s).setIntFlag(areaFlag1);
+  			net.getBus(s).setSubAreaFlag(areaFlag1);
   		}
 
   		for(String s : subAreaBusSet[1]) {
-  			net.getBus(s).setIntFlag(areaFlag2);
+  			net.getBus(s).setSubAreaFlag(areaFlag2);
   		}
   		
   		for(String s : subAreaBusSet[2]) {
-  			net.getBus(s).setIntFlag(areaFlag3);
+  			net.getBus(s).setSubAreaFlag(areaFlag3);
   		}  		
   		
   		// turn off the cutting branches
   		for (CuttingBranchPos cbra : cuttingBranches) {
   			AclfBranch branch = net.getBranch(cbra.getBranchId());
-  			assertTrue(branch.getFromBus().getIntFlag() != branch.getToBus().getIntFlag());
+  			assertTrue(branch.getFromBus().getSubAreaFlag() != branch.getToBus().getSubAreaFlag());
   			branch.setStatus(false);
   		}
   		

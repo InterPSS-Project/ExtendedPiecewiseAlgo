@@ -89,7 +89,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   			
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
   	  		parentNet.getBusList().forEach(bus -> {
-  	  			if (bus.getIntFlag() == subarea.getFlag()) {
+  	  			if (bus.getSubAreaFlag() == subarea.getFlag()) {
   	  				this.netVoltage.put(bus.getId(), new Complex3x1(
   	  						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(bus.getSortNumber()),
   	  						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(bus.getSortNumber()),
@@ -133,7 +133,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   		
 		// set bus injection current to the [b] vector in the [A][x] = [b] eqn
   		parentNet.getBusList().forEach(bus -> {
-				if (bus.getIntFlag() == areaFlag) {
+				if (bus.getSubAreaFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
 					Complex3x1 cur = injCurrentFunc.apply(bus);
 					subArea.getYSparseEqn()[Complex3x1.Index_0].setBi(cur.a_0, bus.getSortNumber());
@@ -307,12 +307,12 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
   			AcscBranch branch = parentNet.getBranch(cuttingBranches[cnt].getBranchId());
   			// current into the network as the positive direction
-  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
+  			if (branch.getFromBus().getSubAreaFlag() == subArea.getFlag()) {
   				yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0.multiply(-1.0), branch.getFromBus().getSortNumber());
   				yMatrixAry[Complex3x1.Index_1].addToB(cuttingBranches[cnt].getCurrent().b_1.multiply(-1.0), branch.getFromBus().getSortNumber());
   				yMatrixAry[Complex3x1.Index_2].addToB(cuttingBranches[cnt].getCurrent().c_2.multiply(-1.0), branch.getFromBus().getSortNumber());
   			}
-  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
+  			else if (branch.getToBus().getSubAreaFlag() == subArea.getFlag()) {
   				yMatrixAry[Complex3x1.Index_0].addToB(cuttingBranches[cnt].getCurrent().a_0, branch.getToBus().getSortNumber());
   				yMatrixAry[Complex3x1.Index_1].addToB(cuttingBranches[cnt].getCurrent().b_1, branch.getToBus().getSortNumber());
   				yMatrixAry[Complex3x1.Index_2].addToB(cuttingBranches[cnt].getCurrent().c_2, branch.getToBus().getSortNumber());

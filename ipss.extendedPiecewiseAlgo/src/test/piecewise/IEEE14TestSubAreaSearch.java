@@ -74,17 +74,17 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
   		 */
   		net.getBusList().forEach(bus -> {
-  			assertTrue(bus.getIntFlag() != DefaultFlag);
+  			assertTrue(bus.getSubAreaFlag() != DefaultFlag);
   			//System.out.println(bus.getId() + "," + bus.getIntFlag());
-  			if (bus.getId().equals("2")) assertTrue(bus.getIntFlag() == 1);
-  			if (bus.getId().equals("13")) assertTrue(bus.getIntFlag() == 2);
+  			if (bus.getId().equals("2")) assertTrue(bus.getSubAreaFlag() == 1);
+  			if (bus.getId().equals("13")) assertTrue(bus.getSubAreaFlag() == 2);
   		});
   		
   		assertTrue(proc.getSubAreaNetList().get(0).getFlag() == 1);
   		assertTrue(proc.getSubAreaNetList().get(1).getFlag() == 2);
   		proc.getSubAreaNetList().forEach(subarea -> {
   			subarea.getInterfaceBusIdList().forEach(id -> {
-  				assertTrue(net.getBus(id).getIntFlag() == subarea.getFlag());
+  				assertTrue(net.getBus(id).getSubAreaFlag() == subarea.getFlag());
   			});
   		});
   		
@@ -128,11 +128,11 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		 *   (3) CuttingBranch.fromSubAreaFlag/toSubAreaFlag fields
   		 */
   		net.getBusList().forEach(bus -> {
-  			assertTrue(bus.getIntFlag() != DefaultFlag);
+  			assertTrue(bus.getSubAreaFlag() != DefaultFlag);
   			//System.out.println(bus.getId() + "," + bus.getIntFlag());
-  			if (bus.getId().equals("2")) assertTrue(bus.getIntFlag() == 1);
-  			if (bus.getId().equals("61")) assertTrue(bus.getIntFlag() == 2);
-  			if (bus.getId().equals("14")) assertTrue(bus.getIntFlag() == 3);  			
+  			if (bus.getId().equals("2")) assertTrue(bus.getSubAreaFlag() == 1);
+  			if (bus.getId().equals("61")) assertTrue(bus.getSubAreaFlag() == 2);
+  			if (bus.getId().equals("14")) assertTrue(bus.getSubAreaFlag() == 3);  			
   		});
   		
   		assertTrue(proc.getSubAreaNetList().get(0).getFlag() == 1);
@@ -140,7 +140,7 @@ public class IEEE14TestSubAreaSearch extends PiecewiseAlgoTestSetup {
   		assertTrue(proc.getSubAreaNetList().get(2).getFlag() == 3);
   		proc.getSubAreaNetList().forEach(subarea -> {
   			subarea.getInterfaceBusIdList().forEach(id -> {
-  				assertTrue(net.getBus(id).getIntFlag() == subarea.getFlag());
+  				assertTrue(net.getBus(id).getSubAreaFlag() == subarea.getFlag());
   			});
   		});
   		

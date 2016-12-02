@@ -36,7 +36,7 @@ import com.interpss.common.exp.InterpssException;
 /**
  * Interface for the Piecewise Algorithm implementation. 
  * A Network could be divided into a set of SubArea or SubNetwork connected by a set of cutting branches. 
- * Each SubArea/Network is identified by an unique flag(int). The Bus.intFlag is used to indicate where the 
+ * Each SubArea/Network is identified by an unique flag(int). The Bus.SubAreaFlag is used to indicate where the 
  * bus is located in terms of SubArea/Network. A set of interface buses are defined in a SubArea/Network to keep 
  * track of cutting branch connection relationship.
  * 

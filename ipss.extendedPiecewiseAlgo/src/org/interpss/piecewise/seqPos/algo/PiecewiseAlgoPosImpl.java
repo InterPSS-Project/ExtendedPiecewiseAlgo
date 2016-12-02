@@ -84,7 +84,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   			
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
   	  		parentNet.getBusList().forEach(bus -> {
-  	  			if (bus.getIntFlag() == subarea.getFlag()) {
+  	  			if (bus.getSubAreaFlag() == subarea.getFlag()) {
   	  				this.netVoltage.put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
   	  			}
   	  		}); 
@@ -115,7 +115,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   		//System.out.println("y1: \n" + y1.toString());
   		
   		parentNet.getBusList().forEach(bus -> {
-				if (bus.getIntFlag() == areaFlag) {
+				if (bus.getSubAreaFlag() == areaFlag) {
 					// we use the function to calculate the bus injection current
 					subArea.getYSparseEqn().setBi(injCurrentFunc.apply(bus), bus.getSortNumber());
 				}
@@ -270,10 +270,10 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   		for (int cnt = 0; cnt < cuttingBranches.length; cnt++) {
   			AclfBranch branch = parentNet.getBranch(cuttingBranches[cnt].getBranchId());
   			// current into the network as the positive direction
-  			if (branch.getFromBus().getIntFlag() == subArea.getFlag()) {
+  			if (branch.getFromBus().getSubAreaFlag() == subArea.getFlag()) {
   				yMatrix.addToB(cuttingBranches[cnt].getCurrent().multiply(-1.0), branch.getFromBus().getSortNumber());
   			}
-  			else if (branch.getToBus().getIntFlag() == subArea.getFlag()) {
+  			else if (branch.getToBus().getSubAreaFlag() == subArea.getFlag()) {
   				yMatrix.addToB(cuttingBranches[cnt].getCurrent(), branch.getToBus().getSortNumber());
   			}
   		}

@@ -30,7 +30,7 @@ import java.util.List;
 /**
  * Base Class for modeling the SubArea concept. SubArea is a logical grouping concept
  * to group a set of buses and connected branches in the parent network together as a 
- * SubArea, using Bus.intFlag = SubArea.flag . The bus objects are still contained by 
+ * SubArea, using Bus.SubAreaFlag = SubArea.flag . The bus objects are still contained by 
  * the parent network, that is Bus.network = the parent network for all buses and branches 
  * in a SubArea.
  * 

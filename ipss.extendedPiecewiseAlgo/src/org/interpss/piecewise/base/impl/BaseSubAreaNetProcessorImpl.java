@@ -149,8 +149,8 @@ public abstract class BaseSubAreaNetProcessorImpl<
 	 * 
 	 */
 	private void initialization() {
-		// init bus IntFlag
-		parentNet.getBusList().forEach(bus -> { bus.setIntFlag(BaseCuttingBranch.DefaultFlag);});
+		// init bus SubAreaFlag
+		parentNet.getBusList().forEach(bus -> { bus.setSubAreaFlag(BaseCuttingBranch.DefaultFlag);});
 		
 		// init cutting branch set
   		int flag = 0;
@@ -158,15 +158,15 @@ public abstract class BaseSubAreaNetProcessorImpl<
   			Branch branch = parentNet.getBranch(cbra.getBranchId());
   			branch.setStatus(false);
   			
-  			if (branch.getFromBus().getIntFlag() == BaseCuttingBranch.DefaultFlag) {
+  			if (branch.getFromBus().getSubAreaFlag() == BaseCuttingBranch.DefaultFlag) {
   				cbra.setFromSubAreaFlag(++flag);
-  				branch.getFromBus().setIntFlag(cbra.getFromSubAreaFlag());
+  				branch.getFromBus().setSubAreaFlag(cbra.getFromSubAreaFlag());
   				//System.out.println("Bus " + branch.getFromBus().getId() + " assigned Bus Flag: " + flag);
   			}
 
-  			if (branch.getToBus().getIntFlag() == BaseCuttingBranch.DefaultFlag) {
+  			if (branch.getToBus().getSubAreaFlag() == BaseCuttingBranch.DefaultFlag) {
   				cbra.setToSubAreaFlag(++flag);
-  				branch.getToBus().setIntFlag(cbra.getToSubAreaFlag());
+  				branch.getToBus().setSubAreaFlag(cbra.getToSubAreaFlag());
   				//System.out.println("Bus " + branch.getToBus().getId() + " assigned Bus Flag: " + flag);
   			}
   		}		
@@ -179,13 +179,13 @@ public abstract class BaseSubAreaNetProcessorImpl<
 			// There are two types of BusPair record in the busPairSet Hashtable
 			// Type1 ["10",  "9",  -1] - indicating Bus "10" and Bus "9" are in the same SubArea 
 			// Type2 ["61",  "61",  5] - the interface Bus current SubArea flag is 5, which needs to be 
-			//                           consolidated to the smallest Bus.IntFlag in the SubAre
+			//                           consolidated to the smallest Bus.SubAreaFlag in the SubAre
 		
   		for (BaseCuttingBranch<TState> cbra : cuttingBranches) {
   			Branch branch = parentNet.getBranch(cbra.getBranchId());
 
   			// starting from the fromBus, recursively set the branch opposite 
-  			// bus IntFlag for SubArea processing 
+  			// bus SubAreaFlag for SubArea processing 
   			BusPair pair = new BusPair(branch.getFromBus());
   			if (busPairSet.get(pair.getKey()) == null) {
 					busPairSet.put(pair.getKey(), pair);
@@ -193,7 +193,7 @@ public abstract class BaseSubAreaNetProcessorImpl<
   			setConnectedBusFlag(branch.getFromBus(), busPairSet);
   			
   			// starting from the toBus, recursively set the branch opposite 
-  			// bus IntFlag for SubArea processing 
+  			// bus SubAreaFlag for SubArea processing 
   			pair = new BusPair(branch.getToBus());
   			if (busPairSet.get(pair.getKey()) == null) {
 					busPairSet.put(pair.getKey(), pair);
@@ -202,15 +202,15 @@ public abstract class BaseSubAreaNetProcessorImpl<
   		}	
 		//System.out.println(this.busPairSet);
 		
-  		// consolidate bus.IntFlag and create SubArea flag
+  		// consolidate bus.SubAreaFlag and create SubArea flag
 		busPairSet.forEach((key, pair) -> {
 			// bus1 and bus2 are in the same SubArea and make sure only process Type1 record 
 			if (!pair.bus1.getId().equals(pair.bus2.getId())) {
 				// get Type2 records corresponding to bus1 and bus2
-				BusPair p1 = busPairSet.get(BusPair.createKey(pair.bus1.getIntFlag()));
-				BusPair p2 = busPairSet.get(BusPair.createKey(pair.bus2.getIntFlag()));
+				BusPair p1 = busPairSet.get(BusPair.createKey(pair.bus1.getSubAreaFlag()));
+				BusPair p2 = busPairSet.get(BusPair.createKey(pair.bus2.getSubAreaFlag()));
 				
-				// SubArea Flag is the smallest Bus.IntFlag in a SubArea. Bus.IntFlag has been initialized at
+				// SubArea Flag is the smallest Bus.SubAreaFlag in a SubArea. Bus.SubAreaFlag has been initialized at
 				// the interface bus in the initialization() method
 				if (p1.subAreaFlag > p2.subAreaFlag) {
 					// recursively set p1.subAreaFlag to p2.subAreaFlag
@@ -227,7 +227,7 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		// create SubArea list and the subArea.interfaceBusIdList
 		busPairSet.forEach((key, pair) -> {
 			// make sure only Type2 records are processed
-			if (pair.bus1.getIntFlag() == pair.bus2.getIntFlag()) {
+			if (pair.bus1.getSubAreaFlag() == pair.bus2.getSubAreaFlag()) {
 				//System.out.println(pair);
 				TSub subarea = getSubAreaNet(pair.subAreaFlag);
 				if (subarea == null) {
@@ -242,8 +242,8 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		
 		// update network bus SubArea flag
 		parentNet.getBusList().forEach(bus -> {
-			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
-			bus.setIntFlag(p.subAreaFlag);
+			BusPair p = busPairSet.get(BusPair.createKey(bus.getSubAreaFlag()));
+			bus.setSubAreaFlag(p.subAreaFlag);
 		});
 		
 		// consolidate the subarea number
@@ -263,16 +263,16 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		
 		// update network bus SubArea flag
 		parentNet.getBusList().forEach(bus -> {
-			BusPair p = busPairSet.get(BusPair.createKey(bus.getIntFlag()));
-			bus.setIntFlag(lookup.get(p.subAreaFlag));
+			BusPair p = busPairSet.get(BusPair.createKey(bus.getSubAreaFlag()));
+			bus.setSubAreaFlag(lookup.get(p.subAreaFlag));
 		});
 		
 		// update cutting branch from/toBus subarea flag
 		for (int i = 0; i < this.cuttingBranches.length; i++) {
 			BaseCuttingBranch<TState> branch = this.cuttingBranches[i];
 			Branch aclfBranch = parentNet.getBranch(branch.getBranchId());
-			branch.setFromSubAreaFlag(aclfBranch.getFromBus().getIntFlag());
-			branch.setToSubAreaFlag(aclfBranch.getToBus().getIntFlag());
+			branch.setFromSubAreaFlag(aclfBranch.getFromBus().getSubAreaFlag());
+			branch.setToSubAreaFlag(aclfBranch.getToBus().getSubAreaFlag());
 		}
 		
 		return this.subAreaNetList;
@@ -288,7 +288,7 @@ public abstract class BaseSubAreaNetProcessorImpl<
 	private void setSubAreaFlag(BusPair startPair, int flag, Hashtable<String, BusPair> busPairSet) {
 		// 5_5=["61",  "61",  5], 6_6=["9",  "9",  5], 2_2=["71",  "71",  2]
 		// if "71" and "9" are connected, when set 6_6 flag to 2, 5_5 flag should be set also (recursively)
-		if (startPair.bus1.getIntFlag() != startPair.subAreaFlag) {
+		if (startPair.bus1.getSubAreaFlag() != startPair.subAreaFlag) {
 			BusPair nextPair = busPairSet.get(BusPair.createKey(startPair.subAreaFlag));
 			setSubAreaFlag(nextPair, flag, busPairSet);
 		}
@@ -307,18 +307,18 @@ public abstract class BaseSubAreaNetProcessorImpl<
   			try {
   				if (branch.isActive()) {
   					Bus optBus = branch.getOppositeBus(bus);
-  					if (optBus.getIntFlag() == BaseCuttingBranch.DefaultFlag) {
-  						optBus.setIntFlag(bus.getIntFlag());
+  					if (optBus.getSubAreaFlag() == BaseCuttingBranch.DefaultFlag) {
+  						optBus.setSubAreaFlag(bus.getSubAreaFlag());
   						setConnectedBusFlag(optBus, busPairSet);
   					}
   					else {
   						// the optBus has been already visited with a non-DefaultFlag
   						//System.out.println("Bus " + optBus.getId() + " marked");
-  						if (bus.getIntFlag() != optBus.getIntFlag()) {
+  						if (bus.getSubAreaFlag() != optBus.getSubAreaFlag()) {
   							// make sure that the bus and optBus are visited starting from different 
   							// interface bus
   							// store the bus and optBus pair to indicate that they belong to the same SubArea
-  							String key = BusPair.createKey(bus.getIntFlag(), optBus.getIntFlag());
+  							String key = BusPair.createKey(bus.getSubAreaFlag(), optBus.getSubAreaFlag());
   							if (busPairSet.get(key) == null) {
   	  							busPairSet.put(key, new BusPair(bus, optBus));
   								//System.out.println(x + " belong to the same SubArea" );
@@ -334,18 +334,18 @@ public abstract class BaseSubAreaNetProcessorImpl<
 	
 	/**
 	 * Class holding a pair of buses for SubArea processing. The bus pair are stored in
-	 * such a way that bus1.IntFlag <= bus2.InfFlag. 
+	 * such a way that bus1.SubAreaFlag <= bus2.SubAreaFlag. 
 	 */
 	private static class BusPair {
 		// bus pair
 		public Bus bus1, bus2;
-		// store the smallest Bus.IntFlag in a SubArea
+		// store the smallest Bus.SubAreaFlag in a SubArea
 		public int subAreaFlag = BaseCuttingBranch.DefaultFlag;
 		
 		public BusPair(Bus bus) {
 			this.bus1 = bus;
 			this.bus2 = bus;
-			this.subAreaFlag = bus.getIntFlag();
+			this.subAreaFlag = bus.getSubAreaFlag();
 		}
 		
 		/**
@@ -355,8 +355,8 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		 * @param bus2
 		 */
 		public BusPair(Bus bus1, Bus bus2) {
-			// make sure that bus1.IntFlag <= bus2.InfFlag.
-			if (bus1.getIntFlag() < bus2.getIntFlag()) {
+			// make sure that bus1.SubAreaFlag <= bus2.SubAreaFlag.
+			if (bus1.getSubAreaFlag() < bus2.getSubAreaFlag()) {
 				this.bus1 = bus1;
 				this.bus2 = bus2;
 			}
@@ -372,7 +372,7 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		 * @return the key
 		 */
 		public String getKey() {
-			return createKey(bus1.getIntFlag(), bus2.getIntFlag());
+			return createKey(bus1.getSubAreaFlag(), bus2.getSubAreaFlag());
 		};
 		
 		/**
@@ -397,8 +397,8 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		};
 		
 		public String toString() {
-			return "[" + this.bus1.getIntFlag() + " \"" + this.bus1.getId() + "\",  "
-					+ this.bus2.getIntFlag()  + " \""  + this.bus2.getId() + "\",  "
+			return "[" + this.bus1.getSubAreaFlag() + " \"" + this.bus1.getId() + "\",  "
+					+ this.bus2.getSubAreaFlag()  + " \""  + this.bus2.getId() + "\",  "
 					+ this.subAreaFlag + "]";
 		}
 	}

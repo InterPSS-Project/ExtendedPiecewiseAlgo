@@ -31,7 +31,7 @@ import com.interpss.core.net.Network;
 
 /**
  * Class for modeling the SubNetwork concept. A SubNetwork contains buses and connected branches, 
- * using Bus.intFlag = SubNetwork.flag. Therefore, Bus.network = the SubNetwork for all buses and branches 
+ * using Bus.SubAreaFlag = SubNetwork.flag. Therefore, Bus.network = the SubNetwork for all buses and branches 
  * in a SubNetwork. 
  * 
  * @param <TBus> bus generic type
@@ -90,14 +90,14 @@ public abstract class BaseSubNetwork<TBus extends Bus,
 		this.subNet = createSubNetwork();
 		
 		for (TBus bus : parentNet.getBusList()) {
-			if (bus.getIntFlag() == this.getFlag()) {
+			if (bus.getSubAreaFlag() == this.getFlag()) {
 				this.subNet.addBus(bus);
 			}
 		};
 		
 		for ( TBranch branch : parentNet.getBranchList()) {
-			if (branch.getFromBus().getIntFlag() == this.getFlag() && 
-					branch.getToBus().getIntFlag() == this.getFlag()) {
+			if (branch.getFromBus().getSubAreaFlag() == this.getFlag() && 
+					branch.getToBus().getSubAreaFlag() == this.getFlag()) {
 				this.subNet.addBranch(branch);
 			}
 		};

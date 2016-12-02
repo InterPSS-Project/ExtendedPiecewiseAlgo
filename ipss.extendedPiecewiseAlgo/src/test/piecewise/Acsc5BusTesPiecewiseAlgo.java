@@ -170,7 +170,9 @@ public class Acsc5BusTesPiecewiseAlgo {
 						new CuttingBranch012("2->21(1)"),
 						new CuttingBranch012("2->22(1)")});	
   		
-  		proc.processSubAreaNet(); 		
+  		proc.processSubAreaNet(); 	
+  		System.out.println(net.net2String());
+  		
   		
   		/*
   		 * Solve [Y][I] = [V] using the piecewise method
