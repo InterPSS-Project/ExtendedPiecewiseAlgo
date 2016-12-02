@@ -33,7 +33,6 @@ import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.seqPos.CuttingBranchPos;
 import org.interpss.piecewise.seqPos.SubAreaPos;
 import org.interpss.piecewise.seqPos.impl.SubAreaPosProcessorImpl;
-import org.interpss.piecewise.seqPos.impl.SubNetworkPosProcessorImpl;
 import org.junit.Test;
 
 import com.interpss.core.aclf.AclfBranch;

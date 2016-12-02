@@ -29,14 +29,12 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.function.Function;
 
-import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.exp.IpssNumericException;
 import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.core.acsc.AcscNetwork;
 
 /**
  * Abstract Piecewise Algorithm implementation adapter.

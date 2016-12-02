@@ -1,5 +1,5 @@
  /*
-  * @(#)SubNetwork012ProcessorImpl.java   
+  * @(#)SubDStabNetworkProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -30,17 +30,16 @@ import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
-import org.interpss.piecewise.seq012.SubArea012;
-import org.interpss.piecewise.seq012.SubNetwork012;
-import org.interpss.piecewise.seqPos.SubNetworkPos;
+import org.interpss.piecewise.seq012.SubAcscNetwork;
+import org.interpss.piecewise.seq012.SubDStabNetwork;
 
 import com.interpss.common.exp.InterpssException;
-import com.interpss.core.acsc.AcscBranch;
-import com.interpss.core.acsc.AcscBus;
-import com.interpss.core.acsc.AcscNetwork;
+import com.interpss.dstab.DStabBranch;
+import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabilityNetwork;
 
 /**
- * Class for 012 SubNetwork processing. It begins by defining a set of cutting branches.
+ * Class for DStability SubNetwork processing. It begins by defining a set of cutting branches.
  * It finds SubAreas in the network and SubArea interface buses. Then it "moves" the bus and branch 
  * objects to corresponding SubNetwork.
  * 
@@ -48,29 +47,30 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 		
-public class SubNetwork012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
+public class SubDStabNetworkProcessorImpl<TSub extends BaseSubArea<?, ?>> 
+				extends BaseSubAreaNetProcessorImpl<DStabBus, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
-	 * @param net AclfNetwork object
+	 * @param net DStabilityNetwork object
 	 */
-	public SubNetwork012ProcessorImpl(AcscNetwork net) {
+	public SubDStabNetworkProcessorImpl(DStabilityNetwork net) {
 		super(net);
 	}
 
 	/**
 	 * Constructor
 	 * 
-	 * @param net AclfNetwork object
+	 * @param net DStabilityNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubNetwork012ProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+	public SubDStabNetworkProcessorImpl(DStabilityNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
 	@SuppressWarnings("unchecked")
 	@Override public TSub createSubAreaNet(int flag) {
-		return (TSub)new SubNetwork012(flag);
+		return (TSub)new SubAcscNetwork(flag);
 	};
 	
 	@Override public List<TSub> processSubAreaNet() throws InterpssException {
@@ -78,7 +78,7 @@ public class SubNetwork012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends 
 		
 		// for each SubNetwork, we build the child/parent relationship.
 		for (TSub subNet : subNetList ) {
-			((SubNetwork012)subNet).buildSubNet((AcscNetwork)this.getNetwork());
+			((SubDStabNetwork)subNet).buildSubNet((DStabilityNetwork)this.getNetwork());
 		};
 		
 		return subNetList;

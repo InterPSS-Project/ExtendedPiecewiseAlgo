@@ -31,7 +31,6 @@ import java.util.function.Function;
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.IpssCorePlugin;
 import org.interpss.numeric.datatype.Complex3x1;
-import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.numeric.datatype.Unit.UnitType;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.numeric.util.NumericUtil;
@@ -39,10 +38,10 @@ import org.interpss.piecewise.PiecewiseAlgorithm;
 import org.interpss.piecewise.SubAreaNetProcessor;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.seq012.CuttingBranch012;
+import org.interpss.piecewise.seq012.SubAcscNetwork;
 import org.interpss.piecewise.seq012.SubArea012;
-import org.interpss.piecewise.seq012.SubNetwork012;
-import org.interpss.piecewise.seq012.algo.PiecewiseAlgo012Impl;
-import org.interpss.piecewise.seq012.impl.SubArea012ProcessorImpl;
+import org.interpss.piecewise.seq012.algo.PiecewiseAlgoAcscNetworkImpl;
+import org.interpss.piecewise.seq012.impl.SubAreaAcscProcessorImpl;
 import org.interpss.pssl.simu.net.IpssAcscNet;
 import org.interpss.pssl.simu.net.IpssAcscNet.AcscNetworkDSL;
 import org.junit.Test;
@@ -81,8 +80,8 @@ public class Acsc5BusTesPiecewiseAlgo {
 		
   		AcscNetwork net = getAcscNet();  	
   		
-		SubAreaNetProcessor<AcscBus, AcscBranch, SubNetwork012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubNetwork012>(net, new CuttingBranch012[] { 
+		SubAreaNetProcessor<AcscBus, AcscBranch, SubAcscNetwork, Complex3x1> proc = 
+				new SubAreaAcscProcessorImpl<SubAcscNetwork>(net, new CuttingBranch012[] { 
 						new CuttingBranch012("2->21(1)"),
 						new CuttingBranch012("2->22(1)")});	
   		
@@ -92,7 +91,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubNetwork012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubAcscNetwork> pieceWiseAlgo = new PiecewiseAlgoAcscNetworkImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage
@@ -166,7 +165,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		AcscNetwork net = getAcscNet();  	
   		
 		SubAreaNetProcessor<AcscBus, AcscBranch, SubArea012, Complex3x1> proc = 
-				new SubArea012ProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
+				new SubAreaAcscProcessorImpl<SubArea012>(net, new CuttingBranch012[] { 
 						new CuttingBranch012("2->21(1)"),
 						new CuttingBranch012("2->22(1)")});	
   		
@@ -178,7 +177,7 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 * Solve [Y][I] = [V] using the piecewise method
   		 * =============================================
   		 */
-  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgo012Impl<>(net, proc.getSubAreaNetList());
+  		PiecewiseAlgorithm<AcscBus, Complex3x1, SubArea012> pieceWiseAlgo = new PiecewiseAlgoAcscNetworkImpl<>(net, proc.getSubAreaNetList());
   		
   		/*//////////////////////////////////
   		 * Step-1: Solve for the open-circuit voltage

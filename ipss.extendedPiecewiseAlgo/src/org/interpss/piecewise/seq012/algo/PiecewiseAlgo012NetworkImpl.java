@@ -1,5 +1,5 @@
  /*
-  * @(#)PiecewiseAlgo012Impl.java   
+  * @(#)PiecewiseAlgo012NetworkImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -40,18 +40,18 @@ import org.interpss.piecewise.seq012.SubNetwork012;
 
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
-import com.interpss.core.acsc.AcscNetwork;
+import com.interpss.core.acsc.BaseAcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
 /**
- * Piecewise algorithm implementation for 012 sequence network. We use
+ * Piecewise algorithm implementation for AcscNetwork 012 sequence network. We use
  * an array[3] to store 012 quantities in the sequence of [0, 1, 2]
  * 
  * @author Mike
  *
  */
-public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
-					extends AbstractPiecewiseAlgoAdapter<AcscBus, AcscNetwork, Complex3x1, TSub> {
+public class PiecewiseAlgo012NetworkImpl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
+					extends AbstractPiecewiseAlgoAdapter<TBus, TNet, Complex3x1, TSub> {
 	// AclfNetwork object
 	//private AcscNetwork net;
 	
@@ -63,7 +63,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 * 
 	 * @param net AcscNetwork object
 	 */
-	public PiecewiseAlgo012Impl(AcscNetwork net) {
+	public PiecewiseAlgo012NetworkImpl(TNet net) {
 		super();
 		this.parentNet = net;
 	}
@@ -74,14 +74,14 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 * @param net AcscNetwork object
 	 * @param subAreaList SubArea/Network object list
 	 */
-	public PiecewiseAlgo012Impl(AcscNetwork net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgo012NetworkImpl(TNet net, List<TSub> subAreaNetList) {
 		super();
 		this.parentNet = net;
 		this.subAreaNetList = subAreaNetList;
 	}
 
 	@Override
-	public void buildNortonEquivNet(Function<AcscBus, Complex3x1> injCurrentFunc) throws IpssNumericException {
+	public void buildNortonEquivNet(Function<TBus, Complex3x1> injCurrentFunc) throws IpssNumericException {
   		for (TSub subarea: this.subAreaNetList) {
   			// calculate open circuit SubArea/Network voltage
   			solveSubAreaNet(subarea.getFlag(), injCurrentFunc);
@@ -110,7 +110,7 @@ public class PiecewiseAlgo012Impl<TSub extends BaseSubArea<ISparseEqnComplex[], 
 	 * @param injCurrentFunc injection current calculation function
 	 * @throws IpssNumericException
 	 */
-	private void solveSubAreaNet(int areaFlag, Function<AcscBus,Complex3x1> injCurrentFunc) throws IpssNumericException {
+	private void solveSubAreaNet(int areaFlag, Function<TBus,Complex3x1> injCurrentFunc) throws IpssNumericException {
 		TSub subArea = this.getSubArea(areaFlag);
 
 		// form Y-matrix (012) for each SubArea/Network

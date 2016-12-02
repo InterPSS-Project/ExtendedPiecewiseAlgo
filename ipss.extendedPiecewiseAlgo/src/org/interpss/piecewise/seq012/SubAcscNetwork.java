@@ -27,23 +27,24 @@ import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubNetwork;
 
+import com.interpss.CoreObjectFactory;
+import com.interpss.common.exp.InterpssException;
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
-import com.interpss.core.acsc.BaseAcscNetwork;
+import com.interpss.core.acsc.AcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
 /**
  * Class for modeling the SubArea concept for representing 012 sub-network. 
  */
-public abstract class SubNetwork012<TBus extends AcscBus, TBranch extends AcscBranch, TNet extends BaseAcscNetwork<TBus, TBranch>> 
-                   extends BaseSubNetwork<TBus, TBranch, TNet, ISparseEqnComplex[], Complex3x1[][]>{
+public class SubAcscNetwork extends SubNetwork012<AcscBus, AcscBranch, AcscNetwork>{
 	
 	/**
 	 * default constructor
 	 * 
 	 * @param flag
 	 */
-	public SubNetwork012(int flag) {
+	public SubAcscNetwork(int flag) {
 		super(flag);
 	}
 	
@@ -53,18 +54,18 @@ public abstract class SubNetwork012<TBus extends AcscBus, TBranch extends AcscBr
 	 * @param flag
 	 * @param ids
 	 */
-	public SubNetwork012(int flag, String[] ids) {
+	public SubAcscNetwork(int flag, String[] ids) {
 		super(flag, ids);
 	}
 	
+	@Override public AcscNetwork createSubNetwork() {
+		return CoreObjectFactory.createAcscNetwork();
+	};
 	
-	/**
-	 * form the Y-matrix for the SubNetwork
-	 */
-	public void formYMatrix() {
-		this.setYSparseEqn(new ISparseEqnComplex[] { 
-				this.subNet.formScYMatrix(SequenceCode.POSITIVE, false),
-				this.subNet.formScYMatrix(SequenceCode.NEGATIVE, false),
-				this.subNet.formScYMatrix(SequenceCode.ZERO, false)});
-	}	
+	@Override public void buildSubNet(AcscNetwork parentNet) throws InterpssException {
+		super.buildSubNet(parentNet);
+		
+		// TODO only bus and branch objects are copied to the SubNetwork in the super class. We
+		//      may need to add missing objects
+	}
 }	

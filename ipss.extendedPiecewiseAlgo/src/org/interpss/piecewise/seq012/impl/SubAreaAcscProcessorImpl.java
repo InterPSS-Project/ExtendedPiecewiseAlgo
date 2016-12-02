@@ -1,5 +1,5 @@
  /*
-  * @(#)SubArea012ProcessorImpl.java   
+  * @(#)SubAreaAcscProcessorImpl.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -24,17 +24,12 @@
 
 package org.interpss.piecewise.seq012.impl;
 
-import java.util.List;
-
 import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
 import org.interpss.piecewise.seq012.SubArea012;
-import org.interpss.piecewise.seq012.SubNetwork012;
-import org.interpss.piecewise.seqPos.SubNetworkPos;
 
-import com.interpss.common.exp.InterpssException;
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
 import com.interpss.core.acsc.AcscNetwork;
@@ -47,14 +42,14 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 		
-public class SubArea012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
+public class SubAreaAcscProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net AclfNetwork object
 	 * @param subType SubArea/Network processing type
 	 */
-	public SubArea012ProcessorImpl(AcscNetwork net) {
+	public SubAreaAcscProcessorImpl(AcscNetwork net) {
 		super(net);
 	}
 
@@ -65,7 +60,7 @@ public class SubArea012ProcessorImpl<TSub extends BaseSubArea<?, ?>> extends Bas
 	 * @param subType SubArea/Network processing type
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubArea012ProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+	public SubAreaAcscProcessorImpl(AcscNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
