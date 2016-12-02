@@ -37,7 +37,7 @@ import java.util.List;
  * @param <TYMatrix> generic type for defining the sub-area Y matrix
  * @param <TZMatrix> generic type for defining the cutting branch Z matrix
  */
-public class BaseSubArea<TYmatrix, TZMatrix> {
+public class BaseSubArea<TYMatrix, TZMatrix> {
 	// SubArea flag, which should be unique
 	private int flag;
 	
@@ -45,7 +45,7 @@ public class BaseSubArea<TYmatrix, TZMatrix> {
 	private List<String> interfaceBusIdList;
 	
 	// SubArea Y-matrix sparse eqn 
-	private TYmatrix ySparseEqn;
+	private TYMatrix ySparseEqn;
 	
 	// SubArea Norton equivalent Z-matrix
 	private TZMatrix zMatrix;
@@ -97,14 +97,14 @@ public class BaseSubArea<TYmatrix, TZMatrix> {
 	/**
 	 * @return the ySparseEqn
 	 */
-	public TYmatrix getYSparseEqn() {
+	public TYMatrix getYSparseEqn() {
 		return ySparseEqn;
 	}
 
 	/**
 	 * @param ySparseEqn the ySparseEqn to set
 	 */
-	public void setYSparseEqn(TYmatrix ySparseEqn) {
+	public void setYSparseEqn(TYMatrix ySparseEqn) {
 		this.ySparseEqn = ySparseEqn;
 	}
 
