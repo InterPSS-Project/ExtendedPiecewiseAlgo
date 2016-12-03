@@ -42,7 +42,7 @@ import com.interpss.common.exp.InterpssException;
  * @author Mike
  *
  */
-public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub extends BaseSubArea<?, ?>> 
+public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub extends BaseSubArea<?, ?, TState>> 
 					implements  PiecewiseAlgorithm<TBus, TState, TSub> {
 	// Parent Network object
 	protected TNet parentNet;
@@ -52,7 +52,7 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
 	protected boolean netYmatrixDirty;
 	
 	// network bus voltage storage place
-	protected Hashtable<String, TState> netVoltage;
+	//protected Hashtable<String, TState> netVoltage;
 	
 	// Sub-area/network list 
 	protected List<TSub> subAreaNetList;
@@ -64,7 +64,7 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
 	 */
 	public AbstractPiecewiseAlgoAdapter() {
 		this.netYmatrixDirty = true;
-		this.netVoltage = new Hashtable<>();
+		//this.netVoltage = new Hashtable<>();
 		this.subAreaNetList = new ArrayList<>();
 	}
 	
@@ -83,13 +83,8 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
 		this.netYmatrixDirty = netYmatrixDirty;
 	}
 
-	/**
-	 * the network voltage cache hashtable
-	 * 
-	 * @return the netVoltage
-	 */
-	public Hashtable<String, TState> getNetVoltage() {
-		return netVoltage;
+	@Override public Hashtable<String, TState> getBusVoltage(int areaFlag) {
+		return this.getSubArea(areaFlag).getBusVoltage();
 	}
 
 	/**
@@ -116,7 +111,7 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
 	}
 	
 	@Override
-	public Hashtable<String, TState> calculateNetVoltage(
+	public void calculateNetVoltage(
 				List<TSub> subAreaNetList,
 				BaseCuttingBranch<TState>[] cbranches, 
 				Function<TBus,TState> injCurrentFunc)  throws InterpssException, IpssNumericException {
@@ -147,7 +142,7 @@ public abstract class AbstractPiecewiseAlgoAdapter<TBus, TNet, TState, TSub exte
     	// in the SubArea/Network.
   		calcuateSubAreaNetVoltage(cbranches);  		
 
-		return this.netVoltage;
+		//return this.netVoltage;
 	}
 }
 

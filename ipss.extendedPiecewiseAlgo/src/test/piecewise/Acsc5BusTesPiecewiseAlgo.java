@@ -110,11 +110,11 @@ public class Acsc5BusTesPiecewiseAlgo {
 2=0.0000 + j0.00254  0.00239 + j0.03719  0.00012 + j0.00186, 
 1=-0.0000 + j-0.00254  -0.0198 + j-0.02425  -0.00099 + j-0.00121, 
  */
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").a_0, 
 				     	new Complex(-0.0000, -0.00254), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").b_1, 
 			     		new Complex(-0.0110, -0.0481), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").c_2, 
 			     		new Complex(-0.00055, -0.0024), 1.0e-5));
   		
   		/*/////////////////////////////
@@ -150,11 +150,11 @@ public class Acsc5BusTesPiecewiseAlgo {
 2=  0.0000 + j0.00128    0.0027 + j0.0264      0.00014 + j0.00132, 
 1= -0.0000 + j0.00023    0.00035 + j0.00057    0.00002 + j0.00003, 
  */
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").a_0, 
 			     	new Complex(-0.0000, -0.00128), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").b_1, 
 					new Complex(-0.00765, -0.03524), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").c_2, 
 					new Complex(-0.00038, -0.00176), 1.0e-5));		
 	}
 
@@ -184,11 +184,11 @@ public class Acsc5BusTesPiecewiseAlgo {
   		 *//////////////////////////////////
    		pieceWiseAlgo.buildNortonEquivNet(injCurFunc);
   		//System.out.println("Open Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").a_0, 
 		     	new Complex(-0.0000, -0.00254), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").b_1, 
 	     		new Complex(-0.0110, -0.0481), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").c_2, 
 	     		new Complex(-0.00055, -0.0024), 1.0e-5));
 
   		/*/////////////////////////////
@@ -212,11 +212,11 @@ public class Acsc5BusTesPiecewiseAlgo {
 		
 		pieceWiseAlgo.calcuateSubAreaNetVoltage(proc.getCuttingBranches());  		
   		//System.out.println("Closed Circuit Voltage\n" + pieceWiseAlgo.getNetVoltage().toString());
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").a_0, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").a_0, 
 		     	new Complex(-0.0000, -0.00128), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").b_1, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").b_1, 
 				new Complex(-0.00765, -0.03524), 1.0e-5));
-		assertTrue(NumericUtil.equals(pieceWiseAlgo.getNetVoltage().get("3").c_2, 
+		assertTrue(NumericUtil.equals(pieceWiseAlgo.getBusVoltage(2).get("3").c_2, 
 				new Complex(-0.00038, -0.00176), 1.0e-5));
 
 	}

@@ -47,7 +47,7 @@ import com.interpss.core.aclf.AclfNetwork;
  *
  */
 		
-public class SubNetworkPosProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
+public class SubNetworkPosProcessorImpl<TSub extends BaseSubArea<?, ?, Complex>> extends BaseSubAreaNetProcessorImpl<AclfBus, AclfBranch, TSub, Complex> {
 	/**
 	 * Constructor
 	 * 

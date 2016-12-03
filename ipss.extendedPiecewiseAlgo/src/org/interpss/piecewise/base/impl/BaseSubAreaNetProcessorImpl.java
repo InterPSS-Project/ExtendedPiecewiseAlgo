@@ -49,7 +49,7 @@ import com.interpss.core.net.Network;
 public abstract class BaseSubAreaNetProcessorImpl<
 							TBus extends Bus, 
 							TBra extends Branch, 
-							TSub extends BaseSubArea<?, ?>, 
+							TSub extends BaseSubArea<?, ?, TState>, 
 							TState> implements SubAreaNetProcessor<TBus, TBra, TSub, TState> {
 	// SubArea or SubNetwork type
 	//protected SubAreaNetType subType;
@@ -251,7 +251,7 @@ public abstract class BaseSubAreaNetProcessorImpl<
 		//  We make it continuous 1, 2, 3, ...
 		Hashtable<Integer, Integer> lookup = new Hashtable<>();
 		Integer cnt = 0;
-		for (BaseSubArea<?, ?> subarea : this.subAreaNetList) {
+		for (BaseSubArea<?, ?, TState> subarea : this.subAreaNetList) {
 			lookup.put(subarea.getFlag(), ++cnt);
 		};
 		//System.out.println(lookup);

@@ -50,7 +50,7 @@ import com.interpss.core.acsc.SequenceCode;
  * @author Mike
  *
  */
-public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
+public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
 					extends AbstractPiecewiseAlgoAdapter<TBus, TNet, Complex3x1, TSub> {
 	// AclfNetwork object
 	//private AcscNetwork net;
@@ -90,7 +90,7 @@ public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNet
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
   	  		parentNet.getBusList().forEach(bus -> {
   	  			if (bus.getSubAreaFlag() == subarea.getFlag()) {
-  	  				this.netVoltage.put(bus.getId(), new Complex3x1(
+  	  				subarea.getBusVoltage().put(bus.getId(), new Complex3x1(
   	  						subarea.getYSparseEqn()[Complex3x1.Index_0].getX(bus.getSortNumber()),
   	  						subarea.getYSparseEqn()[Complex3x1.Index_1].getX(bus.getSortNumber()),
   	  						subarea.getYSparseEqn()[Complex3x1.Index_2].getX(bus.getSortNumber())));
@@ -226,8 +226,10 @@ public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNet
   			AcscBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			// assume branch current from bus -> to bus
   			// current positive direction - into the sub-area network
-  			eCutBranch3x1[i] = getNetVoltage().get(branch.getFromBus().getId())
-  					        	.subtract(getNetVoltage().get(branch.getToBus().getId()));
+  			TSub fromSubArea = this.getSubArea(branch.getFromBus().getSubAreaFlag());
+  			TSub toSubArea = this.getSubArea(branch.getToBus().getSubAreaFlag());
+  			eCutBranch3x1[i] = fromSubArea.getBusVoltage().get(branch.getFromBus().getId())
+  					        	.subtract(toSubArea.getBusVoltage().get(branch.getToBus().getId()));
   			//System.out.println("E open: " + i + ", " + eCutBranch3x1[i]);
   		}
   		return eCutBranch3x1;
@@ -328,11 +330,11 @@ public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNet
   		// update the bus voltage based on the superposition principle
   		for (int i = 0; i < yMatrixAry[0].getDimension(); i++) {
   			String id = yMatrixAry[0].getBusId(i);
-  			Complex v0 = netVoltage.get(id).a_0.add(yMatrixAry[Complex3x1.Index_0].getX(i));
-  			Complex v1 = netVoltage.get(id).b_1.add(yMatrixAry[Complex3x1.Index_1].getX(i));
-  			Complex v2 = netVoltage.get(id).c_2.add(yMatrixAry[Complex3x1.Index_2].getX(i));
+  			Complex v0 = subArea.getBusVoltage().get(id).a_0.add(yMatrixAry[Complex3x1.Index_0].getX(i));
+  			Complex v1 = subArea.getBusVoltage().get(id).b_1.add(yMatrixAry[Complex3x1.Index_1].getX(i));
+  			Complex v2 = subArea.getBusVoltage().get(id).c_2.add(yMatrixAry[Complex3x1.Index_2].getX(i));
   			//System.out.println("area1 voltage update -- " + id + ", " + netVoltage.get(id) + ", " + yAreaNet1.getX(i) + ", " + v.abs());
-  			netVoltage.put(id, new Complex3x1(v0, v1, v2));
+  			subArea.getBusVoltage().put(id, new Complex3x1(v0, v1, v2));
   		}		
 	}	
 }

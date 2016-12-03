@@ -63,11 +63,12 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub> {
 	void setNetYmatrixDirty(boolean netYmatrixDirty);
 
 	/**
-	 * During the calculation process, the network voltage is cached in a hashtable.
+	 * During the calculation process, the network bus voltage is cached in a subArea/Network hashtable.
 	 * 
+	 * @param areaFlag SubArea/Network flag
 	 * @return the netVoltage
 	 */
-	Hashtable<String, TState> getNetVoltage();
+	Hashtable<String, TState> getBusVoltage(int areaFlag);
 
 	/**
 	 * get the SubArea/Network list
@@ -119,10 +120,9 @@ public interface PiecewiseAlgorithm<TBus, TState, TSub> {
 	 * @param subAreaNetList SubArea/Network list
 	 * @param cbranches cutting branch set
 	 * @param injCurrentFunc function for calculating bus injection current
-	 * @return network bus voltage pairs <BusId, Voltage>
 	 * @throws InterpssException, IpssNumericException
 	 */
-	Hashtable<String, TState> calculateNetVoltage(
+	void calculateNetVoltage(
 			List<TSub> subAreaNetList,
 			BaseCuttingBranch<TState>[] cbranches, 
 			Function<TBus, TState> injCurrentFunc) throws InterpssException, IpssNumericException;

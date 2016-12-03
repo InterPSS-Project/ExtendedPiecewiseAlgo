@@ -31,7 +31,7 @@ import org.interpss.piecewise.base.BaseSubArea;
 /**
  * Class for modeling the SubArea concept for representing single phase or positive sequence sub-network. 
  */
-public class SubAreaPos extends BaseSubArea<ISparseEqnComplex, Complex[][]>{
+public class SubAreaPos extends BaseSubArea<ISparseEqnComplex, Complex[][], Complex>{
 	
 	/**
 	 * default constructor

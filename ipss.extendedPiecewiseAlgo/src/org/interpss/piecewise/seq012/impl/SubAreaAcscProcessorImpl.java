@@ -42,7 +42,7 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 		
-public class SubAreaAcscProcessorImpl<TSub extends BaseSubArea<?, ?>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
+public class SubAreaAcscProcessorImpl<TSub extends BaseSubArea<?, ?, Complex3x1>> extends BaseSubAreaNetProcessorImpl<AcscBus, AcscBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 

@@ -47,7 +47,7 @@ import com.interpss.core.aclf.AclfNetwork;
  * @author Mike
  *
  */
-public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][]>> 
+public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Complex[][], Complex>> 
 					extends AbstractPiecewiseAlgoAdapter<AclfBus, AclfNetwork, Complex, TSub> {
 	// AclfNetwork object
 	//private AclfNetwork net;
@@ -85,7 +85,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   			// cache bus voltage stored in the subarea Y-matrix sparse eqn into the hashtable
   	  		parentNet.getBusList().forEach(bus -> {
   	  			if (bus.getSubAreaFlag() == subarea.getFlag()) {
-  	  				this.netVoltage.put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
+  	  				subarea.getBusVoltage().put(bus.getId(), subarea.getYSparseEqn().getX(bus.getSortNumber()));
   	  			}
   	  		}); 
   	  		
@@ -193,8 +193,10 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   			AclfBranch branch = parentNet.getBranch(cuttingBranches[i].getBranchId());
   			// assume branch current from bus -> to bus
   			// current positive direction - into the sub-area network
-  			eCutBranch[i] = getNetVoltage().get(branch.getFromBus().getId())
-  					        	.subtract(getNetVoltage().get(branch.getToBus().getId()));
+  			TSub fromSubArea = this.getSubArea(branch.getFromBus().getSubAreaFlag());
+  			TSub toSubArea = this.getSubArea(branch.getToBus().getSubAreaFlag());
+  			eCutBranch[i] = fromSubArea.getBusVoltage().get(branch.getFromBus().getId())
+  					        	.subtract(toSubArea.getBusVoltage().get(branch.getToBus().getId()));
   			//System.out.println("E open: " + cnt + ", " + ComplexFunc.toStr(eCutBranch[cnt]));
   		}
   		return eCutBranch;
@@ -286,9 +288,9 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   		// update the bus voltage based on the superposition principle
   		for (int i = 0; i < yMatrix.getDimension(); i++) {
   			String id = yMatrix.getBusId(i);
-  			Complex v = netVoltage.get(id).add(yMatrix.getX(i));
+  			Complex v = subArea.getBusVoltage().get(id).add(yMatrix.getX(i));
   			//System.out.println("area1 voltage update -- " + id + ", " + netVoltage.get(id) + ", " + yAreaNet1.getX(i) + ", " + v.abs());
-  			netVoltage.put(id, v);
+  			subArea.getBusVoltage().put(id, v);
   		}		
 	}	
 }

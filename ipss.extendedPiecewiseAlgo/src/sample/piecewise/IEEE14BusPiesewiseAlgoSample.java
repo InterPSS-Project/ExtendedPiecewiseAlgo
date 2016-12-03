@@ -82,13 +82,15 @@ public class IEEE14BusPiesewiseAlgoSample {
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-  		Hashtable<String,Complex> voltages = new PiecewiseAlgoPosImpl<SubAreaPos>(net)
+  		new PiecewiseAlgoPosImpl<SubAreaPos>(net)
   				.calculateNetVoltage(subAreaList, cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		System.out.println("----------- SubArea -----------");
-  		voltages.forEach((busId, voltage) -> {
-  			System.out.println("Bus id:" + busId + ", v = " + ComplexFunc.toStr(voltage));
+  		subAreaList.forEach(subarea -> {
+  			subarea.getBusVoltage().forEach((busId, voltage) -> {
+  	  			System.out.println("Bus id:" + busId + ", v = " + ComplexFunc.toStr(voltage));
+  			});
   		});
 
   		/* you should see output like the following
@@ -116,13 +118,15 @@ public class IEEE14BusPiesewiseAlgoSample {
 								.processSubAreaNet();
 
 		// define a piecewise algo object and calculate the network bus voltage
-  		Hashtable<String,Complex> voltages = new PiecewiseAlgoPosImpl<SubNetworkPos>(net)
+  		new PiecewiseAlgoPosImpl<SubNetworkPos>(net)
   				.calculateNetVoltage(subAreaList, cuttingBranches, injCurrentFunc);
  		
   		// output network bus voltage
   		System.out.println("----------- SubNetwork -----------");
-  		voltages.forEach((busId, voltage) -> {
-  			System.out.println("Bus id:" + busId + ", v = " + ComplexFunc.toStr(voltage));
+  		subAreaList.forEach(subarea -> {
+  			subarea.getBusVoltage().forEach((busId, voltage) -> {
+  	  			System.out.println("Bus id:" + busId + ", v = " + ComplexFunc.toStr(voltage));
+  			});
   		});
 
   		/* you should see output like the following

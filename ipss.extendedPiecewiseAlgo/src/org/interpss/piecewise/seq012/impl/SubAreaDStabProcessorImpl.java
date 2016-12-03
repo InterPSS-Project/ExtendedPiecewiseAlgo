@@ -42,7 +42,7 @@ import com.interpss.dstab.DStabilityNetwork;
  *
  */
 		
-public class SubAreaDStabProcessorImpl<TSub extends BaseSubArea<?, ?>> 
+public class SubAreaDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex3x1>> 
 				extends BaseSubAreaNetProcessorImpl<DStabBus, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor

@@ -25,6 +25,7 @@
 package org.interpss.piecewise.base;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -36,13 +37,17 @@ import java.util.List;
  * 
  * @param <TYMatrix> generic type for defining the sub-area Y matrix
  * @param <TZMatrix> generic type for defining the cutting branch Z matrix
+ * @param <TVolt> generic type for defining the sub-area bus voltage
  */
-public class BaseSubArea<TYMatrix, TZMatrix> {
+public class BaseSubArea<TYMatrix, TZMatrix, TVolt> {
 	// SubArea flag, which should be unique
 	private int flag;
 	
 	// interface bus ID array
 	private List<String> interfaceBusIdList;
+	
+	// SubArea/Network bus voltage storage place
+	protected Hashtable<String, TVolt> busVoltage;
 	
 	// SubArea Y-matrix sparse eqn 
 	private TYMatrix ySparseEqn;
@@ -58,6 +63,7 @@ public class BaseSubArea<TYMatrix, TZMatrix> {
 	public BaseSubArea(int flag) {
 		this.flag = flag;
 		this.interfaceBusIdList = new ArrayList<>();
+		this.busVoltage = new Hashtable<>();
 	}
 	
 	/**
@@ -67,8 +73,7 @@ public class BaseSubArea<TYMatrix, TZMatrix> {
 	 * @param ids
 	 */
 	public BaseSubArea(int flag, String[] ids) {
-		this.flag = flag;
-		this.interfaceBusIdList = new ArrayList<>();
+		this(flag);
 		for (String id : ids)
 			this.interfaceBusIdList.add(id);
 	}
@@ -94,6 +99,15 @@ public class BaseSubArea<TYMatrix, TZMatrix> {
 		return interfaceBusIdList;
 	}
 
+	/**
+	 * get the subArea/Network voltage cache hashtable
+	 * 
+	 * @return the subAreaVoltage
+	 */
+	public Hashtable<String, TVolt> getBusVoltage() {
+		return busVoltage;
+	}
+	
 	/**
 	 * @return the ySparseEqn
 	 */

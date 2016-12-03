@@ -41,8 +41,8 @@ import com.interpss.core.net.Network;
 public abstract class BaseSubNetwork<TBus extends Bus, 
                             TBranch extends Branch, 
                             TNet extends Network<TBus, TBranch>, 
-                            TYmatrix, TZMatrix> 
-								extends BaseSubArea<TYmatrix, TZMatrix>{
+                            TYmatrix, TZMatrix, TVolt> 
+								extends BaseSubArea<TYmatrix, TZMatrix, TVolt>{
 	/** a network object representing the sub-area*/
 	protected TNet subNet;
 	

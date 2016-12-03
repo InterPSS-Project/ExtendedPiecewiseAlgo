@@ -40,7 +40,7 @@ import com.interpss.dstab.DStabilityNetwork;
  * @author Mike
  *
  */
-public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][]>> 
+public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
 					extends PiecewiseAlgo012Impl<DStabBus, DStabilityNetwork, TSub> {
 	/**
 	 * Constructor
