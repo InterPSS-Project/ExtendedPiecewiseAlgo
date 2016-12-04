@@ -1,4 +1,4 @@
- /* @(#)SubNetwork012.java   
+ /* @(#)SubAcscNetwork.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -35,7 +35,7 @@ import com.interpss.core.acsc.AcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
 /**
- * Class for modeling the SubArea concept for representing 012 sub-network. 
+ * Class for modeling the SubNetwork concept for representing a sub-network of type AcscNetwork. 
  */
 public class SubAcscNetwork extends SubNetwork012<AcscBus, AcscBranch, AcscNetwork>{
 	

@@ -30,7 +30,7 @@ import com.interpss.core.net.Bus;
 import com.interpss.core.net.Network;
 
 /**
- * Class for modeling the SubNetwork concept. A SubNetwork contains buses and connected branches, 
+ * Base class for modeling the SubNetwork concept. A SubNetwork contains buses and connected branches, 
  * using Bus.SubAreaFlag = SubNetwork.flag. Therefore, Bus.network = the SubNetwork for all buses and branches 
  * in a SubNetwork. 
  * 

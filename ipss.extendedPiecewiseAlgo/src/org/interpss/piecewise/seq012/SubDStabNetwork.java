@@ -1,4 +1,4 @@
- /* @(#)SubNetwork012.java   
+ /* @(#)SubDStabNetwork.java   
   *
   * Copyright (C) 2006-2016 www.interpss.org
   *
@@ -30,7 +30,7 @@ import com.interpss.dstab.DStabBus;
 import com.interpss.dstab.DStabilityNetwork;
 
 /**
- * Class for modeling the SubArea concept for representing 012 sub-network. 
+ * Class for modeling the SubNetwork concept for representing a sub-network of type DStabilityNetwork. 
  */
 public class SubDStabNetwork extends SubNetwork012<DStabBus, DStabBranch, DStabilityNetwork>{
 	

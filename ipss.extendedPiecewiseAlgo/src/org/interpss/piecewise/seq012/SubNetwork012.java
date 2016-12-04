@@ -33,7 +33,8 @@ import com.interpss.core.acsc.BaseAcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
 /**
- * Class for modeling the SubArea concept for representing 012 sub-network. 
+ * Class for modeling the SubNetwork concept for representing 012 un-symmetric sub-network. 
+ * 
  */
 public abstract class SubNetwork012<TBus extends AcscBus, TBranch extends AcscBranch, TNet extends BaseAcscNetwork<TBus, TBranch>> 
                    extends BaseSubNetwork<TBus, TBranch, TNet, ISparseEqnComplex[], Complex3x1[][], Complex3x1>{

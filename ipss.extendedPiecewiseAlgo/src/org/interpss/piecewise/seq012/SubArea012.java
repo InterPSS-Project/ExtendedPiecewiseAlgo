@@ -29,7 +29,7 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
 /**
- * Class for modeling the SubArea concept for representing 012 sub-network. 
+ * Class for modeling the SubArea concept for representing 012 un-symmetric sub-network. 
  */
 public class SubArea012 extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>{
 	/**

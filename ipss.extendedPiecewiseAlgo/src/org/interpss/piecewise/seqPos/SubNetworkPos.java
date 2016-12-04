@@ -36,7 +36,7 @@ import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
 
 /**
- * Class for modeling the SubArea concept for representing single phase or positive sequence sub-network. 
+ * Class for modeling the SubNetwork concept for representing single phase or positive sequence sub-network. 
  */
 public class SubNetworkPos extends BaseSubNetwork<AclfBus, AclfBranch, AclfNetwork, ISparseEqnComplex, Complex[][], Complex>{
 	
