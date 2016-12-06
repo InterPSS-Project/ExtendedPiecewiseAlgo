@@ -27,12 +27,14 @@ import com.interpss.DStabObjectFactory;
 import com.interpss.common.exp.InterpssException;
 import com.interpss.dstab.DStabBranch;
 import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabGen;
+import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
 
 /**
  * Class for modeling the SubNetwork concept for representing a sub-network of type DStabilityNetwork. 
  */
-public class SubDStabNetwork extends SubNetwork012<DStabBus, DStabBranch, DStabilityNetwork>{
+public class SubDStabNetwork extends SubNetwork012<DStabGen, DStabLoad, DStabBus<DStabGen,DStabLoad>, DStabBranch, DStabilityNetwork>{
 	
 	/**
 	 * default constructor

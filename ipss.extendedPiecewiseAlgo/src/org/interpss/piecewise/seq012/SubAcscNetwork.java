@@ -23,21 +23,18 @@
 
 package org.interpss.piecewise.seq012;
 
-import org.interpss.numeric.datatype.Complex3x1;
-import org.interpss.numeric.sparse.ISparseEqnComplex;
-import org.interpss.piecewise.base.BaseSubNetwork;
-
 import com.interpss.CoreObjectFactory;
 import com.interpss.common.exp.InterpssException;
 import com.interpss.core.acsc.AcscBranch;
 import com.interpss.core.acsc.AcscBus;
+import com.interpss.core.acsc.AcscGen;
+import com.interpss.core.acsc.AcscLoad;
 import com.interpss.core.acsc.AcscNetwork;
-import com.interpss.core.acsc.SequenceCode;
 
 /**
  * Class for modeling the SubNetwork concept for representing a sub-network of type AcscNetwork. 
  */
-public class SubAcscNetwork extends SubNetwork012<AcscBus, AcscBranch, AcscNetwork>{
+public class SubAcscNetwork extends SubNetwork012<AcscGen, AcscLoad, AcscBus, AcscBranch, AcscNetwork>{
 	
 	/**
 	 * default constructor

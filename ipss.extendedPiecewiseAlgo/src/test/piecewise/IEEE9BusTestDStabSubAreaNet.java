@@ -21,6 +21,8 @@ import com.interpss.SimuObjectFactory;
 import com.interpss.common.exp.InterpssException;
 import com.interpss.dstab.DStabBranch;
 import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabGen;
+import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
 import com.interpss.simu.SimuContext;
 import com.interpss.simu.SimuCtxType;
@@ -42,7 +44,7 @@ public class IEEE9BusTestDStabSubAreaNet {
            		[ Bus2, Bus7 ]
 	     */
 	    
-		SubAreaNetProcessor<DStabBus, DStabBranch, SubArea012, Complex3x1> proc = 
+		SubAreaNetProcessor<DStabBus<DStabGen,DStabLoad>, DStabBranch, SubArea012, Complex3x1> proc = 
 				new SubAreaDStabProcessorImpl<SubArea012>(dsNet, new CuttingBranch012[] { 
 						new CuttingBranch012("Bus5->Bus7(0)"),
 						new CuttingBranch012("Bus7->Bus8(0)")});	
@@ -69,7 +71,7 @@ public class IEEE9BusTestDStabSubAreaNet {
 	
 	    DStabilityNetwork dsNet = getTestNet();
 	    
-	    SubAreaNetProcessor<DStabBus, DStabBranch, SubDStabNetwork, Complex3x1> proc = 
+	    SubAreaNetProcessor<DStabBus<DStabGen,DStabLoad>, DStabBranch, SubDStabNetwork, Complex3x1> proc = 
 				new SubNetworkDStabProcessorImpl<SubDStabNetwork>(dsNet, new CuttingBranch012[] { 
 						new CuttingBranch012("Bus5->Bus7(0)"),
 						new CuttingBranch012("Bus7->Bus8(0)")});	

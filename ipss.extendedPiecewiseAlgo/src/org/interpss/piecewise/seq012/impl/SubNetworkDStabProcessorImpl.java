@@ -30,12 +30,13 @@ import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 import org.interpss.piecewise.base.BaseSubArea;
 import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
-import org.interpss.piecewise.seq012.SubAcscNetwork;
 import org.interpss.piecewise.seq012.SubDStabNetwork;
 
 import com.interpss.common.exp.InterpssException;
 import com.interpss.dstab.DStabBranch;
 import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabGen;
+import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
 
 /**
@@ -48,7 +49,7 @@ import com.interpss.dstab.DStabilityNetwork;
  */
 		
 public class SubNetworkDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex3x1>> 
-				extends BaseSubAreaNetProcessorImpl<DStabBus, DStabBranch, TSub, Complex3x1> {
+				extends BaseSubAreaNetProcessorImpl<DStabBus<DStabGen,DStabLoad>, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 

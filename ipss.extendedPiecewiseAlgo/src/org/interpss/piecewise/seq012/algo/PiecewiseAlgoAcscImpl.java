@@ -31,6 +31,8 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
 import com.interpss.core.acsc.AcscBus;
+import com.interpss.core.acsc.AcscGen;
+import com.interpss.core.acsc.AcscLoad;
 import com.interpss.core.acsc.AcscNetwork;
 
 /**
@@ -41,7 +43,7 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 public class PiecewiseAlgoAcscImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
-					extends PiecewiseAlgo012Impl<AcscBus, AcscNetwork, TSub> {
+					extends PiecewiseAlgo012Impl<AcscGen, AcscLoad, AcscBus, AcscNetwork, TSub> {
 	/**
 	 * Constructor
 	 * 

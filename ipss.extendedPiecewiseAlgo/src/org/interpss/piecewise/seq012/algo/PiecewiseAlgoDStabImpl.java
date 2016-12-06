@@ -31,6 +31,8 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
 import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabGen;
+import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
 
 /**
@@ -41,7 +43,7 @@ import com.interpss.dstab.DStabilityNetwork;
  *
  */
 public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
-					extends PiecewiseAlgo012Impl<DStabBus, DStabilityNetwork, TSub> {
+					extends PiecewiseAlgo012Impl<DStabGen, DStabLoad, DStabBus<DStabGen,DStabLoad>, DStabilityNetwork, TSub> {
 	/**
 	 * Constructor
 	 * 

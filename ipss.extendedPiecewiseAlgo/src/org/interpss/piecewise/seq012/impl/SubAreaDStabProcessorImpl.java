@@ -32,6 +32,8 @@ import org.interpss.piecewise.seq012.SubArea012;
 
 import com.interpss.dstab.DStabBranch;
 import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.DStabGen;
+import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
 
 /**
@@ -43,7 +45,7 @@ import com.interpss.dstab.DStabilityNetwork;
  */
 		
 public class SubAreaDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex3x1>> 
-				extends BaseSubAreaNetProcessorImpl<DStabBus, DStabBranch, TSub, Complex3x1> {
+				extends BaseSubAreaNetProcessorImpl<DStabBus<DStabGen,DStabLoad>, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 

@@ -39,7 +39,9 @@ import org.interpss.piecewise.base.impl.AbstractPiecewiseAlgoAdapter;
 import org.interpss.piecewise.seq012.SubNetwork012;
 
 import com.interpss.core.acsc.AcscBranch;
-import com.interpss.core.acsc.AcscBus;
+import com.interpss.core.acsc.AcscGen;
+import com.interpss.core.acsc.AcscLoad;
+import com.interpss.core.acsc.BaseAcscBus;
 import com.interpss.core.acsc.BaseAcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
@@ -50,7 +52,9 @@ import com.interpss.core.acsc.SequenceCode;
  * @author Mike
  *
  */
-public class PiecewiseAlgo012Impl<TBus extends AcscBus, TNet extends BaseAcscNetwork<TBus,?>, TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
+public class PiecewiseAlgo012Impl<TGen extends AcscGen, TLoad extends AcscLoad, TBus extends BaseAcscBus<TGen,TLoad>, 
+					TNet extends BaseAcscNetwork<TGen, TLoad, TBus,?>, 
+					TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
 					extends AbstractPiecewiseAlgoAdapter<TBus, TNet, Complex3x1, TSub> {
 	// AclfNetwork object
 	//private AcscNetwork net;

@@ -28,7 +28,9 @@ import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubNetwork;
 
 import com.interpss.core.acsc.AcscBranch;
-import com.interpss.core.acsc.AcscBus;
+import com.interpss.core.acsc.AcscGen;
+import com.interpss.core.acsc.AcscLoad;
+import com.interpss.core.acsc.BaseAcscBus;
 import com.interpss.core.acsc.BaseAcscNetwork;
 import com.interpss.core.acsc.SequenceCode;
 
@@ -36,7 +38,8 @@ import com.interpss.core.acsc.SequenceCode;
  * Class for modeling the SubNetwork concept for representing 012 un-symmetric sub-network. 
  * 
  */
-public abstract class SubNetwork012<TBus extends AcscBus, TBranch extends AcscBranch, TNet extends BaseAcscNetwork<TBus, TBranch>> 
+public abstract class SubNetwork012<TGen extends AcscGen, TLoad extends AcscLoad, TBus extends BaseAcscBus<TGen, TLoad>, TBranch extends AcscBranch, 
+										TNet extends BaseAcscNetwork<TGen, TLoad, TBus, TBranch>> 
                    extends BaseSubNetwork<TBus, TBranch, TNet, ISparseEqnComplex[], Complex3x1[][], Complex3x1>{
 	
 	/**
