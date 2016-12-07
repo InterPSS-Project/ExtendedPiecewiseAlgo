@@ -34,7 +34,7 @@ import com.interpss.core.acsc.AcscNetwork;
 /**
  * Class for modeling the SubNetwork concept for representing a sub-network of type AcscNetwork. 
  */
-public class SubAcscNetwork extends SubNetwork012<AcscGen, AcscLoad, AcscBus, AcscBranch, AcscNetwork>{
+public class SubAcscNetwork extends SubNetwork012<AcscBus, AcscBranch, AcscNetwork>{
 	
 	/**
 	 * default constructor

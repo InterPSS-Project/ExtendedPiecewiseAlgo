@@ -34,7 +34,7 @@ import com.interpss.dstab.DStabilityNetwork;
 /**
  * Class for modeling the SubNetwork concept for representing a sub-network of type DStabilityNetwork. 
  */
-public class SubDStabNetwork extends SubNetwork012<DStabGen, DStabLoad, DStabBus<DStabGen,DStabLoad>, DStabBranch, DStabilityNetwork>{
+public class SubDStabNetwork extends SubNetwork012<DStabBus<DStabGen,DStabLoad>, DStabBranch, DStabilityNetwork>{
 	
 	/**
 	 * default constructor

@@ -43,7 +43,7 @@ import com.interpss.core.acsc.AcscNetwork;
  *
  */
 public class PiecewiseAlgoAcscImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
-					extends PiecewiseAlgo012Impl<AcscGen, AcscLoad, AcscBus, AcscNetwork, TSub> {
+					extends PiecewiseAlgo012Impl<AcscBus, AcscNetwork, TSub> {
 	/**
 	 * Constructor
 	 * 

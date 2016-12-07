@@ -52,9 +52,9 @@ import com.interpss.core.acsc.SequenceCode;
  * @author Mike
  *
  */
-public class PiecewiseAlgo012Impl<TGen extends AcscGen, TLoad extends AcscLoad, TBus extends BaseAcscBus<TGen,TLoad>, 
-					TNet extends BaseAcscNetwork<TGen, TLoad, TBus,?>, 
-					TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
+public class PiecewiseAlgo012Impl<TBus extends BaseAcscBus<? extends AcscGen, ? extends AcscLoad>, 
+								  TNet extends BaseAcscNetwork<TBus,?>, 
+								  TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
 					extends AbstractPiecewiseAlgoAdapter<TBus, TNet, Complex3x1, TSub> {
 	// AclfNetwork object
 	//private AcscNetwork net;
