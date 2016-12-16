@@ -130,7 +130,7 @@ public class PiecewiseAlgo012Impl<TBus extends BaseAcscBus<? extends AcscGen, ? 
   					});
   			
   	  		for ( ISparseEqnComplex eqn : subArea.getYSparseEqn())
-  	  			eqn.luMatrix(1.0e-10);
+  	  			eqn.factorization(1.0e-10);
   		}
   		//for ( ISparseEqnComplex eqn : subArea.getYSparseEqn())
   		//	System.out.println(eqn.toString());

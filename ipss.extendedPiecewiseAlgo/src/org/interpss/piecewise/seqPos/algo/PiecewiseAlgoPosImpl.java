@@ -110,7 +110,7 @@ public class PiecewiseAlgoPosImpl<TSub extends BaseSubArea<ISparseEqnComplex, Co
   				((SubNetworkPos)subArea).formYMatrix();
   			else	
   				subArea.setYSparseEqn(parentNet.formYMatrix(areaFlag));
-  			subArea.getYSparseEqn().luMatrix(1.0e-10);
+  			subArea.getYSparseEqn().factorization(1.0e-10);
   		}
   		//System.out.println("y1: \n" + y1.toString());
   		

@@ -91,7 +91,7 @@ public class IEEE14TestAclfNetPiesewise extends PiecewiseAlgoTestSetup {
 			});
   		//System.out.println(y.toString());
   		
-  		y.luMatrixAndSolveEqn(1.0e-10);
+  		y.solveEqn(1.0e-10);
   		//System.out.println(y.toString());
   		
   		double[] results = {
