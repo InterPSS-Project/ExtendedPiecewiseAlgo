@@ -25,16 +25,17 @@ package org.interpss.piecewise.seq012;
 
 import com.interpss.DStabObjectFactory;
 import com.interpss.common.exp.InterpssException;
+import com.interpss.dstab.BaseDStabBus;
+import com.interpss.dstab.BaseDStabNetwork;
 import com.interpss.dstab.DStabBranch;
-import com.interpss.dstab.DStabBus;
 import com.interpss.dstab.DStabGen;
 import com.interpss.dstab.DStabLoad;
-import com.interpss.dstab.DStabilityNetwork;
 
 /**
  * Class for modeling the SubNetwork concept for representing a sub-network of type DStabilityNetwork. 
  */
-public class SubDStabNetwork extends SubNetwork012<DStabBus<DStabGen,DStabLoad>, DStabBranch, DStabilityNetwork>{
+public class SubDStabNetwork extends SubNetwork012<BaseDStabBus<DStabGen,DStabLoad>, DStabBranch, 
+											       BaseDStabNetwork<BaseDStabBus<DStabGen,DStabLoad>,DStabBranch>>{
 	
 	/**
 	 * default constructor
@@ -55,11 +56,11 @@ public class SubDStabNetwork extends SubNetwork012<DStabBus<DStabGen,DStabLoad>,
 		super(flag, ids);
 	}
 	
-	@Override public DStabilityNetwork createSubNetwork() {
+	@Override public BaseDStabNetwork createSubNetwork() {
 		return DStabObjectFactory.createDStabilityNetwork();
 	};
 	
-	@Override public void buildSubNet(DStabilityNetwork parentNet) throws InterpssException {
+	@Override public void buildSubNet(BaseDStabNetwork parentNet) throws InterpssException {
 		super.buildSubNet(parentNet);
 		
 		// TODO only bus and branch objects are copied to the SubNetwork in the super class. We

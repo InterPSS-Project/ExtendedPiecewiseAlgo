@@ -33,8 +33,9 @@ import org.interpss.piecewise.base.impl.BaseSubAreaNetProcessorImpl;
 import org.interpss.piecewise.seq012.SubDStabNetwork;
 
 import com.interpss.common.exp.InterpssException;
+import com.interpss.dstab.BaseDStabBus;
+import com.interpss.dstab.BaseDStabNetwork;
 import com.interpss.dstab.DStabBranch;
-import com.interpss.dstab.DStabBus;
 import com.interpss.dstab.DStabGen;
 import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
@@ -49,13 +50,13 @@ import com.interpss.dstab.DStabilityNetwork;
  */
 		
 public class SubNetworkDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex3x1>> 
-				extends BaseSubAreaNetProcessorImpl<DStabBus<DStabGen,DStabLoad>, DStabBranch, TSub, Complex3x1> {
+				extends BaseSubAreaNetProcessorImpl<BaseDStabBus<DStabGen,DStabLoad>, DStabBranch, TSub, Complex3x1> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net DStabilityNetwork object
 	 */
-	public SubNetworkDStabProcessorImpl(DStabilityNetwork net) {
+	public SubNetworkDStabProcessorImpl(BaseDStabNetwork net) {
 		super(net);
 	}
 
@@ -65,7 +66,7 @@ public class SubNetworkDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex
 	 * @param net DStabilityNetwork object
 	 * @param cuttingBranches cutting branch set
 	 */
-	public SubNetworkDStabProcessorImpl(DStabilityNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
+	public SubNetworkDStabProcessorImpl(BaseDStabNetwork net, BaseCuttingBranch<Complex3x1>[] cuttingBranches) {
 		super(net, cuttingBranches);
 	}	
 	
@@ -79,7 +80,7 @@ public class SubNetworkDStabProcessorImpl<TSub extends BaseSubArea<?, ?, Complex
 		
 		// for each SubNetwork, we build the child/parent relationship.
 		for (TSub subNet : subNetList ) {
-			((SubDStabNetwork)subNet).buildSubNet((DStabilityNetwork)this.getNetwork());
+			((SubDStabNetwork)subNet).buildSubNet((BaseDStabNetwork)this.getNetwork());
 		};
 		
 		return subNetList;

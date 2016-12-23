@@ -30,7 +30,9 @@ import org.interpss.numeric.datatype.Complex3x1;
 import org.interpss.numeric.sparse.ISparseEqnComplex;
 import org.interpss.piecewise.base.BaseSubArea;
 
-import com.interpss.dstab.DStabBus;
+import com.interpss.dstab.BaseDStabBus;
+import com.interpss.dstab.BaseDStabNetwork;
+import com.interpss.dstab.DStabBranch;
 import com.interpss.dstab.DStabGen;
 import com.interpss.dstab.DStabLoad;
 import com.interpss.dstab.DStabilityNetwork;
@@ -43,13 +45,14 @@ import com.interpss.dstab.DStabilityNetwork;
  *
  */
 public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[], Complex3x1[][], Complex3x1>> 
-					extends PiecewiseAlgo012Impl<DStabBus<DStabGen,DStabLoad>, DStabilityNetwork, TSub> {
+					extends PiecewiseAlgo012Impl<BaseDStabBus<DStabGen,DStabLoad>, 
+								BaseDStabNetwork<BaseDStabBus<DStabGen,DStabLoad>, DStabBranch>, TSub> {
 	/**
 	 * Constructor
 	 * 
 	 * @param net DStabilityNetwork object
 	 */
-	public PiecewiseAlgoDStabImpl(DStabilityNetwork net) {
+	public PiecewiseAlgoDStabImpl(BaseDStabNetwork net) {
 		super(net);
 	}
 
@@ -59,7 +62,7 @@ public class PiecewiseAlgoDStabImpl<TSub extends BaseSubArea<ISparseEqnComplex[]
 	 * @param net DStabilityNetwork object
 	 * @param subAreaList SubArea/Network object list
 	 */
-	public PiecewiseAlgoDStabImpl(DStabilityNetwork net, List<TSub> subAreaNetList) {
+	public PiecewiseAlgoDStabImpl(BaseDStabNetwork net, List<TSub> subAreaNetList) {
 		super(net, subAreaNetList);
 	}
 }
