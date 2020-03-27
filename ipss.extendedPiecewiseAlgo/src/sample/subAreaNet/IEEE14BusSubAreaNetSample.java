@@ -24,6 +24,8 @@
 
 package sample.subAreaNet;
 
+import java.util.Arrays;
+
 import org.apache.commons.math3.complex.Complex;
 import org.interpss.CorePluginFactory;
 import org.interpss.IpssCorePlugin;
@@ -39,6 +41,7 @@ import com.interpss.common.exp.InterpssException;
 import com.interpss.core.aclf.AclfBranch;
 import com.interpss.core.aclf.AclfBus;
 import com.interpss.core.aclf.AclfNetwork;
+import com.interpss.core.net.BranchBusSide;
 
 public class IEEE14BusSubAreaNetSample {
 	
@@ -62,11 +65,15 @@ public class IEEE14BusSubAreaNetSample {
 				
 		SubAreaNetProcessor<AclfBus, AclfBranch, SubAreaPos, Complex> 
 			proc = new SubAreaPosProcessorImpl<>(net, new CuttingBranchPos[] { 
-						new CuttingBranchPos("4->71(1)"),
-						new CuttingBranchPos("4->91(1)"),
-						new CuttingBranchPos("5->61(1)")});	
+						new CuttingBranchPos("4->71(1)", BranchBusSide.FROM_SIDE),
+						new CuttingBranchPos("4->91(1)", BranchBusSide.TO_SIDE),
+						new CuttingBranchPos("5->61(1)", BranchBusSide.FROM_SIDE)});	
 		
 		proc.processSubAreaNet();
+		
+		Arrays.asList(proc.getCuttingBranches()).forEach(branch -> {
+			System.out.println("Interface: " + branch.toString());
+		});
 		
 		proc.getSubAreaNetList().forEach(subArea -> {
 			System.out.println("----------------------");
