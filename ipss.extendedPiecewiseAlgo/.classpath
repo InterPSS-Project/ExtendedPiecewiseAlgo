@@ -15,6 +15,8 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ieee.odm.schema"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ipss.common"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/ipss.numeric"/>
-	<classpathentry kind="lib" path="/ext-lib/lib/interpss/ipss_plugin.jar" sourcepath="/ipss.plugin.base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ipss.plugin.base"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ipss.plugin.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ipss.pssl"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
