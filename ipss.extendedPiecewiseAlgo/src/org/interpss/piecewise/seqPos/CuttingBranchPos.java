@@ -28,6 +28,8 @@ import org.apache.commons.math3.complex.Complex;
 import org.interpss.numeric.datatype.ComplexFunc;
 import org.interpss.piecewise.base.BaseCuttingBranch;
 
+import com.interpss.core.net.BranchBusSide;
+
 
 /**
  * Class for modeling the cutting branch concept with current of Complex type
@@ -55,6 +57,15 @@ public class CuttingBranchPos extends BaseCuttingBranch<Complex> {
 	 */
 	public CuttingBranchPos(String id) {
 		super(id, BaseCuttingBranch.DefaultFlag, BaseCuttingBranch.DefaultFlag);
+	}
+
+	/**
+	 * constructor
+	 * 
+	 * @param id branch id
+	 */
+	public CuttingBranchPos(String id, BranchBusSide cuttingSide) {
+		super(id, BaseCuttingBranch.DefaultFlag, BaseCuttingBranch.DefaultFlag, cuttingSide);
 	}
 	
 	public String toString() {

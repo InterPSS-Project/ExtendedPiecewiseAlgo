@@ -24,6 +24,7 @@
 
 package org.interpss.piecewise.base;
 
+import com.interpss.core.net.BranchBusSide;
 
 /**
  * Base class for modeling the cutting branch concept
@@ -41,6 +42,9 @@ public class BaseCuttingBranch<TCur> {
 	
 	// cutting branch from/to bus SubArea flag
 	private int fromSubAreaFlag, toSubAreaFlag;
+	
+	// cutting bus side, only for information purpose
+	private BranchBusSide splitSide;
 	
 	// the calculated cutting branch Norton equivalent current
 	protected TCur cur;
@@ -64,6 +68,18 @@ public class BaseCuttingBranch<TCur> {
 	}
 
 	/**
+	 * constructor
+	 * 
+	 * @param id branch id
+	 * @param fromFlag branch from bus area flag
+	 * @param toFlag branch to bus area flag
+	 */
+	public BaseCuttingBranch(String id, int fromFlag, int toFlag, BranchBusSide cuttingSide) {
+		this(id, fromFlag, toFlag);
+		this.splitSide = cuttingSide;
+	}
+	
+	/**
 	 * @return the branchId
 	 */
 	public String getBranchId() {
@@ -77,6 +93,13 @@ public class BaseCuttingBranch<TCur> {
 		return fromSubAreaFlag;
 	}
 
+	/**
+	 * @return the splitSide
+	 */
+	public BranchBusSide getSplitSide() {
+		return this.splitSide;
+	}
+	
 	/**
 	 * @return the toSubAreaFlag
 	 */
@@ -114,7 +137,8 @@ public class BaseCuttingBranch<TCur> {
 	
 	public String toString() {
 		String str =  "Branch Id: " + this.branchId + "\n"
-				+ "From, To side SubArea Flag: " + this.fromSubAreaFlag + ", " + this.toSubAreaFlag + "\n";
+				+ "From, To side SubArea Flag, splitSide: " 
+				+ this.fromSubAreaFlag + ", " + this.toSubAreaFlag + ", " + this.splitSide + "\n";
 		return str;
 	}
 }
